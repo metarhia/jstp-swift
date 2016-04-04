@@ -12,6 +12,9 @@ import JavaScriptCore
 private let context = JSContext()
 private let undefined = JSValueMakeUndefined(context.JSGlobalContextRef)
 private let JSQueue: dispatch_queue_t = dispatch_queue_create("JS", DISPATCH_QUEUE_SERIAL)
+private let api = try? String(
+    contentsOfFile: NSBundle.mainBundle().pathForResource("api", ofType: "js")!,
+    encoding: NSUTF8StringEncoding)
 
 /**
  * TODO: add multiple metadata handling and caching.
@@ -20,6 +23,7 @@ public struct JSTPObject {
 
     public var JSObject: AnyObject!
     private var data: String?
+    private let id = (NSUUID().UUIDString as NSString).substringToIndex(4)
 
     public init() {
         JSObject = nil
@@ -54,7 +58,7 @@ public struct JSTPObject {
             self.initMetadata(metadata)
 
             let JSData = JSManagedValue(value: context!["data"])
-            let JSMetadata = JSManagedValue(value: context!["metadata"])
+            let JSMetadata = JSManagedValue(value: context!["metadata\(self.id)"])
             /**
              * TODO: call "api.jstp.jsrd" via subscript.
              */
@@ -79,16 +83,9 @@ public struct JSTPObject {
      */
     private func initMetadata(metadata: String) {
 
-        if context!.objectForKeyedSubscript("metadata").JSValueRef == undefined {
-            var api: String?
-            do {
-                api = try String(
-                    contentsOfFile: NSBundle.mainBundle().pathForResource("api", ofType: "js")!,
-                    encoding: NSUTF8StringEncoding)
-
+        if context!.objectForKeyedSubscript("metadata\(self.id)").JSValueRef == undefined {
                 context!.evaluateScript(" \(api!);"
-                    + "var metadata = \(metadata);")
-            } catch _ { return }
+                    + "var metadata\(self.id) = \(metadata);")
         }
     }
 
