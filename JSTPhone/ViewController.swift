@@ -35,7 +35,7 @@ class ViewController: UIViewController {
         var JSDObject = JSTPObject()
 
         NSLog("logged")
-        for _ in 1...100 {
+        for _ in 1...100000 {
             JSDObject = JSTPObject(data: data, metadata: metadata)
         }
         NSLog("logged")
