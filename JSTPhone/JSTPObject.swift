@@ -9,12 +9,12 @@
 import UIKit
 import JavaScriptCore
 
-private let JSQueue: dispatch_queue_t = dispatch_queue_create("JS", DISPATCH_QUEUE_SERIAL)
-private let api = try? String(
+private let api     = try? String(
     contentsOfFile: NSBundle.mainBundle().pathForResource("api", ofType: "js")!,
     encoding: NSUTF8StringEncoding)
+
 private let context = JSContext().evaluateScript(api).context
-private let undefined = JSValueMakeUndefined(context.JSGlobalContextRef)
+private let JSQueue = dispatch_queue_create("JS", DISPATCH_QUEUE_SERIAL)
 
 private var metadataCache = [Int : String]()
 
@@ -39,34 +39,15 @@ public struct JSTPObject {
         self.init(data: data, metadata: metadata)
     }
 
-    public init(dataName: String, metadataName: String) {
-        let dataURL = NSBundle.mainBundle().URLForResource(dataName, withExtension: "js")!
-        let metadataURL = NSBundle.mainBundle().URLForResource(metadataName, withExtension: "js")!
-
-        self.init(dataURL: dataURL, metadataURL: metadataURL)
-    }
-
-    public init(dataURL: NSURL, metadataURL: NSURL) {
-        let dData = NSData(contentsOfURL: dataURL)!
-        let dMetadata = NSData(contentsOfURL: metadataURL)!
-
-        self.init(data: dData, metadata: dMetadata)
-    }
-
     public init(data: String, metadata: String) {
 
         onPostExecute { () -> Void in
             self.initData(data)
             self.initMetadata(metadata)
 
-            let JSData = JSManagedValue(value: context!["data"])
-            let JSMetadata = JSManagedValue(value: context!["metadata" + self.id])
-            let object = JSManagedValue(value: context!["jsrd"].callWithArguments(
-                [JSData.value, JSMetadata.value]))
-
-            if let parsed = object.value {
-                self.JSObject = parsed.toObject()
-            }
+            let object = context!["jsrd"].callWithArguments(
+                        [context!["data"], context!["meta" + self.id]])
+            if let parsed = object { self.JSObject = parsed.toObject() }
         }
     }
 
@@ -82,29 +63,26 @@ public struct JSTPObject {
      */
     private mutating func initMetadata(metadata: String) {
 
-        if let value = metadataCache[metadata.hash] {
-            self.id = value
-        } else {
-            context!.evaluateScript("var metadata" + self.id + " = \(metadata);")
+        if let value = metadataCache[metadata.hash] { self.id = value }
+        else {
+            context!.evaluateScript("var meta" + self.id + " = \(metadata);")
             metadataCache.updateValue(self.id, forKey: metadata.hash)
         }
     }
 
-    private func onPostExecute(complete: () -> Void) {
+    private func onPostExecute(execution: () -> Void) {
 
-        let semaphore = dispatch_semaphore_create(0)
+        let signal = dispatch_semaphore_create(0)
         dispatch_async(JSQueue) {
-            complete()
-            dispatch_semaphore_signal(semaphore)
-        }
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+            execution()
+            dispatch_semaphore_signal(signal)
+        };  dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER)
     }
 
     public subscript(key: String) -> AnyObject? {
 
-        if let value = self.JSObject.valueForKey(key) {
-            return value
-        } else { return nil }
+        if let value = self.JSObject.valueForKey(key) { return value }
+        else { return nil }
     }
 }
 
