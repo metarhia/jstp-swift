@@ -6,15 +6,16 @@
 //  Copyright © 2016 Test. All rights reserved.
 //
 
-import UIKit
 import JavaScriptCore
 
 private let api     = try? String(
     contentsOfFile: NSBundle.mainBundle().pathForResource("api", ofType: "js")!,
     encoding: NSUTF8StringEncoding)
 
-private let context = JSContext().evaluateScript(api).context
-private let JSQueue = dispatch_queue_create("JS", DISPATCH_QUEUE_SERIAL)
+private let metaContext = JSContext().evaluateScript(api).context
+private let context     = JSContext(virtualMachine: metaContext.virtualMachine)
+private let JSQueue     = dispatch_queue_create("JS", DISPATCH_QUEUE_SERIAL)
+
 
 private var metadataCache = [Int : String]()
 
@@ -40,13 +41,13 @@ public struct JSTPObject {
     }
 
     public init(data: String, metadata: String) {
-
         onPostExecute { () -> Void in
+
             self.initData(data)
             self.initMetadata(metadata)
 
-            let object = context!["jsrd"].callWithArguments(
-                        [context!["data"], context!["meta" + self.id]])
+            let object = metaContext["jsrd"].callWithArguments(
+                            [context["data"], metaContext["meta" + self.id]])
             if let parsed = object { self.JSObject = parsed.toObject() }
         }
     }
@@ -62,16 +63,14 @@ public struct JSTPObject {
      * TODO: redo metadata initialization.
      */
     private mutating func initMetadata(metadata: String) {
-
         if let value = metadataCache[metadata.hash] { self.id = value }
         else {
-            context!.evaluateScript("var meta" + self.id + " = \(metadata);")
+            metaContext.evaluateScript("var meta" + self.id + " = \(metadata);")
             metadataCache.updateValue(self.id, forKey: metadata.hash)
         }
     }
 
     private func onPostExecute(execution: () -> Void) {
-
         let signal = dispatch_semaphore_create(0)
         dispatch_async(JSQueue) {
             execution()
@@ -80,7 +79,6 @@ public struct JSTPObject {
     }
 
     public subscript(key: String) -> AnyObject? {
-
         if let value = self.JSObject.valueForKey(key) { return value }
         else { return nil }
     }

@@ -39,7 +39,6 @@ class ViewController: UIViewController {
             JSDObject = JSTPObject(data: data, metadata: metadata)
         }
         NSLog("logged")
-
         print(JSDObject.JSObject)
         print(JSDObject["name"]!)
     }
