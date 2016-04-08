@@ -12,54 +12,46 @@ private let api     = try? String(
     contentsOfFile: NSBundle.mainBundle().pathForResource("api", ofType: "js")!,
     encoding: NSUTF8StringEncoding)
 
-private let metaContext = JSContext().evaluateScript(api).context
-private let context     = JSContext(virtualMachine: metaContext.virtualMachine)
-private let JSQueue     = dispatch_queue_create("JS", DISPATCH_QUEUE_SERIAL)
-
-
+private let metaContext   = JSContext().evaluateScript(api).context
+private let context       = JSContext(virtualMachine: metaContext.virtualMachine)
+private let JSQueue       = dispatch_queue_create("JS", DISPATCH_QUEUE_SERIAL)
 private var metadataCache = [Int : String]()
 
-/*
- * TODO: add multiple metadata handling and caching.
+/**
+ * TODO: add proper caching and optimize.
  */
 public struct JSTPObject {
 
-    public var JSObject: AnyObject!
-    private var data: String?
-    private var id = (NSUUID().UUIDString as NSString).substringToIndex(4)
-
-    public init() {
-        JSObject = nil
-        data = nil
+    private var _JSObject: AnyObject!
+    public var JSObject: AnyObject! {
+        get {
+            return metaContext["jsrd"].callWithArguments(
+                [context["data"], metaContext["meta" + self.id]]).toObject()
+        }
+        set { _JSObject = newValue }
     }
+    private var id = (NSUUID().UUIDString as NSString).substringToIndex(3)
+
+    public init() { JSObject = nil }
 
     public init(data: NSData, metadata: NSData) {
-        let data = NSString(data: data, encoding: NSUTF8StringEncoding) as! String
-        let metadata = NSString(data: metadata, encoding: NSUTF8StringEncoding) as! String
-
-        self.init(data: data, metadata: metadata)
+        self.init(data: NSString(data: data, encoding: NSUTF8StringEncoding) as! String,
+              metadata: NSString(data: metadata, encoding: NSUTF8StringEncoding) as! String)
     }
 
     public init(data: String, metadata: String) {
         onPostExecute { () -> Void in
-
             self.initData(data)
             self.initMetadata(metadata)
-
-            let object = metaContext["jsrd"].callWithArguments(
-                            [context["data"], metaContext["meta" + self.id]])
-            if let parsed = object { self.JSObject = parsed.toObject() }
         }
     }
 
-    /*
+    /**
      * TODO: redo data initialization to avoid multiple writing to context.
      */
-    public func initData(data: String) {
-        context.evaluateScript("var data = \(data)")
-    }
+    public func initData(data: String) { context.evaluateScript("var data = \(data)") }
 
-    /*
+    /**
      * TODO: redo metadata initialization.
      */
     private mutating func initMetadata(metadata: String) {
@@ -85,7 +77,5 @@ public struct JSTPObject {
 }
 
 extension JSContext {
-    private subscript(key: String) -> JSValue {
-        return self.objectForKeyedSubscript(key)
-    }
+    private subscript(key: String) -> JSValue { return self.objectForKeyedSubscript(key) }
 }
