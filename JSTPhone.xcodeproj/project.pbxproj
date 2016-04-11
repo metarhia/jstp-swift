@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4471095B1CBC44B000361B13 /* JSTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4471095A1CBC44B000361B13 /* JSTP.swift */; };
 		44CB73361CA9940C00D9F07A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CB73351CA9940C00D9F07A /* AppDelegate.swift */; };
 		44CB73381CA9940C00D9F07A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CB73371CA9940C00D9F07A /* ViewController.swift */; };
 		44CB733B1CA9940C00D9F07A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 44CB73391CA9940C00D9F07A /* Main.storyboard */; };
@@ -16,7 +17,6 @@
 		44CB73571CA994FD00D9F07A /* data.js in Resources */ = {isa = PBXBuildFile; fileRef = 44CB73551CA994FD00D9F07A /* data.js */; };
 		44CB73581CA994FD00D9F07A /* metadata.js in Resources */ = {isa = PBXBuildFile; fileRef = 44CB73561CA994FD00D9F07A /* metadata.js */; };
 		44CB735A1CA9951200D9F07A /* api.js in Resources */ = {isa = PBXBuildFile; fileRef = 44CB73591CA9951200D9F07A /* api.js */; };
-		44CB73CA1CAA3FCC00D9F07A /* JSTPObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CB73C91CAA3FCC00D9F07A /* JSTPObject.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,6 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4471095A1CBC44B000361B13 /* JSTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSTP.swift; sourceTree = "<group>"; };
 		44CB73321CA9940C00D9F07A /* JSTPhone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JSTPhone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		44CB73351CA9940C00D9F07A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		44CB73371CA9940C00D9F07A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -43,7 +44,6 @@
 		44CB73551CA994FD00D9F07A /* data.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = data.js; sourceTree = "<group>"; };
 		44CB73561CA994FD00D9F07A /* metadata.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = metadata.js; sourceTree = "<group>"; };
 		44CB73591CA9951200D9F07A /* api.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = api.js; sourceTree = "<group>"; };
-		44CB73C91CAA3FCC00D9F07A /* JSTPObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSTPObject.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,7 +87,7 @@
 			children = (
 				44CB73351CA9940C00D9F07A /* AppDelegate.swift */,
 				44CB73371CA9940C00D9F07A /* ViewController.swift */,
-				44CB73C91CAA3FCC00D9F07A /* JSTPObject.swift */,
+				4471095A1CBC44B000361B13 /* JSTP.swift */,
 				44CB73561CA994FD00D9F07A /* metadata.js */,
 				44CB73551CA994FD00D9F07A /* data.js */,
 				44CB73591CA9951200D9F07A /* api.js */,
@@ -214,7 +214,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				44CB73CA1CAA3FCC00D9F07A /* JSTPObject.swift in Sources */,
+				4471095B1CBC44B000361B13 /* JSTP.swift in Sources */,
 				44CB73381CA9940C00D9F07A /* ViewController.swift in Sources */,
 				44CB73361CA9940C00D9F07A /* AppDelegate.swift in Sources */,
 			);
