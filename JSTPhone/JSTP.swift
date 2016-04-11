@@ -19,65 +19,76 @@ private var metadataCache = [Int : String]()
 
 public class jstp {
 
+    private init() { }
+
     public static func parse(str: String) -> [AnyObject] {
-        return JSTPObject(data: str).parse as [AnyObject]
+        return JSTPOS(data: str).parsed as [AnyObject]
     }
 
-    public static func intertprete(str: String) -> AnyObject {
-
-        return NSObject() //zaglushka
+    public static func intertprete(str: String) -> NSObject! {
+        return JSTPOS(data: str).interpreted as! NSObject
     }
 
-    public static func jsrd(data: String, metadata: String) -> NSObject {
-        return JSTPObject(data: data, metadata: metadata).jsrd as! NSObject
+    public static func jsrd(data: String, metadata: String) -> NSObject! {
+        return JSTPRM(data: data, metadata: metadata).jsrd as! NSObject
     }
 }
 
-/**
- * TODO: add proper caching and optimize.
- */
-public struct JSTPObject {
-
-    public weak var jsrd: AnyObject! {
-        let obj = metaContext["jsrd"].callWithArguments(
-                     [context["data"], metaContext["meta" + self.id]]).toObject()
-                      context.deleteJSProperty("data")
-        return obj
+extension jstp {
+    private static func writeData(data: String) {
+        context.evaluateScript("var data=\(data);")
     }
-    public weak var parse: NSArray! {
-        let arr = context["data"].toArray()
+}
+
+
+private struct JSTPOS {
+
+    weak var parsed: NSArray! {
+        let arr = context.objectForKeyedSubscript("data").toArray()
                   context.deleteJSProperty("data")
         return arr
     }
-    private var id = (NSUUID().UUIDString as NSString).substringToIndex(3)
 
-    public init(data: NSData, metadata: NSData) {
+    weak var interpreted: AnyObject! {
+        let obj = context.objectForKeyedSubscript("data").toObject()
+                  context.deleteJSProperty("data")
+        return obj
+    }
+
+    init(data: String) {
+        jstp.writeData(data)
+    }
+}
+
+
+private struct JSTPRM {
+
+    weak var jsrd: AnyObject! {
+        let obj = metaContext.objectForKeyedSubscript("jsrd").callWithArguments(
+                     [context.objectForKeyedSubscript("data"),
+                  metaContext.objectForKeyedSubscript("meta" + self.id)]).toObject()
+                      context.deleteJSProperty("data")
+        return obj
+    }
+    var id = (NSUUID().UUIDString as NSString).substringToIndex(3)
+
+    init(data: NSData, metadata: NSData) {
         self.init(data: NSString(data:     data, encoding: NSUTF8StringEncoding) as! String,
               metadata: NSString(data: metadata, encoding: NSUTF8StringEncoding) as! String)
     }
 
-    public init(data: String) {
-        self.initData(data)
+    init(data: String, metadata: String) {
+        self.writeMetadata(metadata)
+        jstp.writeData(data)
     }
-
-    public init(data: String, metadata: String) {
-            self.initData(data)
-            self.initMetadata(metadata)
-    }
-
-    /**
-     * TODO: redo data initialization to avoid multiple writing to context.
-     */
-    public func initData(data: String) { context.evaluateScript("var data = \(data)") }
-//    public func initData(data: String) { context.evaluateScript("\(data)") }
 
     /**
      * TODO: redo metadata initialization.
      */
-    private mutating func initMetadata(metadata: String) {
+    mutating func writeMetadata(metadata: String) {
         if let value = metadataCache[metadata.hash] { self.id = value }
         else {
-            metaContext.evaluateScript("var meta" + self.id + " = \(metadata);")
+            metaContext.evaluateScript("var meta" + self.id + "=\(metadata);")
             metadataCache.updateValue(self.id, forKey: metadata.hash)
         }
     }
@@ -88,12 +99,10 @@ extension NSObject {
 }
 
 extension JSContext {
-    private subscript(key: String) -> JSValue { return self.objectForKeyedSubscript(key) }
-
     private func deleteJSProperty(name: String) {
         JSObjectDeleteProperty(self.JSGlobalContextRef,
-                               JSContextGetGlobalObject(self.JSGlobalContextRef),
-                               self[name].JSValueRef, nil)
-        JSGarbageCollect(self.JSGlobalContextRef)
+                               self.globalObject.JSValueRef,
+                               self.objectForKeyedSubscript(name).JSValueRef, nil)
+              JSGarbageCollect(self.JSGlobalContextRef)
     }
 }

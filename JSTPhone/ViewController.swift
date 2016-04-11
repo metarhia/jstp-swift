@@ -70,7 +70,6 @@ class ViewController: UIViewController {
 //
 
         let _Begin = NSDate()
-        /* Here comes the lock */
         for _ in 1...100000 {
             let _ = jstp.parse(data)
         }

@@ -1,6 +1,4 @@
 "use strict";
-//function jsrd(e,t){var r={},n=Object.keys(t);return n.forEach(function(t,n){Object.defineProperty(r,t,{enumerable:!0,get:function(){return e[n]},set:function(t){e[n]=t}})}),r}
-
 function interprete(str) {
     var sandbox = this.createContext({});
     var script = this.createScript('(' + str + ')');
