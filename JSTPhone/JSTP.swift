@@ -12,8 +12,9 @@ private let api = try? String(
     contentsOfFile: NSBundle.mainBundle().pathForResource("api", ofType: "js")!,
     encoding: NSUTF8StringEncoding)
 
-private let metaContext   = JSContext().evaluateScript(api).context
-private let context       = JSContext(virtualMachine: metaContext.virtualMachine)
+//private let metaContext   = JSContext().evaluateScript(api).context
+//private let context       = JSContext(virtualMachine: metaContext.virtualMachine)
+private let context = JSContext().evaluateScript(api).context
 private let JSQueue       = dispatch_queue_create("JS", DISPATCH_QUEUE_SERIAL)
 private var metadataCache = [Int : String]()
 
@@ -29,29 +30,42 @@ public class jstp {
         return JSTPOS(data: str).interpreted as! NSObject
     }
 
-    public static func jsrd(data: String, metadata: String) -> NSObject! {
+    public static func jsrd(data data: String, metadata: String) -> NSObject! {
         return JSTPRM(data: data, metadata: metadata).jsrd as! NSObject
     }
 }
 
 extension jstp {
+
     private static func writeData(data: String) {
-        context.evaluateScript("var data=\(data);")
+        //context.evaluateScript("var data=\(data);")
+        metaContext.evaluateScript("api.data = \(data)")
     }
 }
-
 
 private struct JSTPOS {
 
     weak var parsed: NSArray! {
-        let arr = context.objectForKeyedSubscript("data").toArray()
-                  context.deleteJSProperty("data")
+//        let arr = context.globalObject.valueForProperty("data").toArray()
+//                  context.globalObject.deleteProperty("var data")
+//        JSGarbageCollect(context.JSGlobalContextRef)
+//        return arr
+        let arr = metaContext.objectForKeyedSubscript("api").valueForProperty("data").toArray()
+        metaContext.objectForKeyedSubscript("api").deleteProperty("data")
+        if !metaContext.objectForKeyedSubscript("api").hasProperty("data") {
+            print(#function)
+        }
+        JSGarbageCollect(context.JSGlobalContextRef)
         return arr
     }
 
     weak var interpreted: AnyObject! {
-        let obj = context.objectForKeyedSubscript("data").toObject()
-                  context.deleteJSProperty("data")
+        let obj = context.globalObject.valueForProperty("data").toObject()
+                  //context.globalObject.deleteProperty("var data")
+        if !context.globalObject.deleteProperty("var data") {
+            print(#function)
+        }
+        JSGarbageCollect(context.JSGlobalContextRef)
         return obj
     }
 
@@ -60,22 +74,17 @@ private struct JSTPOS {
     }
 }
 
-
 private struct JSTPRM {
 
     weak var jsrd: AnyObject! {
         let obj = metaContext.objectForKeyedSubscript("jsrd").callWithArguments(
-                     [context.objectForKeyedSubscript("data"),
+                     [context.globalObject.valueForProperty("data"),
                   metaContext.objectForKeyedSubscript("meta" + self.id)]).toObject()
-                      context.deleteJSProperty("data")
+                      context.globalObject.deleteProperty("var data")
+        JSGarbageCollect(context.JSGlobalContextRef)
         return obj
     }
     var id = (NSUUID().UUIDString as NSString).substringToIndex(3)
-
-    init(data: NSData, metadata: NSData) {
-        self.init(data: NSString(data:     data, encoding: NSUTF8StringEncoding) as! String,
-              metadata: NSString(data: metadata, encoding: NSUTF8StringEncoding) as! String)
-    }
 
     init(data: String, metadata: String) {
         self.writeMetadata(metadata)
@@ -98,11 +107,11 @@ extension NSObject {
     public subscript(key: String) -> AnyObject? { return self.valueForKey(key) }
 }
 
-extension JSContext {
-    private func deleteJSProperty(name: String) {
-        JSObjectDeleteProperty(self.JSGlobalContextRef,
-                               self.globalObject.JSValueRef,
-                               self.objectForKeyedSubscript(name).JSValueRef, nil)
-              JSGarbageCollect(self.JSGlobalContextRef)
-    }
-}
+
+
+
+
+
+
+
+

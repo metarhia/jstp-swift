@@ -32,48 +32,26 @@ class ViewController: UIViewController {
         let data        = NSString(data: dData, encoding: NSUTF8StringEncoding) as! String
         let metadata    = NSString(data: dMetadata, encoding: NSUTF8StringEncoding) as! String
 
-//        var JSDObject = JSTPObject(data: data, metadata: metadata)
 //        let begin = NSDate()
 //        for _ in 1...100000 {
-//            JSDObject = JSTPObject(data: data, metadata: metadata)
+//            let _ = jstp.jsrd(data: data, metadata: metadata)
 //        }
-//        NSLog("Init time: \((-begin.timeIntervalSinceNow).description)")
-//
-//        print(JSDObject.jsrd)
+//        NSLog("Parse time: \((-begin.timeIntervalSinceNow).description)")
+//        print(jstp.jsrd(data: data, metadata: metadata))
 
-        let newBegin = NSDate()
-        /* Here comes the lock */
-        for _ in 1...100000 {
-            let _ = jstp.jsrd(data, metadata: metadata)
-        }
-        NSLog("Parse time: \((-newBegin.timeIntervalSinceNow).description)")
-        print(jstp.jsrd(data, metadata: metadata))
-        print(jstp.jsrd(data, metadata: metadata)["name"]!)
-
-
-//        let anoBegin = NSDate()
-//        /* Here comes the lock */
-//        for _ in 1...100000 {
-//            let _ = jstp.jsrd(data, metadata: metadata)
-//        }
-//        NSLog("Parse time: \((-anoBegin.timeIntervalSinceNow).description)")
-//        print(jstp.jsrd(data, metadata: metadata))
-//
-
-//        let _anoBegin = NSDate()
-//        /* Here comes the lock */
-//        for _ in 1...100000 {
-//            let _ = jstp.jsrd(data, metadata: metadata)
-//        }
-//        NSLog("Parse time: \((-_anoBegin.timeIntervalSinceNow).description)")
-//        print(jstp.jsrd(data, metadata: metadata))
-//
-
-        let _Begin = NSDate()
+        
+        let _begin = NSDate()
         for _ in 1...100000 {
             let _ = jstp.parse(data)
         }
-        NSLog("Parse time: \((-_Begin.timeIntervalSinceNow).description)")
+        NSLog("Parse time: \((-_begin.timeIntervalSinceNow).description)")
         print(jstp.parse(data))
+
+//        let __begin = NSDate()
+//        for _ in 1...10000 {
+//            let _ = jstp.intertprete(data)
+//        }
+//        NSLog("Parse time: \((-__begin.timeIntervalSinceNow).description)")
+//        print(jstp.intertprete(data))
     }
 }
