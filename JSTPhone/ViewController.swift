@@ -32,12 +32,12 @@ class ViewController: UIViewController {
         let data        = NSString(data: dData, encoding: NSUTF8StringEncoding) as! String
         let metadata    = NSString(data: dMetadata, encoding: NSUTF8StringEncoding) as! String
 
-//        let begin = NSDate()
-//        for _ in 1...100000 {
-//            let _ = jstp.jsrd(data: data, metadata: metadata)
-//        }
-//        NSLog("Parse time: \((-begin.timeIntervalSinceNow).description)")
-//        print(jstp.jsrd(data: data, metadata: metadata))
+        let begin = NSDate()
+        for _ in 1...100000 {
+            let _ = jstp.jsrd(data: data, metadata: metadata)
+        }
+        NSLog("Parse time: \((-begin.timeIntervalSinceNow).description)")
+        print(jstp.jsrd(data: data, metadata: metadata))
 
         
         let _begin = NSDate()
