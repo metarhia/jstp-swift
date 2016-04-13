@@ -1,13 +1,10 @@
 //
-//  JSTP.swift
+//  JSTPObject.swift
 //  JSTPhone
 //
-//  Created by Nikita Kirichek on 13.04.16.
+//  Created by Artem Chernenkiy on 29.03.16.
 //  Copyright © 2016 Test. All rights reserved.
 //
-
-import JavaScriptCore
-
 
 import JavaScriptCore
 
@@ -15,44 +12,104 @@ private let api = try? String(
     contentsOfFile: NSBundle.mainBundle().pathForResource("api", ofType: "js")!,
     encoding: NSUTF8StringEncoding)
 
-private var metaCache = NSMutableArray()
 private let context = JSContext().evaluateScript(api).context
+private let JSQueue       = dispatch_queue_create("JS", DISPATCH_QUEUE_SERIAL)
+private var metadataCache = [Int : String]()
 
-public class JSTP{
-    
-    private var id: Int!
-    
-    public static func parse(data: String) -> [AnyObject]! {
-        if let value =  intertprete(data){
-            return value as! [AnyObject]
-        }
-        return nil
+public class jstp {
+
+    private init() { }
+
+    public static func parse(str: String) -> [AnyObject] {
+//        var obj = [AnyObject]()
+//               let signal = dispatch_semaphore_create(0)
+//               dispatch_async(JSQueue) {
+//                    obj = JSTPOS(data: str).parsed as [AnyObject]
+//                    dispatch_semaphore_signal(signal)
+//                }; dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER)
+//        return obj
+        return JSTPOS(data: str).parsed as [AnyObject]
     }
-    
-    public static func intertprete(data: String) -> NSObject! {
-        if let value = context.evaluateScript("api.data = \(data);").toObject(){
-            JSGarbageCollect(context.JSGlobalContextRef)
-            return value as! NSObject
-        }
-        JSGarbageCollect(context.JSGlobalContextRef)
-        return nil
+
+    public static func intertprete(str: String) -> NSObject! {
+        return JSTPOS(data: str).interpreted as! NSObject
     }
-    
-    public func jsrd(data data: String, metadata: String) -> NSObject! {
-        self.cashing(metadata)
-        return context.objectForKeyedSubscript("jsrd").callWithArguments(
-            [JSTP.intertprete(data), metaCache[id]]).toObject() as! NSObject
-        
+
+    public static func jsrd(data data: String, metadata: String) -> NSObject! {
+//        var obj = NSObject()
+//               let signal = dispatch_semaphore_create(0)
+//               dispatch_async(JSQueue) {
+//                    obj = JSTPRM(data: data, metadata: metadata).jsrd as! NSObject
+//                    dispatch_semaphore_signal(signal)
+//                }; dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER)
+//        return obj
+        return JSTPRM(data: data, metadata: metadata).jsrd as! NSObject
     }
-    
-    private func cashing(metadata: String) {
-        let obj = JSTP.intertprete(metadata)
-        if metaCache.containsObject(obj){
-            self.id = metaCache.indexOfObject(obj)
-        } else {
-            metaCache.addObject(obj)
-            self.id = metaCache.count - 1
-        }
-    }
-    
 }
+
+extension jstp {
+
+    private static func writeData(data: String) {
+       context.evaluateScript("api.data=\(data);")
+    }
+}
+
+private struct JSTPOS {
+
+    weak var parsed: NSArray! {
+        let arr = context.objectForKeyedSubscript("api").valueForProperty("data").toArray()
+        JSGarbageCollect(context.JSGlobalContextRef)
+        return arr
+    }
+
+    weak var interpreted: AnyObject! {
+        let obj = context.objectForKeyedSubscript("api").valueForProperty("data").toObject()
+        JSGarbageCollect(context.JSGlobalContextRef)
+        return obj
+    }
+
+    init(data: String) {
+        jstp.writeData(data)
+    }
+}
+
+private struct JSTPRM {
+
+    weak var jsrd: AnyObject! {
+        let obj = context.objectForKeyedSubscript("jsrd").callWithArguments(
+                 [context.objectForKeyedSubscript("api").valueForProperty("data"),
+                  context.objectForKeyedSubscript("meta" + self.id)]).toObject()
+        JSGarbageCollect(context.JSGlobalContextRef)
+        return obj
+    }
+    var id = (NSUUID().UUIDString as NSString).substringToIndex(3)
+
+    init(data: String, metadata: String) {
+        self.writeMetadata(metadata)
+        jstp.writeData(data)
+    }
+
+    /**
+     * TODO: redo metadata initialization.
+     */
+    mutating func writeMetadata(metadata: String) {
+        if let value = metadataCache[metadata.hash] { self.id = value }
+        else {
+            context.evaluateScript("var meta" + self.id + "=\(metadata);")
+            metadataCache.updateValue(self.id, forKey: metadata.hash)
+        }
+    }
+}
+
+extension NSObject {
+    public subscript(key: String) -> AnyObject? { return self.valueForKey(key) }
+}
+
+
+
+
+
+
+
+
+
