@@ -34,24 +34,24 @@ class ViewController: UIViewController {
 
         let begin = NSDate()
         for _ in 1...100000 {
-            let _ = jstp.jsrd(data: data, metadata: metadata)
+            let _ = JSTP().jsrd(data: data, metadata: metadata)
         }
         NSLog("Parse time: \((-begin.timeIntervalSinceNow).description)")
-        print(jstp.jsrd(data: data, metadata: metadata))
+        print(JSTP().jsrd(data: data, metadata: metadata))
 
-        
-        let _begin = NSDate()
-        for _ in 1...100000 {
-            let _ = jstp.parse(data)
-        }
-        NSLog("Parse time: \((-_begin.timeIntervalSinceNow).description)")
-        print(jstp.parse(data))
+//        
+//        let _begin = NSDate()
+//        for _ in 1...100000 {
+//            let _ = JSTP.parse(data)
+//        }
+//        NSLog("Parse time: \(NSDate().timeIntervalSinceDate(_begin))")
+//        print(JSTP.parse(data))
 
 //        let __begin = NSDate()
 //        for _ in 1...10000 {
-//            let _ = jstp.intertprete(data)
+//            let _ = JSTP.intertprete(data)
 //        }
 //        NSLog("Parse time: \((-__begin.timeIntervalSinceNow).description)")
-//        print(jstp.intertprete(data))
+//        print(JSTP.intertprete(data))
     }
 }
