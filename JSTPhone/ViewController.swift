@@ -32,26 +32,29 @@ class ViewController: UIViewController {
         let data        = NSString(data: dData, encoding: NSUTF8StringEncoding) as! String
         let metadata    = NSString(data: dMetadata, encoding: NSUTF8StringEncoding) as! String
 
-        let begin = NSDate()
-        for _ in 1...100000 {
-            let _ = jstp.jsrd(data: data, metadata: metadata)
-        }
-        NSLog("Parse time: \((-begin.timeIntervalSinceNow).description)")
-        print(jstp.jsrd(data: data, metadata: metadata))
+        let interpreter = { return jstp.intertprete(data)                    }
+        let parser      = { return jstp.parse(data) as NSObject!             }
+        let jsrds       = { return jstp.jsrd(data: data, metadata: metadata) }
 
-        
+        let objects: [() -> NSObject!] = [interpreter, parser, jsrds]
+
+        for object in objects {
+            test(object)
+        }
+    }
+
+    func test(object: () -> NSObject!) {
         let _begin = NSDate()
         for _ in 1...100000 {
-            let _ = jstp.parse(data)
+            let _ = object()
         }
         NSLog("Parse time: \((-_begin.timeIntervalSinceNow).description)")
-        print(jstp.parse(data))
-
-//        let __begin = NSDate()
-//        for _ in 1...10000 {
-//            let _ = jstp.intertprete(data)
-//        }
-//        NSLog("Parse time: \((-__begin.timeIntervalSinceNow).description)")
-//        print(jstp.intertprete(data))
+        print(object())
     }
 }
+
+//            let signal = dispatch_semaphore_create(0)
+//            dispatch_async(JSQueue) {
+//                let _ = object()
+//                dispatch_semaphore_signal(signal)
+//            }; dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER)
