@@ -12,80 +12,70 @@ private let api = try? String(
     contentsOfFile: NSBundle.mainBundle().pathForResource("api", ofType: "js")!,
     encoding: NSUTF8StringEncoding)
 
-public let JSQueue       = dispatch_queue_create("JS", DISPATCH_QUEUE_SERIAL)
+private let JSQueue       = dispatch_queue_create("JS", DISPATCH_QUEUE_CONCURRENT)
 private let context       = JSContext().evaluateScript(api).context
 private var metadataCache = [Int :  String]()
+
 /**
  * a — api, d — data, m — metadata
  */
-public class jstp {
+public class JSTP {
 
     private init() { }
+    deinit { JSGarbageCollect(context.JSGlobalContextRef) }
 
     public static func parse(str: String) -> [AnyObject] {
-        return JSTPOS(data: str).parsed as [AnyObject]
+        return JSTP()._parse(str)
+    }
+    public static func interprete(str: String) -> NSObject! {
+        return JSTP()._interprete(str)
+    }
+    public static func jsrd(data data: String, metadata: String) -> NSDictionary! {
+        return JSTP()._jsrd(data: data, metadata: metadata)
     }
 
-    public static func intertprete(str: String) -> NSObject! {
-        return JSTPOS(data: str).interpreted as! NSObject
+    private func _parse(str: String) -> [AnyObject] {
+        return self.onPostExecute { () -> AnyObject in
+            return context.evaluateScript(str).toArray()
+            } as! [AnyObject]
     }
-
-    public static func jsrd(data data: String, metadata: String) -> NSObject! {
-        return JSTPRM(data: data, metadata: metadata).jsrd as! NSObject
+    private func _interprete(str: String) -> NSObject! {
+        return onPostExecute { () -> AnyObject in
+            return context.evaluateScript(str).toObject()
+            } as! NSObject
     }
-}
-
-extension jstp {
-
-    private static func writeData(data: String) {
-       context.evaluateScript("a.d=\(data);")
-    }
-}
-
-private struct JSTPOS {
-
-    weak var parsed: NSArray! {
-        let arr = context.objectForKeyedSubscript("a").valueForProperty("d").toArray()
-        JSGarbageCollect(context.JSGlobalContextRef)
-        return arr
-    }
-
-    weak var interpreted: AnyObject! {
-        let obj = context.objectForKeyedSubscript("a").valueForProperty("d").toObject()
-        JSGarbageCollect(context.JSGlobalContextRef)
-        return obj
-    }
-
-    init(data: String) {
-        jstp.writeData(data)
-    }
-}
-
-private struct JSTPRM {
-
-    weak var jsrd: AnyObject! {
-        let obj = context.objectForKeyedSubscript("jsrd").callWithArguments(
-                 [context.objectForKeyedSubscript("a").valueForProperty("d"),
-                  context.objectForKeyedSubscript("a").objectForKeyedSubscript("m" + self.id)]).toObject()
-        JSGarbageCollect(context.JSGlobalContextRef)
-        return obj
-    }
-    var id = (NSUUID().UUIDString as NSString).substringToIndex(8)
-
-    init(data: String, metadata: String) {
-        self.writeMetadata(metadata)
-        jstp.writeData(data)
-    }
-
-    mutating func writeMetadata(metadata: String) {
-        if let value = metadataCache[metadata.hash] { self.id = value }
+    private func _jsrd(data data: String, metadata: String) -> NSDictionary {
+        // metadata initializing
+        let id: String
+        if let value = metadataCache[metadata.hash] { id = value }
         else {
-            context.evaluateScript("a.m" + self.id  + "=\(metadata);")
-            metadataCache.updateValue(self.id, forKey: metadata.hash)
+            id = (NSUUID().UUIDString as NSString).substringToIndex(8)
+            context.evaluateScript("a.m\(id)=\(metadata);")
+            metadataCache.updateValue(id, forKey: metadata.hash)
         }
+        // data parsing
+        return onPostExecute { () -> AnyObject! in
+            return context["jsrd"].callWithArguments([
+                   context["a"].objectForKeyedSubscript("m\(id)"),
+                   context.evaluateScript(data)]).toObject()
+        } as! NSDictionary
     }
+
+    private func onPostExecute(execute: () -> AnyObject!) -> AnyObject {
+        var result: AnyObject! = nil
+        let signal = dispatch_semaphore_create(0)
+        dispatch_async(JSQueue) {
+            result = execute()
+            dispatch_semaphore_signal(signal)
+        };  dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER)
+        return result
+    }
+
 }
 
+extension JSContext {
+    private subscript(key: String) -> JSValue! { return self.objectForKeyedSubscript(key) }
+}
 extension NSObject {
     public subscript(key: String) -> AnyObject? { return self.valueForKey(key) }
 }

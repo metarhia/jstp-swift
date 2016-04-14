@@ -17,8 +17,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KhH-lq-ocN">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KhH-lq-ocN">
                                 <rect key="frame" x="258" y="285" width="84" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="84" id="QeK-l3-QSl"/>
+                                </constraints>
                                 <state key="normal" title="Run Test"/>
                                 <connections>
                                     <action selector="testRunner:" destination="BYZ-38-t0r" eventType="touchUpInside" id="YmQ-z1-jRB"/>
@@ -26,6 +29,10 @@
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="KhH-lq-ocN" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="PdI-aL-pab"/>
+                            <constraint firstItem="KhH-lq-ocN" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="ivc-U0-WsB"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="testButton" destination="KhH-lq-ocN" id="HIO-nf-W5R"/>
