@@ -12,13 +12,13 @@ private let api = try? String(
     contentsOfFile: NSBundle.mainBundle().pathForResource("api", ofType: "js")!,
     encoding: NSUTF8StringEncoding)
 
-public let JSQueue       = dispatch_queue_create("JS", DISPATCH_QUEUE_SERIAL)
+public let JSQueue        = dispatch_queue_create("JS", DISPATCH_QUEUE_CONCURRENT)
 private let context       = JSContext().evaluateScript(api).context
 private var metadataCache = [Int :  String]()
 /**
  * a — api, d — data, m — metadata
  */
-public class jstp {
+public struct jstp {
 
     private init() { }
 
@@ -36,48 +36,47 @@ public class jstp {
 }
 
 extension jstp {
-
     private static func writeData(data: String) {
        context.evaluateScript("a.d=\(data);")
     }
 }
 
-private struct JSTPOS {
-
-    weak var parsed: NSArray! {
-        let arr = context.objectForKeyedSubscript("a").valueForProperty("d").toArray()
-        JSGarbageCollect(context.JSGlobalContextRef)
-        return arr
-    }
-
-    weak var interpreted: AnyObject! {
-        let obj = context.objectForKeyedSubscript("a").valueForProperty("d").toObject()
-        JSGarbageCollect(context.JSGlobalContextRef)
-        return obj
-    }
+private class JSTPOS {
 
     init(data: String) {
         jstp.writeData(data)
     }
-}
+    deinit { JSGarbageCollect(context.JSGlobalContextRef) }
 
-private struct JSTPRM {
+    weak var parsed: NSArray! {
+        let arr = context["a"]["d"].toArray()
+        return arr
+    }
 
-    weak var jsrd: AnyObject! {
-        let obj = context.objectForKeyedSubscript("jsrd").callWithArguments(
-                 [context.objectForKeyedSubscript("a").valueForProperty("d"),
-                  context.objectForKeyedSubscript("a").objectForKeyedSubscript("m" + self.id)]).toObject()
-        JSGarbageCollect(context.JSGlobalContextRef)
+    weak var interpreted: AnyObject! {
+        let obj = context["a"]["d"].toObject()
         return obj
     }
-    var id = (NSUUID().UUIDString as NSString).substringToIndex(8)
+}
+
+private class JSTPRM {
 
     init(data: String, metadata: String) {
         self.writeMetadata(metadata)
         jstp.writeData(data)
     }
+    deinit { JSGarbageCollect(context.JSGlobalContextRef) }
 
-    mutating func writeMetadata(metadata: String) {
+    var id = (NSUUID().UUIDString as NSString).substringToIndex(8)
+
+    weak var jsrd: AnyObject! {
+        let obj = context["jsrd"].callWithArguments(
+                 [context["a"]["d"],
+                  context["a"]["m" + self.id]]).toObject()
+        return obj
+    }
+
+    func writeMetadata(metadata: String) {
         if let value = metadataCache[metadata.hash] { self.id = value }
         else {
             context.evaluateScript("a.m" + self.id  + "=\(metadata);")
@@ -86,6 +85,12 @@ private struct JSTPRM {
     }
 }
 
+extension JSContext {
+    private subscript(key: String) -> JSValue! { return self.objectForKeyedSubscript(key) }
+}
+extension JSValue {
+    private subscript(key: String) -> JSValue! { return self.valueForProperty(key) }
+}
 extension NSObject {
     public subscript(key: String) -> AnyObject? { return self.valueForKey(key) }
 }

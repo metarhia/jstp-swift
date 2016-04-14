@@ -32,6 +32,7 @@ class ViewController: UIViewController {
         let data        = NSString(data: dData, encoding: NSUTF8StringEncoding) as! String
         let metadata    = NSString(data: dMetadata, encoding: NSUTF8StringEncoding) as! String
 
+
         let interpreter = { return jstp.intertprete(data)                    }
         let parser      = { return jstp.parse(data) as NSObject!             }
         let jsrds       = { return jstp.jsrd(data: data, metadata: metadata) }
