@@ -1,10 +1,13 @@
 //
-//  ViewController.swift
-//  JSTPhone
+//  JSTPhoneTests.swift
+//  JSTPhoneTests
 //
 //  Created by Artem Chernenkiy on 28.03.16.
+//  Updated by Nikita Kirichek  on 15.04.16
+
 //  Copyright © 2016 Test. All rights reserved.
 //
+
 
 import UIKit
 import JavaScriptCore
@@ -32,26 +35,26 @@ class ViewController: UIViewController {
         let data        = NSString(data: dData, encoding: NSUTF8StringEncoding) as! String
         let metadata    = NSString(data: dMetadata, encoding: NSUTF8StringEncoding) as! String
         
-        var JSDObject = JSTPObject()
-        
-        let startInit = NSDate()
-        
+        let begin = NSDate()
         for _ in 1...100000 {
-            JSDObject = JSTPObject(data: data, metadata: metadata)
+            let _ = JSTP().jsrd(data: data, metadata: metadata)
         }
-        
-        print("Time of initializing: \(NSDate().timeIntervalSinceDate(startInit))")
-        
-        let startGetting = NSDate()
-        
+        NSLog("Parse time: \((-begin.timeIntervalSinceNow).description)")
+        print(JSTP().jsrd(data: data, metadata: metadata)!)
+//
+        //
+        let _begin = NSDate()
         for _ in 1...100000 {
-            let _ = JSDObject.JSObject
+            let _ = JSTP.parse(data)
         }
+        NSLog("Parse time: \(NSDate().timeIntervalSinceDate(_begin))")
+        print(JSTP.parse(data)!)
         
-        print("Time of getting the object: \(NSDate().timeIntervalSinceDate(startGetting))")
-        
-        print(JSDObject.JSObject)
-        print(JSDObject["name"]!)
+        let __begin = NSDate()
+        for _ in 1...100000{
+            let _ = JSTP.intertprete(data)
+        }
+        NSLog("Parse time: \((-__begin.timeIntervalSinceNow).description)")
+        print(JSTP.intertprete(data)!)
     }
 }
-
