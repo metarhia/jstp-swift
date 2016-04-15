@@ -16,13 +16,13 @@ private let api = try? String(
     contentsOfFile: NSBundle.mainBundle().pathForResource("api", ofType: "js")!,
     encoding: NSUTF8StringEncoding)
 
-private var metadataStringCache = [String : Int]()
-private var metadataObjectCache = [Int : AnyObject]()
+private var metadataStringCache = [String : String]()
+private var metadataObjectCache = [String : AnyObject]()
 private let context = JSContext().evaluateScript(api).context
 
 public class JSTP{
     
-    private var id: Int!
+    private var id: String!
     
     public static func parse(data: String) -> [AnyObject]! {
         let result =  intertprete(data) as? [AnyObject]
@@ -52,7 +52,7 @@ public class JSTP{
             return true
             
         } else if let obj =  context.evaluateScript("api.m = \(metadata);").toObject() {
-            self.id =  metadataStringCache.values.count
+            self.id =  NSUUID().UUIDString
             metadataObjectCache.updateValue(obj, forKey: self.id)
             metadataStringCache.updateValue(self.id, forKey: metadata)
             return true
