@@ -33,11 +33,11 @@ class ViewController: UIViewController {
         let metadata    = NSString(data: dMetadata, encoding: NSUTF8StringEncoding) as! String
 
 
-        let interpreter = { return jstp.intertprete(data)                    }
-        let parser      = { return jstp.parse(data) as NSObject!             }
-        let jsrds       = { return jstp.jsrd(data: data, metadata: metadata) }
+        let interpreter = { return JSTP.intertprete(data)                    }
+        let parser      = { return JSTP.parse(data) as NSObject!             }
+        let jsrds       = { return JSTP.jsrd(data: data, metadata: metadata) }
 
-        let objects: [() -> NSObject!] = [interpreter, parser, jsrds]
+        let objects: [() -> NSObject!] = [/*interpreter, parser,*/ jsrds]
 
         for object in objects {
             test(object)
@@ -46,7 +46,7 @@ class ViewController: UIViewController {
 
     func test(object: () -> NSObject!) {
         let _begin = NSDate()
-        for _ in 1...100000 {
+        for _ in 1...250000 {
             let _ = object()
         }
         NSLog("Parse time: \((-_begin.timeIntervalSinceNow).description)")

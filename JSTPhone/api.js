@@ -1,1 +1,1 @@
-"use strict";var a = {};function interprete(t){var e=this.createContext({}),r=(this.createScript("("+t+")"),t.runInNewContext(e));for(var n in r)e[n]=r[n];return r}function jsrd(t,e){var r={},n=Object.keys(e);return n.forEach(function(e,n){Object.defineProperty(r,e,{enumerable:!0,get:function(){return t[n]},set:function(e){t[n]=e}})}),r};
+"use strict";var a = {};function jsrd(e,n){var t={},r=Object.keys(n);return r.forEach(function(n,r){Object.defineProperty(t,n,{enumerable:!0,get:function(){return e[r]},set:function(n){e[r]=n}})}),t}

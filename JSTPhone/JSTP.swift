@@ -46,7 +46,9 @@ private class JSTPOS {
     init(data: String) {
         jstp.writeData(data)
     }
-    deinit { JSGarbageCollect(context.JSGlobalContextRef) }
+    deinit {
+        JSGarbageCollect(context.JSGlobalContextRef)
+    }
 
     weak var parsed: NSArray! {
         let arr = context["a"]["d"].toArray()
@@ -65,7 +67,9 @@ private class JSTPRM {
         self.writeMetadata(metadata)
         jstp.writeData(data)
     }
-    deinit { JSGarbageCollect(context.JSGlobalContextRef) }
+    deinit {
+        JSGarbageCollect(context.JSGlobalContextRef)
+    }
 
     var id = (NSUUID().UUIDString as NSString).substringToIndex(8)
 
@@ -85,6 +89,53 @@ private class JSTPRM {
     }
 }
 
+public class JSTP {
+    private static var id: String!
+    private static var jsrs: AnyObject!
+
+    deinit { print("dawd"); JSGarbageCollect(context.JSGlobalContextRef) }
+
+    public static func parse(str: String) -> [AnyObject] {
+        return JSTP.onPostExecute { () -> AnyObject in
+            return intertprete(str)
+        } as! [AnyObject]
+    }
+
+    public static func intertprete(str: String) -> NSObject! {
+        return JSTP.onPostExecute { () -> AnyObject in
+            return context.evaluateScript(str).toObject()
+        } as! NSObject
+    }
+
+    public static func jsrd(data data: String, metadata: String) -> NSObject! {
+        return JSTP.onPostExecute { () -> AnyObject in
+            let JSM = context.evaluateScript(metadata)
+            let JSD = context.evaluateScript(data)
+            return context.objectForKeyedSubscript("jsrd").callWithArguments([JSD, JSM])
+        }.toObject() as! NSObject
+    }
+
+    private func writeMetadata(metadata: String) {
+
+        if let value = metadataCache[metadata.hash] { JSTP.id = value }
+        else {
+            JSTP.id = (NSUUID().UUIDString as NSString).substringToIndex(8)
+            context.evaluateScript("a.m" + JSTP.id  + "=\(metadata);")
+            metadataCache.updateValue(JSTP.id, forKey: metadata.hash)
+        }
+    }
+
+    private static func onPostExecute(execute: () -> AnyObject) -> AnyObject {
+        var result: AnyObject = NSObject()
+        let signal = dispatch_semaphore_create(0)
+        dispatch_async(JSQueue) {
+            result = execute()
+            dispatch_semaphore_signal(signal)
+        }; dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER)
+        return result
+    }
+}
+
 extension JSContext {
     private subscript(key: String) -> JSValue! { return self.objectForKeyedSubscript(key) }
 }
@@ -94,3 +145,13 @@ extension JSValue {
 extension NSObject {
     public subscript(key: String) -> AnyObject? { return self.valueForKey(key) }
 }
+
+//            if let value = metadataCache[metadata.hash] { JSTP.id = value }
+//            else {
+//                JSTP.id = (NSUUID().UUIDString as NSString).substringToIndex(8)
+//                context.evaluateScript("a.m" + JSTP.id  + "=\(metadata);")
+//                metadataCache.updateValue(JSTP.id, forKey: metadata.hash)
+//            }
+//            return context["jsrd"].callWithArguments(
+//                [context.evaluateScript(data), context["a"]["m" + JSTP.id]]).toObject() as! NSObject
+
