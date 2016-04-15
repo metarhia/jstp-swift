@@ -24,24 +24,29 @@ class ViewController: UIViewController {
     }
 
     @IBAction func testRunner(sender: AnyObject) {
-
-        let dataURL     = NSBundle.mainBundle().URLForResource("data", withExtension: "js")!
-        let metadataURL = NSBundle.mainBundle().URLForResource("metadata", withExtension: "js")!
-        let dData       = NSData(contentsOfURL: dataURL)!
-        let dMetadata   = NSData(contentsOfURL: metadataURL)!
-        let data        = NSString(data: dData, encoding: NSUTF8StringEncoding) as! String
-        let metadata    = NSString(data: dMetadata, encoding: NSUTF8StringEncoding) as! String
-
-        var JSDObject = JSTPObject()
-
-        NSLog("logged")
-        for _ in 1...100 {
-            JSDObject = JSTPObject(data: data, metadata: metadata)
+        
+        let metadata =
+            "({" +
+                "name:'string'," +
+                "passport:'string(8)'," +
+                "birth:'Date'," +
+                "age:'number'," +
+            "})"
+        
+        let data = "['Marcus Aurelius','AE127095','1990-02-15',26]"
+        
+        NSLog("begin")
+        
+        for _ in 0...250000 {
+            let _ = JSTPObject(data: data, metadata: metadata)
         }
-        NSLog("logged")
-
-        print(JSDObject.JSObject)
-        print(JSDObject["name"]!)
+        
+        NSLog("end")
+        
+        NSLog("ggwp")
+        
+        JSGarbageCollect(context.JSGlobalContextRef)
+                
     }
 }
 

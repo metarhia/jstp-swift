@@ -16,8 +16,8 @@ import JavaScriptCore
 let path   = NSBundle.mainBundle().pathForResource("api", ofType: "js")!
 let script = try? String(contentsOfFile: path, encoding: NSUTF8StringEncoding)
 
-private let context = JSContext().evaluateScript(script).context
-private let JSQueue = dispatch_queue_create("JS", DISPATCH_QUEUE_SERIAL)
+let context = JSContext().evaluateScript(script).context
+let JSQueue = dispatch_queue_create("JS", DISPATCH_QUEUE_SERIAL)
 
 //----------------------------------------------------------------------------
 
