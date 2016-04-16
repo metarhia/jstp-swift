@@ -32,12 +32,11 @@ class ViewController: UIViewController {
         let data        = NSString(data: dData, encoding: NSUTF8StringEncoding) as! String
         let metadata    = NSString(data: dMetadata, encoding: NSUTF8StringEncoding) as! String
 
-
-        let interpreter = { return JSTP.interprete(data)                    }
-        let parser      = { return JSTP.parse(data) as NSObject!             }
         let jsrds       = { return JSTP.jsrd(data: data, metadata: metadata) }
+        let parser      = { return JSTP.parse(data) as NSObject!             }
+        let interpreter = { return JSTP.interprete(data)                     }
 
-        let objects: [() -> NSObject!] = [/*interpreter, parser,*/ jsrds]
+        let objects: [() -> NSObject!] = [jsrds, parser, interpreter]
 
         for object in objects {
             test(object)
@@ -46,16 +45,10 @@ class ViewController: UIViewController {
 
     func test(object: () -> NSObject!) {
         let _begin = NSDate()
-        for _ in 1...250000 {
+        for _ in 1...100000 {
             let _ = object()
         }
         NSLog("Parse time: \((-_begin.timeIntervalSinceNow).description)")
         print(object())
     }
 }
-
-//            let signal = dispatch_semaphore_create(0)
-//            dispatch_async(JSQueue) {
-//                let _ = object()
-//                dispatch_semaphore_signal(signal)
-//            }; dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER)

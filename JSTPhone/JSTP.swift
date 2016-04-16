@@ -21,7 +21,6 @@ private var metadataCache = [Int :  String]()
  */
 public class JSTP {
 
-    private var id: String!
     private init() { }
     deinit { JSGarbageCollect(context.JSGlobalContextRef) }
 
@@ -40,27 +39,25 @@ public class JSTP {
             return self._interprete(str)
             } as! [AnyObject]
     }
-
     private func _interprete(str: String) -> NSObject! {
         return onPostExecute { () -> AnyObject in
             return context.evaluateScript(str).toObject()
             } as! NSObject
     }
-
     private func _jsrd(data data: String, metadata: String) -> NSObject! {
         // metadata initializing
         let id: String
         if let value = metadataCache[metadata.hash] { id = value }
         else {
             id = (NSUUID().UUIDString as NSString).substringToIndex(8)
-            context.evaluateScript("a.m" + id  + "=\(metadata);")
+            context.evaluateScript("a.m\(id)=\(metadata);")
             metadataCache.updateValue(id, forKey: metadata.hash)
         }
         // data parsing
         return onPostExecute { () -> AnyObject! in
-            return context.objectForKeyedSubscript("jsrd").callWithArguments([
-                context.evaluateScript(data),
-                context.objectForKeyedSubscript("a").objectForKeyedSubscript("m\(id)")]).toObject()
+            return context["jsrd"].callWithArguments([
+                   context.evaluateScript(data),
+                   context["a"].objectForKeyedSubscript("m\(id)")]).toObject()
             } as! NSObject
     }
 
@@ -78,9 +75,6 @@ public class JSTP {
 
 extension JSContext {
     private subscript(key: String) -> JSValue! { return self.objectForKeyedSubscript(key) }
-}
-extension JSValue {
-    private subscript(key: String) -> JSValue! { return self.valueForProperty(key) }
 }
 extension NSObject {
     public subscript(key: String) -> AnyObject? { return self.valueForKey(key) }
