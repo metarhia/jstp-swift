@@ -36,7 +36,7 @@ public class JSTP {
 
     private func _parse(str: String) -> [AnyObject] {
         return self.onPostExecute { () -> AnyObject in
-            return self._interprete(str)
+            return context.evaluateScript(str).toArray()
             } as! [AnyObject]
     }
     private func _interprete(str: String) -> NSObject! {
