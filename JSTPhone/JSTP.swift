@@ -12,7 +12,7 @@ private let api = try? String(
     contentsOfFile: NSBundle.mainBundle().pathForResource("api", ofType: "js")!,
     encoding: NSUTF8StringEncoding)
 
-private let JSQueue        = dispatch_queue_create("JS", DISPATCH_QUEUE_CONCURRENT)
+private let JSQueue       = dispatch_queue_create("JS", DISPATCH_QUEUE_CONCURRENT)
 private let context       = JSContext().evaluateScript(api).context
 private var metadataCache = [Int :  String]()
 
@@ -56,8 +56,8 @@ public class JSTP {
         // data parsing
         return onPostExecute { () -> AnyObject! in
             return context["jsrd"].callWithArguments([
-                   context.evaluateScript(data),
-                   context["a"].objectForKeyedSubscript("m\(id)")]).toObject()
+                   context["a"].objectForKeyedSubscript("m\(id)"),
+                   context.evaluateScript(data)]).toObject()
             } as! NSObject
     }
 
@@ -67,7 +67,7 @@ public class JSTP {
         dispatch_async(JSQueue) {
             result = execute()
             dispatch_semaphore_signal(signal)
-        }; dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER)
+        };  dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER)
         return result
     }
 
