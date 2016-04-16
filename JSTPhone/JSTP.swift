@@ -12,7 +12,7 @@ private let api = try? String(
     contentsOfFile: NSBundle.mainBundle().pathForResource("api", ofType: "js")!,
     encoding: NSUTF8StringEncoding)
 
-public let JSQueue        = dispatch_queue_create("JS", DISPATCH_QUEUE_CONCURRENT)
+private let JSQueue        = dispatch_queue_create("JS", DISPATCH_QUEUE_CONCURRENT)
 private let context       = JSContext().evaluateScript(api).context
 private var metadataCache = [Int :  String]()
 
