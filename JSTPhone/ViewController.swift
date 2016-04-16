@@ -33,7 +33,7 @@ class ViewController: UIViewController {
         let metadata    = NSString(data: dMetadata, encoding: NSUTF8StringEncoding) as! String
 
 
-        let interpreter = { return JSTP.intertprete(data)                    }
+        let interpreter = { return JSTP.interprete(data)                    }
         let parser      = { return JSTP.parse(data) as NSObject!             }
         let jsrds       = { return JSTP.jsrd(data: data, metadata: metadata) }
 

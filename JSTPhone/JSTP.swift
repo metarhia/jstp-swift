@@ -15,118 +15,55 @@ private let api = try? String(
 public let JSQueue        = dispatch_queue_create("JS", DISPATCH_QUEUE_CONCURRENT)
 private let context       = JSContext().evaluateScript(api).context
 private var metadataCache = [Int :  String]()
+
 /**
  * a — api, d — data, m — metadata
  */
-public struct jstp {
-
-    private init() { }
-
-    public static func parse(str: String) -> [AnyObject] {
-        return JSTPOS(data: str).parsed as [AnyObject]
-    }
-
-    public static func intertprete(str: String) -> NSObject! {
-        return JSTPOS(data: str).interpreted as! NSObject
-    }
-
-    public static func jsrd(data data: String, metadata: String) -> NSObject! {
-        return JSTPRM(data: data, metadata: metadata).jsrd as! NSObject
-    }
-}
-
-extension jstp {
-    private static func writeData(data: String) {
-       context.evaluateScript("a.d=\(data);")
-    }
-}
-
-private class JSTPOS {
-
-    init(data: String) {
-        jstp.writeData(data)
-    }
-    deinit {
-        JSGarbageCollect(context.JSGlobalContextRef)
-    }
-
-    weak var parsed: NSArray! {
-        let arr = context["a"]["d"].toArray()
-        return arr
-    }
-
-    weak var interpreted: AnyObject! {
-        let obj = context["a"]["d"].toObject()
-        return obj
-    }
-}
-
-private class JSTPRM {
-
-    init(data: String, metadata: String) {
-        self.writeMetadata(metadata)
-        jstp.writeData(data)
-    }
-    deinit {
-        JSGarbageCollect(context.JSGlobalContextRef)
-    }
-
-    var id = (NSUUID().UUIDString as NSString).substringToIndex(8)
-
-    weak var jsrd: AnyObject! {
-        let obj = context["jsrd"].callWithArguments(
-                 [context["a"]["d"],
-                  context["a"]["m" + self.id]]).toObject()
-        return obj
-    }
-
-    func writeMetadata(metadata: String) {
-        if let value = metadataCache[metadata.hash] { self.id = value }
-        else {
-            context.evaluateScript("a.m" + self.id  + "=\(metadata);")
-            metadataCache.updateValue(self.id, forKey: metadata.hash)
-        }
-    }
-}
-
 public class JSTP {
-    private static var id: String!
-    private static var jsrs: AnyObject!
 
-    deinit { print("dawd"); JSGarbageCollect(context.JSGlobalContextRef) }
-
-    public static func parse(str: String) -> [AnyObject] {
-        return JSTP.onPostExecute { () -> AnyObject in
-            return intertprete(str)
-        } as! [AnyObject]
-    }
-
-    public static func intertprete(str: String) -> NSObject! {
-        return JSTP.onPostExecute { () -> AnyObject in
-            return context.evaluateScript(str).toObject()
-        } as! NSObject
-    }
-
-    public static func jsrd(data data: String, metadata: String) -> NSObject! {
-        return JSTP.onPostExecute { () -> AnyObject in
-            let JSM = context.evaluateScript(metadata)
-            let JSD = context.evaluateScript(data)
-            return context.objectForKeyedSubscript("jsrd").callWithArguments([JSD, JSM])
-        }.toObject() as! NSObject
-    }
-
-    private func writeMetadata(metadata: String) {
-
-        if let value = metadataCache[metadata.hash] { JSTP.id = value }
+    private var id: String!
+    private init() { }
+    private init(metadata: String) {
+        if let value = metadataCache[metadata.hash] { id = value }
         else {
-            JSTP.id = (NSUUID().UUIDString as NSString).substringToIndex(8)
-            context.evaluateScript("a.m" + JSTP.id  + "=\(metadata);")
-            metadataCache.updateValue(JSTP.id, forKey: metadata.hash)
+            self.id = (NSUUID().UUIDString as NSString).substringToIndex(8)
+            context.evaluateScript("a.m" + id  + "=\(metadata);")
+            metadataCache.updateValue(id, forKey: metadata.hash)
         }
     }
+    deinit { JSGarbageCollect(context.JSGlobalContextRef) }
 
-    private static func onPostExecute(execute: () -> AnyObject) -> AnyObject {
-        var result: AnyObject = NSObject()
+    public static func parse(str: String) -> [AnyObject] {
+        return JSTP()._parse(str)
+    }
+    public static func interprete(str: String) -> NSObject! {
+        return JSTP()._interprete(str)
+    }
+    public static func jsrd(data data: String, metadata: String) -> NSObject! {
+        return JSTP(metadata: metadata)._jsrd(data: data)
+    }
+
+    private func _parse(str: String) -> [AnyObject] {
+        return self.onPostExecute { () -> AnyObject in
+            return self._interprete(str)
+            } as! [AnyObject]
+    }
+
+    private func _interprete(str: String) -> NSObject! {
+        return onPostExecute { () -> AnyObject in
+            return context.evaluateScript(str).toObject()
+            } as! NSObject
+    }
+    private func _jsrd(data data: String) -> NSObject! {
+        return onPostExecute { () -> AnyObject! in
+            return context.objectForKeyedSubscript("jsrd").callWithArguments([
+                context.evaluateScript(data),
+                context.objectForKeyedSubscript("a").objectForKeyedSubscript("m\(self.id)")]).toObject()
+            } as! NSObject
+    }
+
+    private func onPostExecute(execute: () -> AnyObject!) -> AnyObject {
+        var result: AnyObject! = nil
         let signal = dispatch_semaphore_create(0)
         dispatch_async(JSQueue) {
             result = execute()
@@ -134,6 +71,7 @@ public class JSTP {
         }; dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER)
         return result
     }
+
 }
 
 extension JSContext {
@@ -145,13 +83,3 @@ extension JSValue {
 extension NSObject {
     public subscript(key: String) -> AnyObject? { return self.valueForKey(key) }
 }
-
-//            if let value = metadataCache[metadata.hash] { JSTP.id = value }
-//            else {
-//                JSTP.id = (NSUUID().UUIDString as NSString).substringToIndex(8)
-//                context.evaluateScript("a.m" + JSTP.id  + "=\(metadata);")
-//                metadataCache.updateValue(JSTP.id, forKey: metadata.hash)
-//            }
-//            return context["jsrd"].callWithArguments(
-//                [context.evaluateScript(data), context["a"]["m" + JSTP.id]]).toObject() as! NSObject
-
