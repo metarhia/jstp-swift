@@ -23,14 +23,6 @@ public class JSTP {
 
     private var id: String!
     private init() { }
-    private init(metadata: String) {
-        if let value = metadataCache[metadata.hash] { id = value }
-        else {
-            self.id = (NSUUID().UUIDString as NSString).substringToIndex(8)
-            context.evaluateScript("a.m" + id  + "=\(metadata);")
-            metadataCache.updateValue(id, forKey: metadata.hash)
-        }
-    }
     deinit { JSGarbageCollect(context.JSGlobalContextRef) }
 
     public static func parse(str: String) -> [AnyObject] {
@@ -40,7 +32,7 @@ public class JSTP {
         return JSTP()._interprete(str)
     }
     public static func jsrd(data data: String, metadata: String) -> NSObject! {
-        return JSTP(metadata: metadata)._jsrd(data: data)
+        return JSTP()._jsrd(data: data, metadata: metadata)
     }
 
     private func _parse(str: String) -> [AnyObject] {
@@ -54,11 +46,21 @@ public class JSTP {
             return context.evaluateScript(str).toObject()
             } as! NSObject
     }
-    private func _jsrd(data data: String) -> NSObject! {
+
+    private func _jsrd(data data: String, metadata: String) -> NSObject! {
+        // metadata initializing
+        let id: String
+        if let value = metadataCache[metadata.hash] { id = value }
+        else {
+            id = (NSUUID().UUIDString as NSString).substringToIndex(8)
+            context.evaluateScript("a.m" + id  + "=\(metadata);")
+            metadataCache.updateValue(id, forKey: metadata.hash)
+        }
+        // data parsing
         return onPostExecute { () -> AnyObject! in
             return context.objectForKeyedSubscript("jsrd").callWithArguments([
                 context.evaluateScript(data),
-                context.objectForKeyedSubscript("a").objectForKeyedSubscript("m\(self.id)")]).toObject()
+                context.objectForKeyedSubscript("a").objectForKeyedSubscript("m\(id)")]).toObject()
             } as! NSObject
     }
 
