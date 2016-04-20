@@ -30,7 +30,7 @@ public class JSTP {
     public static func interprete(str: String) -> NSObject! {
         return JSTP()._interprete(str)
     }
-    public static func jsrd(data data: String, metadata: String) -> NSObject! {
+    public static func jsrd(data data: String, metadata: String) -> NSDictionary! {
         return JSTP()._jsrd(data: data, metadata: metadata)
     }
 
@@ -44,7 +44,7 @@ public class JSTP {
             return context.evaluateScript(str).toObject()
             } as! NSObject
     }
-    private func _jsrd(data data: String, metadata: String) -> NSObject! {
+    private func _jsrd(data data: String, metadata: String) -> NSDictionary {
         // metadata initializing
         let id: String
         if let value = metadataCache[metadata.hash] { id = value }
@@ -58,7 +58,7 @@ public class JSTP {
             return context["jsrd"].callWithArguments([
                    context["a"].objectForKeyedSubscript("m\(id)"),
                    context.evaluateScript(data)]).toObject()
-            } as! NSObject
+        } as! NSDictionary
     }
 
     private func onPostExecute(execute: () -> AnyObject!) -> AnyObject {
