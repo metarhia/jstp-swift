@@ -1,0 +1,10 @@
+framework module Socket {
+  umbrella header "Socket.h"
+
+  export *
+  module * { export * }
+}
+
+module Socket.Swift {
+    header "Socket-Swift.h"
+}

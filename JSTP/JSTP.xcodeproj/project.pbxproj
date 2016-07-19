@@ -8,12 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		04A885F91D3EB7F800B5127C /* JSTP.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A885F81D3EB7F800B5127C /* JSTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		04A886031D3EB8A700B5127C /* jstp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A886011D3EB8A700B5127C /* jstp.swift */; };
+		04A886091D3EB9BD00B5127C /* Socket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A886081D3EB9BD00B5127C /* Socket.framework */; };
+		04A8860A1D3EBA7E00B5127C /* jstp.js in Resources */ = {isa = PBXBuildFile; fileRef = 04A886001D3EB8A700B5127C /* jstp.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		04A885F51D3EB7F700B5127C /* JSTP.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JSTP.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		04A885F81D3EB7F800B5127C /* JSTP.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSTP.h; sourceTree = "<group>"; };
 		04A885FA1D3EB7F800B5127C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		04A886001D3EB8A700B5127C /* jstp.js */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.javascript; path = jstp.js; sourceTree = "<group>"; tabWidth = 3; };
+		04A886011D3EB8A700B5127C /* jstp.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.swift; path = jstp.swift; sourceTree = "<group>"; tabWidth = 3; };
+		04A886081D3EB9BD00B5127C /* Socket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Socket.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -21,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04A886091D3EB9BD00B5127C /* Socket.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,10 +53,45 @@
 		04A885F71D3EB7F800B5127C /* JSTP */ = {
 			isa = PBXGroup;
 			children = (
-				04A885F81D3EB7F800B5127C /* JSTP.h */,
-				04A885FA1D3EB7F800B5127C /* Info.plist */,
+				04A886051D3EB8B600B5127C /* Supporting Files */,
+				04A886071D3EB9A400B5127C /* Frameworks */,
+				04A886041D3EB8AC00B5127C /* Resources */,
+				04A886061D3EB8CB00B5127C /* Sources */,
 			);
 			path = JSTP;
+			sourceTree = "<group>";
+		};
+		04A886041D3EB8AC00B5127C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				04A886001D3EB8A700B5127C /* jstp.js */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		04A886051D3EB8B600B5127C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				04A885FA1D3EB7F800B5127C /* Info.plist */,
+				04A885F81D3EB7F800B5127C /* JSTP.h */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		04A886061D3EB8CB00B5127C /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				04A886011D3EB8A700B5127C /* jstp.swift */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		04A886071D3EB9A400B5127C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				04A886081D3EB9BD00B5127C /* Socket.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -120,6 +162,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04A8860A1D3EBA7E00B5127C /* jstp.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,6 +173,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04A886031D3EB8A700B5127C /* jstp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,26 +274,37 @@
 		04A885FE1D3EB7F800B5127C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/JSTP",
+				);
 				INFOPLIST_FILE = JSTP/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.gagnant.JSTP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		04A885FF1D3EB7F800B5127C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/JSTP",
+				);
 				INFOPLIST_FILE = JSTP/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
