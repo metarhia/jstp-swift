@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		046D978A1D54EF14008AB245 /* error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046D97891D54EF14008AB245 /* error.swift */; };
 		04A885F91D3EB7F800B5127C /* JSTP.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A885F81D3EB7F800B5127C /* JSTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		04A886031D3EB8A700B5127C /* jstp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A886011D3EB8A700B5127C /* jstp.swift */; };
 		04A886091D3EB9BD00B5127C /* Socket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A886081D3EB9BD00B5127C /* Socket.framework */; };
@@ -14,6 +15,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		046D97891D54EF14008AB245 /* error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = error.swift; sourceTree = "<group>"; };
 		04A885F51D3EB7F700B5127C /* JSTP.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JSTP.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		04A885F81D3EB7F800B5127C /* JSTP.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSTP.h; sourceTree = "<group>"; };
 		04A885FA1D3EB7F800B5127C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -82,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				04A886011D3EB8A700B5127C /* jstp.swift */,
+				046D97891D54EF14008AB245 /* error.swift */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -173,6 +176,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				046D978A1D54EF14008AB245 /* error.swift in Sources */,
 				04A886031D3EB8A700B5127C /* jstp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -286,6 +290,7 @@
 				INFOPLIST_FILE = JSTP/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.gagnant.JSTP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -333,6 +338,7 @@
 				04A885FF1D3EB7F800B5127C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -61,6 +61,8 @@ var Packet = function(kind, id, iface, verb, args) {
    if (iface) {
       this[kind].push(iface);
    }
+    
+   console.log(stringify(this));
 }
 
 function serialize(kind, packet, interface, verb, args) {

@@ -11,6 +11,7 @@
 // TODO: Refactor input packets processing method
 // TODO: Add ability to be a server
 // TODO: ?? Split source code to separate files
+// TODO: Profile all
 
 import JavaScriptCore
 import Foundation
@@ -52,7 +53,7 @@ private extension JSValue {
 
 private func createJavaScriptContext() -> JSContext {
    
-   let path = NSBundle(forClass: JSTP.self).pathForResource("jstp", ofType: "js")
+   let path = NSBundle.mainBundle().pathForResource("jstp", ofType: "js")
    let text = try? String(contentsOfFile: path!)
    let ctx  = JSContext()
       
@@ -61,7 +62,7 @@ private func createJavaScriptContext() -> JSContext {
    }
       
    ctx.evaluateScript(text)
-
+   
    return ctx
 }
 
@@ -118,7 +119,7 @@ public class Application {
       methods = [String:[String:Function]]()
    }
    
-   public func registerHandler(interface: String, handler: String, function: Function) {
+   public func register(interface: String, handler: String, function: Function) {
       
       if var functions = methods[interface] {
          functions[handler] = function
@@ -130,12 +131,55 @@ public class Application {
    
 }
 
-public class Connection: TCPSocketDelegate {
+public protocol ConnectionDelegate {
+   
+   func handshakePassedSuccesfully(object: AnyObject)
+   
+   func errorDidHappend(error: AnyObject)
+   
+   func someEvent(interface: String, _ event: String, _ arguments: AnyObject)
 
+   func connected(connection: Connection)
+   
+   func disconnected(connection: Connection)
+   
+}
+
+// MARK: Provide default implementation protocol methods
+
+public extension ConnectionDelegate {
+   
+   func handshakePassedSuccesfully(object: AnyObject) {
+      
+   }
+   
+   func errorDidHappend(error: AnyObject) {
+      
+   }
+   
+   func someEvent(interface: String, _ event: String, _ arguments: AnyObject) {
+      
+   }
+   
+   func connected(connection: Connection) {
+      
+   }
+   
+   func disconnected(connection: Connection) {
+      
+   }
+   
+}
+
+public class Connection {
+
+   private let queue = dispatch_queue_create("com.metarhia.jstp.connection", nil)
+   
    public typealias Callback  = (response: AnyObject?, error: AnyObject?) -> Void
    public typealias Callbacks = [Int:Callback]
 
    public let application: Application
+   public var delegate: ConnectionDelegate?
 
    private var callbacks: Callbacks
    private var socket:    TCPSocket
@@ -148,109 +192,94 @@ public class Connection: TCPSocketDelegate {
       self.callbacks   = Callbacks()
       self.chunks      = Chunks()
       
+      self.delegate = nil
       self.socket = socket
       self.packetId = 0
    }
-    
+   
+   private func onHandshakePacket(packet: AnyObject) {
+      
+      let packetId = (packet["handshake"] as! NSArray)[0] as! Int
+      
+      if let callback = self.callbacks.removeValueForKey(packetId) {
+         callback(response: packet["ok"], error: packet["error"])
+      }
+   }
+   
+   private func onCallbackPacket(packet: AnyObject) {
+      
+      let packetId = (packet["callback"] as! NSArray)[0] as! Int
+      
+      if let callback = self.callbacks.removeValueForKey(packetId) {
+         callback(response: packet["ok"], error: packet["error"])
+      }
+   }
+   
+   private func onInpectPacket(packet: AnyObject) {
+      
+      let packetId = (packet["inspect"] as! NSArray)[0] as! Int
+      let name     = (packet["inspect"] as! NSArray)[1] as! String
+      
+      if let interface = application.methods[name] {
+         self.callback(packetId, nil, Array(interface.keys))
+      }
+      else {
+         self.callback(packetId, Error.InterfaceNotFound, nil)
+      }
+   }
+   
+   private func onEventPacket(packet: AnyObject) {
+      
+      var keys = packet.allKeys as! [String]
+      
+                 _  = (packet["event"] as! NSArray)[0] as! Int
+      let interface = (packet["event"] as! NSArray)[1] as! String
+      
+      keys = keys.filter({$0 != "event"})
+      
+      let event     = keys[0]
+      let arguments = packet[event]!!
+      
+      delegate?.someEvent(interface, event, arguments)
+   }
+   
+   private func onCallPacket(packet: AnyObject) {
+      
+      var keys = packet.allKeys as! [String]
+      
+      let packetId = (packet["call"] as! NSArray)[0] as! Int
+      let name     = (packet["call"] as! NSArray)[1] as! String
+      
+      keys = keys.filter({$0 != "call"})
+      
+      let interface = self.application.methods[name]
+      let method    = keys[0]
+      let arguments = packet[method]!!
+      let function  = interface?[method]
+
+      if interface == nil { return callback(packetId, Error.InterfaceNotFound.toArray, nil) }
+      if function  == nil { return callback(packetId, Error.MethodNotFound.toArray,    nil) }
+
+      callback (packetId, nil, [])
+      function?(object: arguments)
+   }
+   
    private func process(packets: JSValue) {
       
-      let reactions = [
-         
-         "handshake" : { (object: AnyObject!) -> Void in
-            
-            let packetId = object["handshake"]!![0] as! Int
-            
-            if let callback = self.callbacks.removeValueForKey(packetId) {
-               callback(response: object["ok"], error: object["error"])
-            }
-            
-         },
-         
-         "call": { (packet: AnyObject!) -> Void in
-            
-            let keys = packet.allKeys
-            let method: String
-            
-            if keys[0] as? String == "call" { method = keys[1] as! String }
-            else                            { method = keys[0] as! String }
-            
-            let packetId     = packet["call"]!![0] as! Int
-            let interface    = packet["call"]!![1] as! String
-            let apiInterface = self.application.methods[interface]
-            let args         = packet[method]
-            
-            if apiInterface == nil {
-               self.callback(packetId, "RemoteError.INTERFACE_NOT_FOUND", nil)
-               return
-            }
-            
-            let function = apiInterface![method]
-            
-            if function == nil {
-               self.callback(packetId, "RemoteError.METHOD_NOT_FOUND", nil)
-               return
-            }
-            
-            self.callback(packetId, nil, [])
-            function!(object: args!!)
-         },
-         
-         "callback": { (packet: AnyObject!) -> Void in
-            
-            let packetId = packet["callback"]!![0] as! Int
-            
-            if let callback = self.callbacks.removeValueForKey(packetId) {
-               callback(response: packet["ok"], error: packet["error"])
-            }
-            
-         },
-         
-         "event" : { (packet: AnyObject!) -> Void in
-         
-            let packetId  = packet["event"]!![0] as! Int
-            let interface = packet["event"]!![1] as! String
-            
-            let keys = packet.allKeys
-            let eventName: String
-            
-            if keys[0] as? String == "event" { eventName = keys[1] as! String }
-            else                             { eventName = keys[0] as! String }
-            
-            let eventArgs = packet[eventName]
-            
-            // emit this event here
-         },
-         
-         "inspect": { (packet: AnyObject) -> Void in
-            
-            let packetId = packet["inspect"]!![0] as? Int
-            
-            let ifName = packet["inspect"]!![1] as? String
-            
-            if let iface = self.application.methods[ifName!] {
-               
-               let keys = Array(iface.keys)
-               
-               self.callback(packetId!, nil, keys)
-            
-            }
-            else {
-               self.callback(packetId!, "RemoteError.INTERFACE_NOT_FOUND.jstpArray", nil)
-            }
-            
-         }
-         
+      typealias Reaction  = AnyObject -> Void
+      typealias Reactions = [String:Reaction]
+      
+      let reactions: Reactions = [
+         "handshake" : onHandshakePacket,
+         "callback"  : onCallbackPacket,
+         "inspect"   : onInpectPacket,
+         "event"     : onEventPacket,
+         "call"      : onCallPacket
       ]
-      
-      for packet in packets.toObject() as! [AnyObject] {
-         for key in packet.allKeys {
-            if let reaction = reactions[key as! String] {
-               reaction(packet)
-               break
-            }
-         }
-      }
-      
+
+      for packet in packets.toArray() { for key in packet.allKeys {
+         reactions[key as! String]?(packet)
+      }}
    }
    
    private func send(data: JSValue) {
@@ -258,7 +287,9 @@ public class Connection: TCPSocketDelegate {
       let context   = jsContext
       let stringify = context["stringify"]
       
-      socket.write(stringify.callWithArguments([data]).toString() + kPacketDelimiter)
+      print("socketDidSendMessage" + stringify.callWithArguments([data]).toString() + kPacketDelimiter)
+      
+      self.socket.write(stringify.callWithArguments([data]).toString() + kPacketDelimiter)
    }
    
    private func packet(kind: Kind, _ args: AnyObject...) -> JSValue {
@@ -315,7 +346,7 @@ public class Connection: TCPSocketDelegate {
     *  - Parameter result:
     *
     */
-   public func callback(packetId: Int, _ error: AnyObject?, _ result: AnyObject?) {
+   private func callback(packetId: Int, _ error: AnyObject?, _ result: AnyObject?) {
       
       let packet: JSValue
       
@@ -415,28 +446,41 @@ public class Connection: TCPSocketDelegate {
       self.send(packet)
    }
    
+}
+
+private class TCPSocketDelegateImplementation : TCPSocketDelegate {
+   
+   private weak var connection: Connection!
+   
+   init(_ connection: Connection) {
+      self.connection = connection
+   }
+   
    // MARK: Socket Delegate Methods
-   // TODO: post events to delegate
    
-   public func socketDidConnect(socket: Socket.TCPSocket) {
-      print("socketDidConnect \(self)")
+   private func socketDidConnect(socket: Socket.TCPSocket) {
+      print("socketDidConnect")
+      connection.delegate?.connected(connection)
    }
    
-   public func socketDidDisconnect(socket: Socket.TCPSocket) {
-      print("socketDidDisconnect \(self)")
+   private func socketDidDisconnect(socket: Socket.TCPSocket) {
+      print("socketDidDisconnect")
+      connection.delegate?.disconnected(connection)
    }
    
-   public func socketDidFailWithError(socket: Socket.TCPSocket, error: NSError) {
-      print("socketDidFailWithError")
+   private func socketDidFailWithError(socket: Socket.TCPSocket, error: NSError) {
+      print("socketDidFailWithError: \(error.localizedDescription)")
    }
    
-   public func socketDidReceiveMessage(socket: Socket.TCPSocket, text: String) {
+   private func socketDidReceiveMessage(socket: Socket.TCPSocket, text: String) {
       
-      if let packets = chunks.add(text) {
-         self.process(packets)
+      print("socketDidReceiveMessage \(text)")
+      
+      if let packets = connection.chunks.add(text) {
+         connection.process(packets)
       }
       
-      //print("socketDidReceiveMessage \(text)")
+      
    }
    
 }
@@ -444,14 +488,34 @@ public class Connection: TCPSocketDelegate {
 public extension JSTP {
 
    public class func connect(host host: String, port: UInt32) -> Connection {
-    
+   
       let socket     = TCPSocket()
       let connection = Connection(socket: socket)
     
-      socket.delegate = connection
-      socket.connect(host, port: port)
+      let settings: Settings = [
+         SocketSecurityLevelKey: SocketSecurityLevelNone,
+         SocketValidatesCertificateChainKey:false
+      ]
+    
+      socket.delegate = TCPSocketDelegateImplementation(connection)
+      socket.connect(host, port: port, settings: settings)
     
       return connection
+   }
+   
+   public class func connect(url _url: String) -> Connection? {
+      
+      guard let url = NSURL(string: _url) else {
+         return nil
+      }
+      
+      guard let host = url.host,
+            let port = url.port else {
+            
+         return nil
+      }
+      
+      return JSTP.connect(host: host, port: port.unsignedIntValue)
    }
 
 }
