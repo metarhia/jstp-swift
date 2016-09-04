@@ -43,7 +43,7 @@ private extension JSValue   { subscript(key: AnyObject!) -> JSValue  { return se
 
 private func createJavaScriptContext() -> JSContext {
    
-   let path = NSBundle.mainBundle().pathForResource("Common", ofType: "js")
+   let path = NSBundle(forClass: Connection.self).pathForResource("Common", ofType: "js")
    let text = try? String(contentsOfFile: path!)
    let ctx  = JSContext()
       
