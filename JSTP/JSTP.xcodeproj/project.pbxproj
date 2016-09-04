@@ -7,20 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		046D978A1D54EF14008AB245 /* error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046D97891D54EF14008AB245 /* error.swift */; };
+		04967EC51D7C3967004A322C /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04967EBF1D7C3967004A322C /* Application.swift */; };
+		04967EC61D7C3967004A322C /* Common.js in Resources */ = {isa = PBXBuildFile; fileRef = 04967EC01D7C3967004A322C /* Common.js */; };
+		04967EC71D7C3967004A322C /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04967EC11D7C3967004A322C /* Connection.swift */; };
+		04967EC81D7C3967004A322C /* Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04967EC21D7C3967004A322C /* Delegate.swift */; };
+		04967EC91D7C3967004A322C /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04967EC31D7C3967004A322C /* Error.swift */; };
+		04967ECA1D7C3967004A322C /* Initializers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04967EC41D7C3967004A322C /* Initializers.swift */; };
 		04A885F91D3EB7F800B5127C /* JSTP.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A885F81D3EB7F800B5127C /* JSTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		04A886031D3EB8A700B5127C /* jstp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A886011D3EB8A700B5127C /* jstp.swift */; };
 		04A886091D3EB9BD00B5127C /* Socket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04A886081D3EB9BD00B5127C /* Socket.framework */; };
-		04A8860A1D3EBA7E00B5127C /* jstp.js in Resources */ = {isa = PBXBuildFile; fileRef = 04A886001D3EB8A700B5127C /* jstp.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		046D97891D54EF14008AB245 /* error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = error.swift; sourceTree = "<group>"; };
+		04967EBF1D7C3967004A322C /* Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
+		04967EC01D7C3967004A322C /* Common.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Common.js; sourceTree = "<group>"; };
+		04967EC11D7C3967004A322C /* Connection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
+		04967EC21D7C3967004A322C /* Delegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Delegate.swift; sourceTree = "<group>"; };
+		04967EC31D7C3967004A322C /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		04967EC41D7C3967004A322C /* Initializers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Initializers.swift; sourceTree = "<group>"; };
 		04A885F51D3EB7F700B5127C /* JSTP.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JSTP.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		04A885F81D3EB7F800B5127C /* JSTP.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSTP.h; sourceTree = "<group>"; };
 		04A885FA1D3EB7F800B5127C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		04A886001D3EB8A700B5127C /* jstp.js */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.javascript; path = jstp.js; sourceTree = "<group>"; tabWidth = 3; };
-		04A886011D3EB8A700B5127C /* jstp.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.swift; path = jstp.swift; sourceTree = "<group>"; tabWidth = 3; };
 		04A886081D3EB9BD00B5127C /* Socket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Socket.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -57,18 +63,9 @@
 			children = (
 				04A886051D3EB8B600B5127C /* Supporting Files */,
 				04A886071D3EB9A400B5127C /* Frameworks */,
-				04A886041D3EB8AC00B5127C /* Resources */,
 				04A886061D3EB8CB00B5127C /* Sources */,
 			);
 			path = JSTP;
-			sourceTree = "<group>";
-		};
-		04A886041D3EB8AC00B5127C /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				04A886001D3EB8A700B5127C /* jstp.js */,
-			);
-			name = Resources;
 			sourceTree = "<group>";
 		};
 		04A886051D3EB8B600B5127C /* Supporting Files */ = {
@@ -83,8 +80,12 @@
 		04A886061D3EB8CB00B5127C /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				04A886011D3EB8A700B5127C /* jstp.swift */,
-				046D97891D54EF14008AB245 /* error.swift */,
+				04967EC01D7C3967004A322C /* Common.js */,
+				04967EBF1D7C3967004A322C /* Application.swift */,
+				04967EC11D7C3967004A322C /* Connection.swift */,
+				04967EC21D7C3967004A322C /* Delegate.swift */,
+				04967EC31D7C3967004A322C /* Error.swift */,
+				04967EC41D7C3967004A322C /* Initializers.swift */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -165,7 +166,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04A8860A1D3EBA7E00B5127C /* jstp.js in Resources */,
+				04967EC61D7C3967004A322C /* Common.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,8 +177,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				046D978A1D54EF14008AB245 /* error.swift in Sources */,
-				04A886031D3EB8A700B5127C /* jstp.swift in Sources */,
+				04967EC91D7C3967004A322C /* Error.swift in Sources */,
+				04967EC81D7C3967004A322C /* Delegate.swift in Sources */,
+				04967EC51D7C3967004A322C /* Application.swift in Sources */,
+				04967ECA1D7C3967004A322C /* Initializers.swift in Sources */,
+				04967EC71D7C3967004A322C /* Connection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

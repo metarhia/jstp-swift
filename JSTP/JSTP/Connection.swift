@@ -1,6 +1,6 @@
 //
-//  api.jstp.swift
-//  demo.jstp.connection
+//  Connection.swift
+//  JSTP
 //
 //  Created by Andrew Visotskyy on 7/7/16.
 //  Copyright © 2016 Andrew Visotskyy. All rights reserved.
@@ -8,7 +8,6 @@
 
 // TODO: Add remote errors support
 // TODO: Add inspect packet support
-// TODO: Refactor input packets processing method
 // TODO: Add ability to be a server
 // TODO: ?? Split source code to separate files
 // TODO: Profile all
@@ -33,17 +32,8 @@ private enum Kind: String {
    case Call      = "call"
 }
 
-private extension JSContext {
-   subscript(key: String) -> JSValue! {
-      return self.objectForKeyedSubscript(key)
-   }
-}
-
-private extension JSValue {
-   subscript(key: AnyObject!) -> JSValue {
-      return self.objectForKeyedSubscript(key)
-   }
-}
+private extension JSContext { subscript(key: String    ) -> JSValue! { return self.objectForKeyedSubscript(key) } }
+private extension JSValue   { subscript(key: AnyObject!) -> JSValue  { return self.objectForKeyedSubscript(key) } }
 
 // -------------------------------------------------------------------
 // Java Script Context used to evaluate scripts and to parse input and
@@ -53,7 +43,7 @@ private extension JSValue {
 
 private func createJavaScriptContext() -> JSContext {
    
-   let path = NSBundle.mainBundle().pathForResource("jstp", ofType: "js")
+   let path = NSBundle.mainBundle().pathForResource("Common", ofType: "js")
    let text = try? String(contentsOfFile: path!)
    let ctx  = JSContext()
       
@@ -78,7 +68,7 @@ private extension JSTP {
    }
 }
 
-private class Chunks {
+internal class Chunks {
    
    private var buffer: String
    
@@ -109,65 +99,39 @@ private class Chunks {
    
 }
 
-public class Application {
+public class Event {
    
-   public typealias Function = (object: AnyObject) -> Void
+   public let arguments: AnyObject
+   public let interface: String
+   public let name: String
    
-   private var methods: [String:[String:Function]]
-   
-   init() {
-      methods = [String:[String:Function]]()
-   }
-   
-   public func register(interface: String, handler: String, function: Function) {
-      
-      if var functions = methods[interface] {
-         functions[handler] = function
-         return
-      }
-      
-      methods[interface] = [handler:function]
+   init(_ interface: String, _ name: String, _ arguments: AnyObject) {
+      self.arguments = arguments
+      self.interface = interface
+      self.name = name
    }
    
 }
 
 public protocol ConnectionDelegate {
    
-   func handshakePassedSuccesfully(object: AnyObject)
-   
-   func errorDidHappend(error: AnyObject)
-   
-   func someEvent(interface: String, _ event: String, _ arguments: AnyObject)
-
-   func connected(connection: Connection)
-   
-   func disconnected(connection: Connection)
+   func connectionDidReceiveEvent    (connection: Connection, event: Event  )
+   func connectionDidFail            (connection: Connection, error: NSError)
+   func connectionDidPerformHandshake(connection: Connection)
+   func connectionDidDisconnect      (connection: Connection)
+   func connectionDidConnect         (connection: Connection)
    
 }
 
-// MARK: Provide default implementation protocol methods
+// MARK: Default implementation for protocol methods
 
 public extension ConnectionDelegate {
    
-   func handshakePassedSuccesfully(object: AnyObject) {
-      
-   }
-   
-   func errorDidHappend(error: AnyObject) {
-      
-   }
-   
-   func someEvent(interface: String, _ event: String, _ arguments: AnyObject) {
-      
-   }
-   
-   func connected(connection: Connection) {
-      
-   }
-   
-   func disconnected(connection: Connection) {
-      
-   }
+   func connectionDidReceiveEvent    (connection: Connection, event: Event  ) {}
+   func connectionDidFail            (connection: Connection, error: NSError) {}
+   func connectionDidPerformHandshake(connection: Connection) {}
+   func connectionDidDisconnect      (connection: Connection) {}
+   func connectionDidConnect         (connection: Connection) {}
    
 }
 
@@ -181,10 +145,10 @@ public class Connection {
    public let application: Application
    public var delegate: ConnectionDelegate?
 
-   private var callbacks: Callbacks
-   private var socket:    TCPSocket
-   private var chunks:    Chunks
-   private var packetId:  Int
+   internal var callbacks: Callbacks
+   internal var socket:    TCPSocket
+   internal var chunks:    Chunks
+   internal var packetId:  Int
    
    internal init(socket: TCPSocket) {
       
@@ -224,7 +188,7 @@ public class Connection {
          self.callback(packetId, nil, Array(interface.keys))
       }
       else {
-         self.callback(packetId, Error.InterfaceNotFound, nil)
+         self.callback(packetId, Errors.InterfaceNotFound.raw(), nil)
       }
    }
    
@@ -240,7 +204,7 @@ public class Connection {
       let event     = keys[0]
       let arguments = packet[event]!!
       
-      delegate?.someEvent(interface, event, arguments)
+      delegate?.connectionDidReceiveEvent(self, event: Event(interface, event, arguments))
    }
    
    private func onCallPacket(packet: AnyObject) {
@@ -257,14 +221,14 @@ public class Connection {
       let arguments = packet[method]!!
       let function  = interface?[method]
 
-      if interface == nil { return callback(packetId, Error.InterfaceNotFound.toArray, nil) }
-      if function  == nil { return callback(packetId, Error.MethodNotFound.toArray,    nil) }
+      if interface == nil { return callback(packetId, Errors.InterfaceNotFound.raw(), nil) }
+      if function  == nil { return callback(packetId, Errors.MethodNotFound.raw(),    nil) }
 
       callback (packetId, nil, [])
       function?(object: arguments)
    }
    
-   private func process(packets: JSValue) {
+   internal func process(packets: JSValue) {
       
       typealias Reaction  = AnyObject -> Void
       typealias Reactions = [String:Reaction]
@@ -286,8 +250,6 @@ public class Connection {
       
       let context   = jsContext
       let stringify = context["stringify"]
-      
-      print("socketDidSendMessage" + stringify.callWithArguments([data]).toString() + kPacketDelimiter)
       
       self.socket.write(stringify.callWithArguments([data]).toString() + kPacketDelimiter)
    }
@@ -448,74 +410,3 @@ public class Connection {
    
 }
 
-private class TCPSocketDelegateImplementation : TCPSocketDelegate {
-   
-   private weak var connection: Connection!
-   
-   init(_ connection: Connection) {
-      self.connection = connection
-   }
-   
-   // MARK: Socket Delegate Methods
-   
-   private func socketDidConnect(socket: Socket.TCPSocket) {
-      print("socketDidConnect")
-      connection.delegate?.connected(connection)
-   }
-   
-   private func socketDidDisconnect(socket: Socket.TCPSocket) {
-      print("socketDidDisconnect")
-      connection.delegate?.disconnected(connection)
-   }
-   
-   private func socketDidFailWithError(socket: Socket.TCPSocket, error: NSError) {
-      print("socketDidFailWithError: \(error.localizedDescription)")
-   }
-   
-   private func socketDidReceiveMessage(socket: Socket.TCPSocket, text: String) {
-      
-      print("socketDidReceiveMessage \(text)")
-      
-      if let packets = connection.chunks.add(text) {
-         connection.process(packets)
-      }
-      
-      
-   }
-   
-}
-
-public extension JSTP {
-
-   public class func connect(host host: String, port: UInt32) -> Connection {
-   
-      let socket     = TCPSocket()
-      let connection = Connection(socket: socket)
-    
-      let settings: Settings = [
-         SocketSecurityLevelKey: SocketSecurityLevelNone,
-         SocketValidatesCertificateChainKey:false
-      ]
-    
-      socket.delegate = TCPSocketDelegateImplementation(connection)
-      socket.connect(host, port: port, settings: settings)
-    
-      return connection
-   }
-   
-   public class func connect(url _url: String) -> Connection? {
-      
-      guard let url = NSURL(string: _url) else {
-         return nil
-      }
-      
-      guard let host = url.host,
-            let port = url.port else {
-            
-         return nil
-      }
-      
-      return JSTP.connect(host: host, port: port.unsignedIntValue)
-   }
-
-}

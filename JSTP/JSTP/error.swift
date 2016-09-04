@@ -1,41 +1,41 @@
 //
 //  Errors.swift
-//  jstp.demo.dev
+//  JSTP
 //
 //  Created by Andrew Visotskyy on 7/25/16.
 //  Copyright © 2016 Andrew Visotskyy. All rights reserved.
 //
 
 import Foundation
-import JavaScriptCore
 
-public class Error {
-
-   public dynamic var code: Int
-   public dynamic var message: String
+internal extension NSError {
    
-   public init(code: Int, message: String) {
-      self.code = code
-      self.message = message
+   private convenience init(_ code: Int, _ description: String) {
+      
+      let domain = NSBundle.mainBundle().bundleIdentifier!
+      let info   = [NSLocalizedDescriptionKey:description]
+      
+      self.init(domain: domain, code: code, userInfo: info)
    }
    
-   public init(code: Int) {
-      self.code = code
-      self.message = ""
-   }
-   
-   public var toArray: [AnyObject] {
-      return [code, message]
+   internal func raw() -> AnyObject {
+         
+      let error =  [
+         "message":self.localizedDescription,
+         "code"   :self.code
+      ]
+         
+      return error
    }
    
 }
 
-extension Error {
+public class Errors {
    
-   public static let InterfaceIncompatible = Error(code: 13, message: "Incompatible interface")
-   public static let ApplicationNotFound   = Error(code: 10, message: "Application not found" )
-   public static let AuthorizationFailed   = Error(code: 11, message: "Authentication failed" )
-   public static let InterfaceNotFound     = Error(code: 12, message: "Interface not found"   )
-   public static let MethodNotFound        = Error(code: 14, message: "Method not found"      )
-   
+   public static let InterfaceIncompatible = NSError(13, "Incompatible interface")
+   public static let ApplicationNotFound   = NSError(10, "Application not found" )
+   public static let AuthorizationFailed   = NSError(11, "Authentication failed" )
+   public static let InterfaceNotFound     = NSError(12, "Interface not found"   )
+   public static let MethodNotFound        = NSError(14, "Method not found"      )
 }
+
