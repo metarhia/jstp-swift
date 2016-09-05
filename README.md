@@ -1,6 +1,6 @@
 # JavaScript Transfer Protocol 
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE) 
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/JSTPMobile/iOS/jstp-new/LICENSE) 
 
 JSTP is a data transfer protocol that uses JavaScript objects syntax as the encoding format and supports metadata. This implementation currently supports this types of packet:
 
