@@ -1,6 +1,6 @@
 # JavaScript Transfer Protocol 
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/JSTPMobile/iOS/jstp-new/LICENSE) 
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/JSTPMobile/iOS/jstp-new/LICENSE) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 JSTP is a data transfer protocol that uses JavaScript objects syntax as the encoding format and supports metadata. This implementation currently supports this types of packet:
 
@@ -96,15 +96,21 @@ Framework works with iOS 7 or above. It is recommended to use iOS 8 or above for
 
 ## Installation
 
+### Carthage
+
+Check out the [Carthage](https://github.com/Carthage/Carthage) docs on how to add a install. The `JSTP` framework is already setup with shared schemes. To integrate JSTP into your Xcode project using Carthage, specify it in your `Cartfile`:
+
+```
+github "JSTPMobile/iOS"
+```
+
+Run `carthage update`, and you should now have the latest version of JSTP in your Carthage folder.
+
 ### Other
 
 Simply grab the framework (either via git submodule or another package manager).
 
 Add the `JSTP.xcodeproj` to your Xcode project. Once that is complete, in your "Build Phases" add the `JSTP.framework` to your "Link Binary with Libraries" phase.
-
-### Add Copy Frameworks Phase
-
-If you are running this in an OSX app or on a physical iOS device you will need to make sure you add the `JSTP.framework` to be included in your app bundle. To do this, in Xcode, navigate to the target configuration window by clicking on the blue project icon, and selecting the application target under the "Targets" heading in the sidebar. In the tab bar at the top of that window, open the "Build Phases" panel. Expand the "Link Binary with Libraries" group, and add `JSTP.framework`. Click on the + button at the top left of the panel and select "New Copy Files Phase". Rename this new phase to "Copy Frameworks", set the "Destination" to "Frameworks", and add `JSTP.framework` respectively.
 
 ## License
 
