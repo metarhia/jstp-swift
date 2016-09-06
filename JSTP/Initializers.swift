@@ -17,8 +17,8 @@ public extension JSTP {
       let connection = Connection(socket: socket)
       
       let settings: Socket.Settings = [
-         SocketSecurityLevelKey: SocketSecurityLevelNone,
-         SocketValidatesCertificateChainKey:false
+         SocketSecurityLevel: SocketSecurityLevelNone,
+         SocketValidatesCertificateChain:false
       ]
         
       socket.delegate = TCPSocketDelegateImplementation(connection)
