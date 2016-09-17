@@ -10,27 +10,27 @@ import Socket
 
 internal class TCPSocketDelegateImplementation : TCPSocketDelegate {
     
-   private weak var connection: Connection!
+   fileprivate weak var connection: Connection!
     
    init(_ connection: Connection) {
       self.connection = connection
    }
     
    // MARK: Socket Delegate Methods
-    
-   internal func socketDidConnect(socket: Socket.TCPSocket) {
+   
+   internal func socketDidConnect(_ socket: Socket.TCPSocket) {
       connection.delegate?.connectionDidConnect(connection)
    }
     
-   internal func socketDidDisconnect(socket: Socket.TCPSocket) {
+   internal func socketDidDisconnect(_ socket: Socket.TCPSocket) {
       connection.delegate?.connectionDidDisconnect(connection)
    }
-    
-   internal func socketDidFailWithError(socket: Socket.TCPSocket, error: NSError) {
+   
+   internal func socket(_ socket: TCPSocket, didFailWithError error: NSError) {
       connection.delegate?.connectionDidFail(connection, error: error)
    }
     
-   internal func socketDidReceiveMessage(socket: Socket.TCPSocket, text: String) {
+   internal func socket(_ socket: TCPSocket, didReceiveMessage text: String) {
       
       guard let packets = connection.chunks.add(text) else {
          return

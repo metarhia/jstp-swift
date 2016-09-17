@@ -11,7 +11,7 @@ import Socket
 
 public extension JSTP {
     
-   public class func connect(host host: String, port: UInt32) -> Connection {
+   public class func connect(host: String, port: Int) -> Connection {
         
       let socket     = TCPSocket()
       let connection = Connection(socket: socket)
@@ -29,17 +29,17 @@ public extension JSTP {
     
    public class func connect(url _url: String) -> Connection? {
         
-      guard let url = NSURL(string: _url) else {
+      guard let url = URL(string: _url) else {
          return nil
       }
         
       guard let host = url.host,
-            let port = url.port else {
+            let port = (url as NSURL).port else {
                 
          return nil
       }
         
-      return JSTP.connect(host: host, port: port.unsignedIntValue)
+      return JSTP.connect(host: host, port: port.intValue)
    }
     
 }

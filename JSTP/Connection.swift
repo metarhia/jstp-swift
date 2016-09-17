@@ -43,49 +43,49 @@ private extension JSValue   { subscript(key: AnyObject!) -> JSValue  { return se
 
 private func createJavaScriptContext() -> JSContext {
    
-   let path = NSBundle(forClass: Connection.self).pathForResource("Common", ofType: "js")
+   let path = Bundle(for: Connection.self).path(forResource: "Common", ofType: "js")
    let text = try? String(contentsOfFile: path!)
    let ctx  = JSContext()
       
-   ctx.exceptionHandler = { context, exception in
+   ctx?.exceptionHandler = { context, exception in
       print("JS Error in \(context): \(exception)")
    }
-      
-   ctx.evaluateScript(text)
    
-   return ctx
+   _ = ctx?.evaluateScript(text)
+   
+   return ctx!
 }
 
 private let jsContext = createJavaScriptContext()
 
 // -------------------------------------------------------------------
 
-public class JSTP { }
+open class JSTP { }
 
 private extension JSTP {
-   class func parse(data: String) -> JSValue {
+   class func parse(_ data: String) -> JSValue {
       return jsContext.evaluateScript(data)
    }
 }
 
 internal class Chunks {
    
-   private var buffer: String
+   fileprivate var buffer: String
    
    init() {
       buffer = kChunksFirst
    }
    
-   func add(chunk: String) -> JSValue! {
+   func add(_ chunk: String) -> JSValue! {
       
       if chunk.hasSuffix(kPacketDelimiter) {
          
-         let index  = chunk.endIndex.advancedBy(-kPacketDelimiterLength + 1)
-         let nChunk = chunk.substringToIndex(index)
+         let index  = chunk.characters.index(chunk.endIndex, offsetBy: -kPacketDelimiterLength + 1)
+         let nChunk = chunk.substring(to: index)
          var chunks = buffer
          
-         chunks.appendContentsOf(nChunk)
-         chunks.appendContentsOf(kChunksLast)
+         chunks.append(nChunk)
+         chunks.append(kChunksLast)
          
          buffer = kChunksFirst
          
@@ -99,11 +99,11 @@ internal class Chunks {
    
 }
 
-public class Event {
+open class Event {
    
-   public let arguments: AnyObject
-   public let interface: String
-   public let name: String
+   open let arguments: AnyObject
+   open let interface: String
+   open let name: String
    
    init(_ interface: String, _ name: String, _ arguments: AnyObject) {
       self.arguments = arguments
@@ -115,11 +115,11 @@ public class Event {
 
 public protocol ConnectionDelegate {
    
-   func connectionDidReceiveEvent    (connection: Connection, event: Event  )
-   func connectionDidFail            (connection: Connection, error: NSError)
-   func connectionDidPerformHandshake(connection: Connection)
-   func connectionDidDisconnect      (connection: Connection)
-   func connectionDidConnect         (connection: Connection)
+   func connectionDidReceiveEvent    (_ connection: Connection, event: Event  )
+   func connectionDidFail            (_ connection: Connection, error: NSError)
+   func connectionDidPerformHandshake(_ connection: Connection)
+   func connectionDidDisconnect      (_ connection: Connection)
+   func connectionDidConnect         (_ connection: Connection)
    
 }
 
@@ -127,23 +127,23 @@ public protocol ConnectionDelegate {
 
 public extension ConnectionDelegate {
    
-   func connectionDidReceiveEvent    (connection: Connection, event: Event  ) {}
-   func connectionDidFail            (connection: Connection, error: NSError) {}
-   func connectionDidPerformHandshake(connection: Connection) {}
-   func connectionDidDisconnect      (connection: Connection) {}
-   func connectionDidConnect         (connection: Connection) {}
+   func connectionDidReceiveEvent    (_ connection: Connection, event: Event  ) {}
+   func connectionDidFail            (_ connection: Connection, error: NSError) {}
+   func connectionDidPerformHandshake(_ connection: Connection) {}
+   func connectionDidDisconnect      (_ connection: Connection) {}
+   func connectionDidConnect         (_ connection: Connection) {}
    
 }
 
-public class Connection {
+open class Connection {
 
-   private let queue = dispatch_queue_create("com.metarhia.jstp.connection", nil)
+   fileprivate let queue = DispatchQueue(label: "com.metarhia.jstp.connection", attributes: [])
    
-   public typealias Callback  = (response: AnyObject?, error: AnyObject?) -> Void
+   public typealias Callback  = (_ response: AnyObject?, _ error: AnyObject?) -> Void
    public typealias Callbacks = [Int:Callback]
 
-   public let application: Application
-   public var delegate: ConnectionDelegate?
+   open let application: Application
+   open var delegate: ConnectionDelegate?
 
    internal var callbacks: Callbacks
    internal var socket:    TCPSocket
@@ -161,38 +161,38 @@ public class Connection {
       self.packetId = 0
    }
    
-   private func onHandshakePacket(packet: AnyObject) {
+   fileprivate func onHandshakePacket(_ packet: AnyObject) {
       
       let packetId = (packet["handshake"] as! NSArray)[0] as! Int
       
-      if let callback = self.callbacks.removeValueForKey(packetId) {
-         callback(response: packet["ok"], error: packet["error"])
+      if let callback = self.callbacks.removeValue(forKey: packetId) {
+         callback(packet["ok"] as AnyObject, packet["error"] as AnyObject)
       }
    }
    
-   private func onCallbackPacket(packet: AnyObject) {
+   fileprivate func onCallbackPacket(_ packet: AnyObject) {
       
       let packetId = (packet["callback"] as! NSArray)[0] as! Int
       
-      if let callback = self.callbacks.removeValueForKey(packetId) {
-         callback(response: packet["ok"], error: packet["error"])
+      if let callback = self.callbacks.removeValue(forKey: packetId) {
+         callback(packet["ok"] as AnyObject, packet["error"] as AnyObject)
       }
    }
    
-   private func onInpectPacket(packet: AnyObject) {
+   fileprivate func onInpectPacket(_ packet: AnyObject) {
       
       let packetId = (packet["inspect"] as! NSArray)[0] as! Int
       let name     = (packet["inspect"] as! NSArray)[1] as! String
       
       if let interface = application.methods[name] {
-         self.callback(packetId, nil, Array(interface.keys))
+         self.callback(packetId, nil, Array(interface.keys) as AnyObject?)
       }
       else {
          self.callback(packetId, Errors.InterfaceNotFound.raw(), nil)
       }
    }
    
-   private func onEventPacket(packet: AnyObject) {
+   fileprivate func onEventPacket(_ packet: AnyObject) {
       
       var keys = packet.allKeys as! [String]
       
@@ -204,10 +204,10 @@ public class Connection {
       let event     = keys[0]
       let arguments = packet[event]!!
       
-      delegate?.connectionDidReceiveEvent(self, event: Event(interface, event, arguments))
+      delegate?.connectionDidReceiveEvent(self, event: Event(interface, event, arguments as AnyObject))
    }
    
-   private func onCallPacket(packet: AnyObject) {
+   fileprivate func onCallPacket(_ packet: AnyObject) {
       
       var keys = packet.allKeys as! [String]
       
@@ -224,13 +224,13 @@ public class Connection {
       if interface == nil { return callback(packetId, Errors.InterfaceNotFound.raw(), nil) }
       if function  == nil { return callback(packetId, Errors.MethodNotFound.raw(),    nil) }
 
-      callback (packetId, nil, [])
-      function?(object: arguments)
+      callback (packetId, nil, [] as AnyObject)
+      function?(arguments as AnyObject)
    }
    
-   internal func process(packets: JSValue) {
+   internal func process(_ packets: JSValue) {
       
-      typealias Reaction  = AnyObject -> Void
+      typealias Reaction  = (AnyObject) -> Void
       typealias Reactions = [String:Reaction]
       
       let reactions: Reactions = [
@@ -241,27 +241,27 @@ public class Connection {
          "call"      : onCallPacket
       ]
 
-      for packet in packets.toArray() { for key in packet.allKeys {
-         reactions[key as! String]?(packet)
+      for packet in packets.toArray() { for key in (packet as AnyObject).allKeys {
+         reactions[key as! String]?(packet as AnyObject)
       }}
    }
    
-   private func send(data: JSValue) {
+   fileprivate func send(_ data: JSValue) {
       
       let context   = jsContext
-      let stringify = context["stringify"]
+      let stringify = context["stringify"]!
       
-      self.socket.write(stringify.callWithArguments([data]).toString() + kPacketDelimiter)
+      self.socket.write(stringify.call(withArguments: [data]).toString() + kPacketDelimiter)
    }
    
-   private func packet(kind: Kind, _ args: AnyObject...) -> JSValue {
+   fileprivate func packet(_ kind: Kind, _ args: Any...) -> JSValue {
       
-      let serializer = jsContext["Packet"]
-      let packet     = serializer.constructWithArguments([kind.rawValue] + args)
+      let serializer = jsContext["Packet"]!
+      let packet     = serializer.construct(withArguments: [kind.rawValue] + args)
       
       self.packetId += 1
       
-      return packet
+      return packet!
    }
    
    // MARK: JavaScript Transfer Protocol
@@ -276,10 +276,10 @@ public class Connection {
     *  - Parameter callback:   function
     *
     */
-   public func call(interface: String, _ method: String, _ parameters: AnyObject, _ callback: Callback) {
+   open func call(_ interface: String, _ method: String, _ parameters: AnyObject, _ callback: @escaping Callback) {
       
       let packetId = self.packetId
-      let packet   = self.packet(.Call, packetId, interface, method, parameters)
+      let packet   = self.packet(.Call, packetId as AnyObject, interface as AnyObject, method as AnyObject, parameters)
       
       self.callbacks[packetId] = callback
       self.send(packet)
@@ -294,8 +294,8 @@ public class Connection {
     *  - Parameter parameters: method call parameters
     *
     */
-   public func call(interface: String, _ name: String, _ parameters: AnyObject) {
-      let packet = self.packet(.Call, packetId, interface, name, parameters)
+   open func call(_ interface: String, _ name: String, _ parameters: AnyObject) {
+      let packet = self.packet(.Call, packetId as AnyObject, interface as AnyObject, name as AnyObject, parameters)
       self.send(packet)
    }
    
@@ -308,12 +308,12 @@ public class Connection {
     *  - Parameter result:
     *
     */
-   private func callback(packetId: Int, _ error: AnyObject?, _ result: AnyObject?) {
+   fileprivate func callback(_ packetId: Int, _ error: AnyObject?, _ result: AnyObject?) {
       
       let packet: JSValue
       
-      if error != nil { packet = self.packet(.Callback, packetId, "", "error", error!) }
-      else            { packet = self.packet(.Callback, packetId, "", "ok",   result!) }
+      if error != nil { packet = self.packet(.Callback, packetId as AnyObject, "" as AnyObject, "error" as AnyObject, error!) }
+      else            { packet = self.packet(.Callback, packetId as AnyObject, "" as AnyObject, "ok" as AnyObject,   result!) }
       
       self.send(packet)
    }
@@ -327,8 +327,8 @@ public class Connection {
     *  - Parameter parameters: hash or object, event parameters
     *
     */
-   public func event(interface: String, _ event: String, _ parameters: AnyObject) {
-      let packet = self.packet(.Event, packetId, interface, event, parameters)
+   open func event(_ interface: String, _ event: String, _ parameters: AnyObject) {
+      let packet = self.packet(.Event, packetId as AnyObject, interface as AnyObject, event as AnyObject, parameters)
       self.send(packet)
    }
    
@@ -341,8 +341,8 @@ public class Connection {
     *  - Parameter value: delta or new value
     *
     */
-   public func state(path: String, _ verb: String, _ value: AnyObject) {
-      let packet = self.packet(.State, packetId, path, verb, value)
+   open func state(_ path: String, _ verb: String, _ value: AnyObject) {
+      let packet = self.packet(.State, packetId as AnyObject, path as AnyObject, verb as AnyObject, value)
       self.send(packet)
    }
    
@@ -356,10 +356,10 @@ public class Connection {
     *  - Parameter callback: function callback
     *
     */
-   public func handshake(name: String, _ login: String, _ password: String, _ callback: Callback) {
+   open func handshake(_ name: String, _ login: String, _ password: String, _ callback: @escaping Callback) {
       
       let packetId = self.packetId
-      let packet   = self.packet(.Handshake, 0, name, login, password)
+      let packet   = self.packet(.Handshake, 0 as AnyObject, name as AnyObject, login as AnyObject, password as AnyObject)
       
       self.callbacks[packetId] = callback
       self.send(packet)
@@ -374,8 +374,8 @@ public class Connection {
     *  - Parameter password: password hash
     *
     */
-   public func handshake(name: String, _ login: String, _ password: String) {
-      let packet = self.packet(.Handshake, 0, name, login, password)
+   open func handshake(_ name: String, _ login: String, _ password: String) {
+      let packet = self.packet(.Handshake, 0 as AnyObject, name as AnyObject, login as AnyObject, password as AnyObject)
       self.send(packet)
    }
    
@@ -386,8 +386,8 @@ public class Connection {
     *  - Parameter name: application name
     *
     */
-   public func handshake(name: String) {
-      let packet = self.packet(.Handshake, 0, name)
+   open func handshake(_ name: String) {
+      let packet = self.packet(.Handshake, 0 as AnyObject, name as AnyObject)
       self.send(packet)
    }
    
@@ -399,10 +399,10 @@ public class Connection {
     *  - Parameter callback: function callback
     *
     */
-   public func handshake(name: String, _ callback: Callback) {
+   open func handshake(_ name: String, _ callback: @escaping Callback) {
       
       let packetId = self.packetId
-      let packet   = self.packet(.Handshake, 0, name)
+      let packet   = self.packet(.Handshake, 0 as AnyObject, name as AnyObject)
       
       self.callbacks[packetId] = callback
       self.send(packet)

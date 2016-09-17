@@ -8,36 +8,36 @@
 
 import Foundation
 
-public class Application {
+open class Application {
     
-    public typealias Function = (object: AnyObject) -> Void
+   public typealias Function = (_ object: AnyObject) -> Void
     
-    internal var methods: [String:[String:Function]]
+   internal var methods: [String:[String:Function]]
     
-    init() {
-        methods = [String:[String:Function]]()
-    }
+   init() {
+      methods = [String:[String:Function]]()
+   }
     
-    public func register(interface: String, name: String, function: Function) {
+   open func register(_ interface: String, name: String, function: @escaping Function) {
         
-        if var functions = methods[interface] {
-            functions[name] = function
-            return
-        }
+      if var functions = methods[interface] {
+         functions[name] = function
+         return
+      }
         
-        methods[interface] = [name:function]
-    }
+      methods[interface] = [name:function]
+   }
     
-    public func removeHandler(interface: String, name: String) {
+   open func removeHandler(_ interface: String, name: String) {
         
-        if var functions = methods[interface] {
-            functions.removeValueForKey(name)
-        }
-    }
+      if var functions = methods[interface] {
+         functions.removeValue(forKey: name)
+      }
+   }
     
-    public func removeHandles(interface: String) {
-        methods.removeValueForKey(interface)
-    }
+   open func removeHandles(_ interface: String) {
+      methods.removeValue(forKey: interface)
+   }
     
 }
 
