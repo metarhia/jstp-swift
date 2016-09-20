@@ -11,9 +11,7 @@
 // TODO: Wrap calls to js context in something more concrete e.g. create adapter ?? (Parser.swift file)
 // TODO: Refactor - func onCallPacket : func send - func packet
 // TODO: Update common.js with latest modifications
-// TODO: Add ability to choose security level while connecting
 // TODO: Refactor Chunks class
-// TODO: Refactor Constants.swift file
 // TODO: Add something like event emitter to Connection
 
 import JavaScriptCore

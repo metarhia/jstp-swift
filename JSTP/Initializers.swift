@@ -10,37 +10,38 @@ import Foundation
 import Socket
 
 public extension JSTP {
-    
-   public class func connect(host: String, port: Int) -> Connection {
+   
+   public class func connect(host: String, port: Int, secure: Bool = true) -> Connection {
         
       let socket     = TCPSocket()
       let connection = Connection(socket: socket)
       
-      let settings: Socket.Settings = [
-         SocketSecurityLevel: SocketSecurityLevelNone,
-         SocketValidatesCertificateChain:false
-      ]
-        
+      var settings = Socket.Settings()
+      
+      if secure == false {
+         settings[SocketSecurityLevel] = SocketSecurityLevelNone
+      }
+      
       socket.delegate = TCPSocketDelegateImplementation(connection)
       socket.connect(host, port: port, settings: settings)
         
       return connection
    }
     
-   public class func connect(url _url: String) -> Connection? {
+   public class func connect(url: String, secure: Bool = true) -> Connection? {
         
-      guard let url = URL(string: _url) else {
+      guard let url = URL(string: url) else {
          return nil
       }
-        
+      
       guard let host = url.host,
-            let port = (url as NSURL).port else {
+            let port = url.port else {
                 
          return nil
       }
         
-      return JSTP.connect(host: host, port: port.intValue)
+      return JSTP.connect(host: host, port: port, secure: secure)
    }
-    
+   
 }
 
