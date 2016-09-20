@@ -8,16 +8,16 @@
 
 import Foundation
 
-open class Application {
-    
-   public typealias Function = (_ object: AnyObject) -> Void
+public class Application {
+   
+   public typealias Function = (Any) -> Void
     
    internal var methods: [String:[String:Function]]
     
    init() {
       methods = [String:[String:Function]]()
    }
-    
+   
    open func register(_ interface: String, name: String, function: @escaping Function) {
         
       if var functions = methods[interface] {

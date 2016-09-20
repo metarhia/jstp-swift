@@ -8,14 +8,30 @@
 
 import Foundation
 
-internal extension NSError {
+public typealias Error = NSError
+
+internal extension Error {
    
-   fileprivate convenience init(_ code: Int, _ description: String) {
+   internal convenience init(_ code: Int, _ description: String) {
       
       let domain = Bundle.main.bundleIdentifier!
       let info   = [NSLocalizedDescriptionKey:description]
       
       self.init(domain: domain, code: code, userInfo: info)
+   }
+
+   internal convenience init?(_ object: Any) {
+      
+      
+      guard let data = object as? [Any],
+            let code = data[0] as? Int,
+            let description = data[1] as? String else {
+            
+         return nil
+      }
+      
+      self.init(code, description)
+      
    }
    
    internal func raw() -> AnyObject {
@@ -23,6 +39,7 @@ internal extension NSError {
       let error =  [
          "message":self.localizedDescription,
          "code"   :self.code
+         
       ] as [String : Any]
          
       return error as AnyObject
@@ -32,10 +49,10 @@ internal extension NSError {
 
 open class Errors {
    
-   open static let InterfaceIncompatible = NSError(13, "Incompatible interface")
-   open static let ApplicationNotFound   = NSError(10, "Application not found" )
-   open static let AuthorizationFailed   = NSError(11, "Authentication failed" )
-   open static let InterfaceNotFound     = NSError(12, "Interface not found"   )
-   open static let MethodNotFound        = NSError(14, "Method not found"      )
+   open static let InterfaceIncompatible = Error(13, "Incompatible interface")
+   open static let ApplicationNotFound   = Error(10, "Application not found" )
+   open static let AuthorizationFailed   = Error(11, "Authentication failed" )
+   open static let InterfaceNotFound     = Error(12, "Interface not found"   )
+   open static let MethodNotFound        = Error(14, "Method not found"      )
 }
 

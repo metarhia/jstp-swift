@@ -27,7 +27,7 @@ internal class TCPSocketDelegateImplementation : TCPSocketDelegate {
    }
    
    internal func socket(_ socket: TCPSocket, didFailWithError error: NSError) {
-      connection.delegate?.connectionDidFail(connection, error: error)
+      connection.delegate?.connection(connection, didFailWithError: error)
    }
     
    internal func socket(_ socket: TCPSocket, didReceiveMessage text: String) {
