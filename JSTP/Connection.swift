@@ -8,7 +8,6 @@
 
 // TODO: Add ability to be a server
 // TODO: Profile all
-// TODO: Replace aplication property in Connection with Applications array and rebuild Application class
 // TODO: Wrap calls to js context in something more concrete e.g. create adapter ?? (Parser.swift file)
 // TODO: Refactor - func onCallPacket : func send - func packet
 // TODO: Update common.js with latest modifications
@@ -102,7 +101,7 @@ open class Connection {
       let id   = header[0] as! Int
       let name = header[1] as! String
       
-      guard let interface = application.methods[name] else {
+      guard let interface = application[name] else {
          return callback(id, error: Errors.InterfaceNotFound)
       }
       
@@ -137,7 +136,7 @@ open class Connection {
       
       keys = keys.filter({$0 != "call"})
       
-      let interface = application.methods[name]
+      let interface = application[name]
       let method    = keys[0]
       
       let function  = interface?[method]
