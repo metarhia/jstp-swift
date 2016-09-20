@@ -19,22 +19,24 @@ internal class Chunks {
    
    func add(_ chunk: String) -> JSValue! {
       
+      buffer += chunk
+      
       guard chunk.hasSuffix(kPacketDelimiter) else {
          return nil
       }
       
-      let index  = chunk.characters.index(chunk.endIndex, offsetBy: -kPacketDelimiterLength + 1)
-      let nChunk = chunk.substring(to: index)
-      var chunks = buffer
+      let chunks = buffer + kChunksLast
+          buffer = kChunksFirst
          
-      chunks.append(nChunk)
-      chunks.append(kChunksLast)
-         
-      buffer = kChunksFirst
-         
-      let packets: JSValue = JSTP.parse(chunks)
-         
-      return (packets.isNull || packets.isUndefined) ? nil : packets
+      let packets = JSTP.parse(chunks)
+      
+      guard packets.isUndefined == false,
+            packets.isNull      == false else {
+            
+         return nil
+      }
+      
+      return packets
    }
    
 }

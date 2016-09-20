@@ -9,9 +9,8 @@
 // TODO: Add ability to be a server
 // TODO: Profile all
 // TODO: Wrap calls to js context in something more concrete e.g. create adapter ?? (Parser.swift file)
-// TODO: Refactor - func onCallPacket : func send - func packet
+// TODO: Refactor - func send - func packet
 // TODO: Update common.js with latest modifications
-// TODO: Refactor Chunks class
 // TODO: Add something like event emitter to Connection
 
 import JavaScriptCore
