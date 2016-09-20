@@ -200,7 +200,6 @@ open class Connection {
     *  - Parameter method:     method name to be called
     *  - Parameter parameters: method call parameters
     *  - Parameter callback:   function
-    *
     */
    open func call(_ interface: String, _ method: String, _ parameters: Any, _ callback: @escaping Callback) {
       
@@ -218,10 +217,9 @@ open class Connection {
     *  - Parameter interface:  interface containing required method
     *  - Parameter method:     method name to be called
     *  - Parameter parameters: method call parameters
-    *
     */
-   open func call(_ interface: String, _ name: String, _ parameters: Any) {
-      let packet = self.packet(.call, packetId, interface, name, parameters)
+   open func call(_ interface: String, _ method: String, _ parameters: Any) {
+      let packet = self.packet(.call, packetId, interface, method, parameters)
       self.send(packet)
    }
 
@@ -230,8 +228,6 @@ open class Connection {
     * Send callback packets
     *
     *  - Parameter packetId: id of original `call` packet
-    *  - Parameter result:
-    *
     */
    fileprivate func callback(_ packetId: Int, result: Any) {
       let packet = self.packet(.callback, packetId, "", "ok", result)
@@ -243,8 +239,6 @@ open class Connection {
     * Send callback packets
     *
     *  - Parameter packetId: id of original `call` packet
-    *  - Parameter error:
-    *
     */
    fileprivate func callback(_ packetId: Int, error: Error) {
       let packet = self.packet(.callback, packetId, "", "error", error.raw())
@@ -258,7 +252,6 @@ open class Connection {
     *  - Parameter interface:  name of interface sending event to
     *  - Parameter event:      name of event
     *  - Parameter parameters: hash or object, event parameters
-    *
     */
    open func event(_ interface: String, _ event: String, _ parameters: Any) {
       let packet = self.packet(.event, packetId, interface, event, parameters)
@@ -272,7 +265,6 @@ open class Connection {
     *  - Parameter path:  path in data structure to be changed
     *  - Parameter verb:  operation with data inc, dec, let, delete, push, pop, shift, unshift
     *  - Parameter value: delta or new value
-    *
     */
    open func state(_ path: String, _ verb: String, _ value: Any) {
       let packet = self.packet(.state, packetId, path, verb, value)
@@ -287,7 +279,6 @@ open class Connection {
     *  - Parameter login:    user login
     *  - Parameter password: password hash
     *  - Parameter callback: function callback
-    *
     */
    open func handshake(_ name: String, _ login: String, _ password: String, _ callback: @escaping Callback) {
       
@@ -305,7 +296,6 @@ open class Connection {
     *  - Parameter name:     application name
     *  - Parameter login:    user login
     *  - Parameter password: password hash
-    *
     */
    open func handshake(_ name: String, _ login: String, _ password: String) {
       let packet = self.packet(.handshake, 0, name, login, password)
@@ -317,7 +307,6 @@ open class Connection {
     * Send handshake packet
     *
     *  - Parameter name: application name
-    *
     */
    open func handshake(_ name: String) {
       let packet = self.packet(.handshake, 0, name)
@@ -330,7 +319,6 @@ open class Connection {
     *
     *  - Parameter name:     application name
     *  - Parameter callback: function callback
-    *
     */
    open func handshake(_ name: String, _ callback: @escaping Callback) {
       
