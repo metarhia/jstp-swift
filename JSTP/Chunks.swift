@@ -28,7 +28,7 @@ internal class Chunks {
       let chunks = buffer + kChunksLast
           buffer = kChunksFirst
          
-      let packets = JSTP.parse(chunks)
+      let packets = Context.shared.parse(chunks)
       
       guard packets.isUndefined == false,
             packets.isNull      == false else {

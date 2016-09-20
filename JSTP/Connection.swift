@@ -8,8 +8,6 @@
 
 // TODO: Add ability to be a server
 // TODO: Profile all
-// TODO: Wrap calls to js context in something more concrete e.g. create adapter ?? (Parser.swift file)
-// TODO: Refactor - func send - func packet
 // TODO: Update common.js with latest modifications
 // TODO: Add something like event emitter to Connection
 
@@ -171,20 +169,20 @@ open class Connection {
    
    fileprivate func send(_ data: JSValue) {
       
-      let context   = jsContext
-      let stringify = context["stringify"]!
+      let context = Context.shared
+      let text    = context.stringify(data) + kPacketDelimiter
       
-      self.socket.write(stringify.call(withArguments: [data]).toString() + kPacketDelimiter)
+      self.socket.write(text)
    }
    
    fileprivate func packet(_ kind: Kind, _ args: Any...) -> JSValue {
       
-      let serializer = jsContext["Packet"]!
-      let packet     = serializer.construct(withArguments: [kind.rawValue] + args)
-      
       self.packetId += 1
       
-      return packet!
+      let arguments = [kind.rawValue] + args
+      let packet    = Context.shared.packet(arguments)
+      
+      return packet
    }
    
    // MARK: JavaScript Transfer Protocol

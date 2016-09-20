@@ -9,7 +9,7 @@
 import Foundation
 import Socket
 
-public extension JSTP {
+public class JSTP {
    
    public class func connect(host: String, port: Int, secure: Bool = true) -> Connection {
         
