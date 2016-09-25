@@ -75,7 +75,7 @@ open class Connection {
       let data  = packet["ok"   ]
       let error = packet["error"]
       
-      callbacks.removeValue(forKey: 0)?(data, Error(error))
+      callbacks.removeValue(forKey: 0)?(data, NSError(error))
    }
    
    private func onCallbackPacket(_ packet: Packet) {
@@ -86,7 +86,7 @@ open class Connection {
       let data   = packet["ok"   ]
       let error  = packet["error"]
       
-      callbacks.removeValue(forKey: id)?(data, Error(error))
+      callbacks.removeValue(forKey: id)?(data, NSError(error))
    }
    
    private func onInpectPacket(_ packet: Packet) {
@@ -235,7 +235,7 @@ open class Connection {
     *
     *  - Parameter packetId: id of original `call` packet
     */
-   fileprivate func callback(_ packetId: Int, error: Error) {
+   fileprivate func callback(_ packetId: Int, error: NSError) {
       let packet = self.packet(.callback, packetId, "", "error", error.raw())
       self.send(packet)
    }

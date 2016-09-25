@@ -9,12 +9,9 @@
 import Foundation
 import Socket
 
-public class JSTP {
+public extension Connection {
    
-   public class func connect(host: String, port: Int, secure: Bool = true) -> Connection {
-        
-      let socket     = TCPSocket()
-      let connection = Connection(socket: socket)
+   public convenience init (host: String, port: Int, secure: Bool = true) {
       
       var settings = Socket.Settings()
       
@@ -22,25 +19,31 @@ public class JSTP {
          settings[SocketSecurityLevel] = SocketSecurityLevelNone
       }
       
+      let socket     = TCPSocket (host: host, port: port, settings: settings)
+      let connection = Connection(socket: socket)
+      
       socket.delegate = TCPSocketDelegateImplementation(connection)
-      socket.connect(host, port: port, settings: settings)
-        
-      return connection
+      
+      self.init(socket: socket)
    }
+   
+   public convenience init? (url: String, secure: Bool = true) {
     
-   public class func connect(url: String, secure: Bool = true) -> Connection? {
-        
       guard let url = URL(string: url) else {
          return nil
       }
       
       guard let host = url.host,
             let port = url.port else {
-                
+            
          return nil
       }
-        
-      return JSTP.connect(host: host, port: port, secure: secure)
+      
+      self.init(host: host, port: port, secure: secure)
+   }
+   
+   public func connect() {
+      self.socket.connect()
    }
    
 }
