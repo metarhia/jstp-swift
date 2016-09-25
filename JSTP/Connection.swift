@@ -27,8 +27,8 @@ fileprivate enum Kind: String {
 
 public protocol ConnectionDelegate {
    
-   func connection(_ connection: Connection, didReceiveEvent  event: Event)
-   func connection(_ connection: Connection, didFailWithError error: Error)
+   func connection(_ connection: Connection, didReceiveEvent  event: Event  )
+   func connection(_ connection: Connection, didFailWithError error: NSError)
    
    func connectionDidDisconnect(_ connection: Connection)
    func connectionDidConnect   (_ connection: Connection)
@@ -39,8 +39,8 @@ public protocol ConnectionDelegate {
 
 public extension ConnectionDelegate {
    
-   func connection(_ connection: Connection, didReceiveEvent  event: Event) {}
-   func connection(_ connection: Connection, didFailWithError error: Error) {}
+   func connection(_ connection: Connection, didReceiveEvent  event: Event  ) {}
+   func connection(_ connection: Connection, didFailWithError error: NSError) {}
    
    func connectionDidDisconnect(_ connection: Connection) {}
    func connectionDidConnect   (_ connection: Connection) {}
@@ -112,7 +112,7 @@ open class Connection {
                  _  = header[0] as! Int
       let interface = header[1] as! String
    
-      keys = keys.filter({$0 != "event"})
+      keys = keys.filter { $0 != "event" }
       
       let event     = keys[0]
       let arguments = packet[event]!
@@ -129,7 +129,7 @@ open class Connection {
       let id   = header[0] as! Int
       let name = header[1] as! String
       
-      keys = keys.filter({$0 != "call"})
+      keys = keys.filter { $0 != "call" }
       
       let interface = application[name]
       let method    = keys[0]
