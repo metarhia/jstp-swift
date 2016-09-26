@@ -10,7 +10,7 @@ import Socket
 
 internal class TCPSocketDelegateImplementation : TCPSocketDelegate {
     
-   fileprivate weak var connection: Connection!
+   fileprivate var connection: Connection!
     
    init(_ connection: Connection) {
       self.connection = connection
