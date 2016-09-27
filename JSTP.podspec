@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   
-  s.name                  = 'ACRCloudSDK'
+  s.name                  = 'JSTP'
   s.version               = '0.1.4'
   s.summary               = 'JSTP is a data transfer protocol that uses JavaScript objects syntax as the encoding format and supports metadata'
   s.description           = 'JSTP'
