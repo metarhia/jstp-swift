@@ -24,8 +24,10 @@ import JSTP
 Once imported, you can open a connection to your JSTP server. Note that `connection` is probably best as a property, so it doesn't get deallocated right after being setup.
 
 ```swift
-connection = JSTP.connect(host: "127.127.0.1", port: 4000)
+
+connection = Connection(host: "0.0.0.0", port: 6969, secure: false)
 connection.delegate = self
+connection.connect()
 ```
 
 After you are connected, there are some optional delegate methods you may want to implement.
@@ -35,7 +37,7 @@ After you are connected, there are some optional delegate methods you may want t
 This method is called as soon as the client connects to the server.
 
 ```swift
-func connectionDidConnect(connection: Connection)
+func connectionDidConnect(_ connection: Connection) {
    print("Connected")
 }
 ```
@@ -45,17 +47,17 @@ func connectionDidConnect(connection: Connection)
 This method is called as soon as the client is disconnected from the server.
 
 ```swift
-func connectionDidDisconnect(connection: Connection) {
+func connectionDidDisconnect(_ connection: Connection) {
    print("Disconnected")
 }
 ```
 
-#### `connectionDidFail`
+#### `connectionDidFailWithError`
 
 This method is called as soon as some error occurs.
 
 ```swift
-func connectionDidFail(connection: Connection, error: NSError)
+func connection(_ connection: Connection, didFailWithError error: NSError)
    print("Error \(error.localizedDescription)")
 }
 ```
@@ -65,7 +67,7 @@ func connectionDidFail(connection: Connection, error: NSError)
 This method is called as soon as the client receives some event.
 
 ```swift
-func connectionDidReceiveEvent(connection: Connection, event: Event) {
+func connection(_ connection: Connection, didReceiveEvent  event: Event) { {
    print("Event")
 }
 ```
@@ -73,20 +75,10 @@ func connectionDidReceiveEvent(connection: Connection, event: Event) {
 Event is simple class.
 
 ```swift
-public class Event {
-   let arguments: AnyObject
+class Event {
+   let arguments: Any
    let interface: String
    let name: String
-}
-```
-
-#### `connectionDidPerformHandshake`
-
-This method is called as soon as the client performed successful handshake with server. 
-
-```swift
-func connectionDidPerformHandshake(connection: Connection) {
-   print("Handshaked")
 }
 ```
 
