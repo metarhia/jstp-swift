@@ -19,12 +19,11 @@ public extension Connection {
          settings[SocketSecurityLevel] = SocketSecurityLevelNone
       }
       
-      let socket     = TCPSocket (host: host, port: port, settings: settings)
-      let connection = Connection(socket: socket)
-      
-      socket.delegate = TCPSocketDelegateImplementation(connection)
-      
+      let socket = TCPSocket (host: host, port: port, settings: settings)
+
       self.init(socket: socket)
+      
+      socket.delegate = TCPSocketDelegateImplementation(self)
    }
    
    public convenience init? (url: String, secure: Bool = true) {
