@@ -37,11 +37,11 @@ internal class Context {
    
    // MARK: Methods
    
-   internal func stringify(_ argument: Any) -> String {
+   internal func stringify(_ argument: AnyObject) -> String {
       return stringify.call(withArguments: [argument]).toString()
    }
    
-   internal func packet(_ arguments: [Any]) -> JSValue {
+   internal func packet(_ arguments: [AnyObject]) -> JSValue {
       return packet.construct(withArguments: arguments)
    }
    

@@ -21,8 +21,8 @@ internal extension NSError {
    internal convenience init?(_ object: Any) {
       
       
-      guard let data = object as? [Any],
-            let code = data[0] as? Int,
+      guard let data        = object  as? [Any],
+            let code        = data[0] as? Int,
             let description = data[1] as? String else {
             
          return nil

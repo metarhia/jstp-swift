@@ -66,6 +66,8 @@ open class Connection {
       self.chunks    = Chunks()
       self.socket    = socket
       self.packetId  = 0
+      
+      self.socket.delegate = TCPSocketDelegateImplementation(self)
    }
    
    // MARK: - Input Packets Processing
@@ -80,7 +82,7 @@ open class Connection {
    
    private func onCallbackPacket(_ packet: Packet) {
       
-      let header = packet["callback"] as! [Any]
+      let header = packet["callback"] as! [AnyObject]
       
       let id     = header[0      ] as! Int
       let data   = packet["ok"   ]
@@ -91,7 +93,7 @@ open class Connection {
    
    private func onInpectPacket(_ packet: Packet) {
       
-      let header = packet["callback"] as! [Any]
+      let header = packet["callback"] as! [AnyObject]
       
       let id   = header[0] as! Int
       let name = header[1] as! String
@@ -100,14 +102,14 @@ open class Connection {
          return callback(id, error: Errors.InterfaceNotFound)
       }
       
-      callback(id, result: interface.keys)
+      callback(id, result: Array(interface.keys) as AnyObject)
    }
    
    private func onEventPacket(_ packet: Packet) {
       
       var keys = Array(packet.keys) as! [String]
       
-      let header = packet["event"] as! [Any]
+      let header = packet["event"] as! [AnyObject]
       
                  _  = header[0] as! Int
       let interface = header[1] as! String
@@ -124,7 +126,7 @@ open class Connection {
       
       var keys = Array(packet.keys) as! [String]
       
-      let header = packet["call"] as! [Any]
+      let header = packet["call"] as! [AnyObject]
       
       let id   = header[0] as! Int
       let name = header[1] as! String
@@ -140,8 +142,8 @@ open class Connection {
       if interface == nil { return callback(id, error: Errors.InterfaceNotFound) }
       if function  == nil { return callback(id, error: Errors.MethodNotFound   ) }
       
-      function?(args)
-      callback (id, result: [])
+      function!(args!)
+      callback (id, result: [] as AnyObject)
    }
    
    internal func process(_ packets: JSValue) {
@@ -180,7 +182,7 @@ open class Connection {
       self.packetId += 1
       
       let arguments = [kind.rawValue] + args
-      let packet    = Context.shared.packet(arguments)
+      let packet    = Context.shared.packet(arguments as [AnyObject])
       
       return packet
    }
@@ -196,7 +198,7 @@ open class Connection {
     *  - Parameter parameters: method call parameters
     *  - Parameter callback:   function
     */
-   open func call(_ interface: String, _ method: String, _ parameters: Any, _ callback: @escaping Callback) {
+   open func call(_ interface: String, _ method: String, _ parameters: AnyObject, _ callback: @escaping Callback) {
       
       let packetId = self.packetId
       let packet   = self.packet(.call, packetId, interface, method, parameters)
@@ -213,7 +215,7 @@ open class Connection {
     *  - Parameter method:     method name to be called
     *  - Parameter parameters: method call parameters
     */
-   open func call(_ interface: String, _ method: String, _ parameters: Any) {
+   open func call(_ interface: String, _ method: String, _ parameters: AnyObject) {
       let packet = self.packet(.call, packetId, interface, method, parameters)
       self.send(packet)
    }
@@ -224,7 +226,7 @@ open class Connection {
     *
     *  - Parameter packetId: id of original `call` packet
     */
-   fileprivate func callback(_ packetId: Int, result: Any) {
+   fileprivate func callback(_ packetId: Int, result: AnyObject) {
       let packet = self.packet(.callback, packetId, "", "ok", result)
       self.send(packet)
    }
@@ -248,7 +250,7 @@ open class Connection {
     *  - Parameter event:      name of event
     *  - Parameter parameters: hash or object, event parameters
     */
-   open func event(_ interface: String, _ event: String, _ parameters: Any) {
+   open func event(_ interface: String, _ event: String, _ parameters: AnyObject) {
       let packet = self.packet(.event, packetId, interface, event, parameters)
       self.send(packet)
    }
@@ -261,7 +263,7 @@ open class Connection {
     *  - Parameter verb:  operation with data inc, dec, let, delete, push, pop, shift, unshift
     *  - Parameter value: delta or new value
     */
-   open func state(_ path: String, _ verb: String, _ value: Any) {
+   open func state(_ path: String, _ verb: String, _ value: AnyObject) {
       let packet = self.packet(.state, packetId, path, verb, value)
       self.send(packet)
    }
@@ -328,6 +330,6 @@ open class Connection {
 
 /****************************************************/
 
-fileprivate extension JSContext { subscript(key: Any!) -> JSValue! { return objectForKeyedSubscript(key) } }
-fileprivate extension JSValue   { subscript(key: Any!) -> JSValue! { return objectForKeyedSubscript(key) } }
+fileprivate extension JSContext { subscript(key: AnyObject!) -> JSValue! { return objectForKeyedSubscript(key) } }
+fileprivate extension JSValue   { subscript(key: AnyObject!) -> JSValue! { return objectForKeyedSubscript(key) } }
 

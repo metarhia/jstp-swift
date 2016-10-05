@@ -13,7 +13,7 @@ internal let kPacketDelimiterLength = kPacketDelimiter.characters.count
 internal let kChunksFirst           = "["
 internal let kChunksLast            = "]"
 
-public typealias Callback  = (Any?, Error?) -> Void
+public typealias Callback  = (AnyObject?, Error?) -> Void
 public typealias Callbacks = [Int:Callback]
 
-internal typealias Packet = [AnyHashable:Any]
+internal typealias Packet = [AnyHashable:AnyObject]

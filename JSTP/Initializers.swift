@@ -22,8 +22,6 @@ public extension Connection {
       let socket = TCPSocket (host: host, port: port, settings: settings)
 
       self.init(socket: socket)
-      
-      socket.delegate = TCPSocketDelegateImplementation(self)
    }
    
    public convenience init? (url: String, secure: Bool = true) {
