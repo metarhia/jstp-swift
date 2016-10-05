@@ -13,11 +13,10 @@ Pod::Spec.new do |s|
                               :tag        => s.version.to_s,
                               :submodules => true}
   s.source_files          = 'JSTP/*.{h,swift,js}'
-  s.dependency            = 'Socket'
-  s.frameworks            = 'JavaScriptCore'
+  s.framework             = 'JavaScriptCore'
   
   s.subspec 'Socket' do |ss|
-    ss.name   = 'Socket'
+    ss.name           = 'Socket'
     ss.source_files   = 'Carthage/Checkouts/Socket/Socket/*.{h,swift}'
   end
 
