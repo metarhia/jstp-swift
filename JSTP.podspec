@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   
   s.name        = 'JSTP'
-  s.version     = '0.1.7'
+  s.version     = '0.1.8'
   s.license     = { :type => "MIT" }
 
   s.homepage    = 'https://github.com/metarhia/JSTP'
