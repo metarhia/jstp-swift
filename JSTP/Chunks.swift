@@ -6,7 +6,6 @@
 //  Copyright © 2016 Andrew Visotskyy. All rights reserved.
 //
 
-import Foundation
 import JavaScriptCore
 
 internal class Chunks {

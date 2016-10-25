@@ -12,7 +12,10 @@
 // TODO: Add something like event emitter to Connection
 
 import JavaScriptCore
-import Socket
+
+#if CARTHAGE
+   import Socket
+#endif
 
 fileprivate enum Kind: String {
    

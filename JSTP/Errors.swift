@@ -6,8 +6,6 @@
 //  Copyright © 2016 Andrew Visotskyy. All rights reserved.
 //
 
-import Foundation
-
 internal extension NSError {
    
    internal convenience init(_ code: Int, _ description: String) {

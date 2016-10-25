@@ -7,13 +7,16 @@
 //
 
 import Foundation
-import Socket
+
+#if CARTHAGE
+   import Socket
+#endif
 
 public extension Connection {
    
    public convenience init (host: String, port: Int, secure: Bool = true) {
       
-      var settings = Socket.Settings()
+      var settings = Settings()
       
       if secure == false {
          settings[SocketSecurityLevel] = SocketSecurityLevelNone

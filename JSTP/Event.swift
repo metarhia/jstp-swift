@@ -6,8 +6,6 @@
 //  Copyright © 2016 Andrew Visotskyy. All rights reserved.
 //
 
-import Foundation
-
 open class Event {
    
    open let arguments: AnyObject

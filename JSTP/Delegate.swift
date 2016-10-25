@@ -6,7 +6,9 @@
 //  Copyright © 2016 Andrew Visotskyy. All rights reserved.
 //
 
-import Socket
+#if CARTHAGE
+   import Socket
+#endif
 
 internal class TCPSocketDelegateImplementation : TCPSocketDelegate {
     
@@ -18,11 +20,11 @@ internal class TCPSocketDelegateImplementation : TCPSocketDelegate {
     
    // MARK: Socket Delegate Methods
    
-   internal func socketDidConnect(_ socket: Socket.TCPSocket) {
+   internal func socketDidConnect(_ socket: TCPSocket) {
       connection.delegate?.connectionDidConnect(connection)
    }
     
-   internal func socketDidDisconnect(_ socket: Socket.TCPSocket) {
+   internal func socketDidDisconnect(_ socket: TCPSocket) {
       connection.delegate?.connectionDidDisconnect(connection)
    }
    
