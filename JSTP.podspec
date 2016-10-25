@@ -19,9 +19,7 @@ Pod::Spec.new do |s|
     :submodules => true
   }
 
-  s.resource_bundle = {
-    "Resources" => 'JSTP/*.{js}'
-  }
+  s.resources = 'JSTP/*.{js}'
 
   s.source_files = 'JSTP/*.{swift}',
                    'Carthage/Checkouts/Socket/Socket/*.{swift}'
