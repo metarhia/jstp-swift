@@ -6,7 +6,7 @@
 //  Copyright © 2016 Andrew Visotskyy. All rights reserved.
 //
 
-internal let kPacketDelimiter       = ",{\u{C}},"
+internal let kPacketDelimiter       = "\u{0}"
 internal let kPacketDelimiterLength = kPacketDelimiter.characters.count
 internal let kChunksFirst           = "["
 internal let kChunksLast            = "]"

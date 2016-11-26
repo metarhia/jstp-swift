@@ -24,9 +24,11 @@ internal class Chunks {
          return nil
       }
       
-      let chunks = buffer + kChunksLast
+      var chunks = buffer + kChunksLast
           buffer = kChunksFirst
-         
+      
+      chunks = chunks.replacingOccurrences(of: kPacketDelimiter, with: ",")
+      
       let packets = Context.shared.parse(chunks)
       
       guard packets.isUndefined == false,
@@ -39,4 +41,3 @@ internal class Chunks {
    }
    
 }
-
