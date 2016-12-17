@@ -18,14 +18,16 @@ import JavaScriptCore
 #endif
 
 fileprivate enum Kind: String {
-   
    case handshake = "handshake"
    case callback  = "callback"
+   case inspect   = "inspect"
    case stream    = "stream"
    case health    = "health"
    case event     = "event"
    case state     = "state"
    case call      = "call"
+   case pong      = "pong"
+   case ping      = "ping"
 }
 
 public protocol ConnectionDelegate {
@@ -85,7 +87,7 @@ open class Connection {
    
    private func onCallbackPacket(_ packet: Packet) {
       
-      let header = packet["callback"] as! [AnyObject]
+      let header = packet[Kind.callback.rawValue] as! [AnyObject]
       
       let id     = header[0      ] as! Int
       let data   = packet["ok"   ]
@@ -96,7 +98,7 @@ open class Connection {
    
    private func onInpectPacket(_ packet: Packet) {
       
-      let header = packet["callback"] as! [AnyObject]
+      let header = packet[Kind.inspect.rawValue] as! [AnyObject]
       
       let id   = header[0] as! Int
       let name = header[1] as! String
@@ -112,12 +114,12 @@ open class Connection {
       
       var keys = Array(packet.keys) as! [String]
       
-      let header = packet["event"] as! [AnyObject]
+      let header = packet[Kind.event.rawValue] as! [AnyObject]
       
                  _  = header[0] as! Int
       let interface = header[1] as! String
    
-      keys = keys.filter { $0 != "event" }
+      keys = keys.filter { $0 != Kind.event.rawValue }
       
       let event     = keys[0]
       let arguments = packet[event]!
@@ -129,12 +131,12 @@ open class Connection {
       
       var keys = Array(packet.keys) as! [String]
       
-      let header = packet["call"] as! [AnyObject]
+      let header = packet[Kind.call.rawValue] as! [AnyObject]
       
       let id   = header[0] as! Int
       let name = header[1] as! String
       
-      keys = keys.filter { $0 != "call" }
+      keys = keys.filter { $0 != Kind.call.rawValue }
       
       let interface = application[name]
       let method    = keys[0]
@@ -149,14 +151,20 @@ open class Connection {
       callback (id, result: [] as AnyObject)
    }
    
+   private func onPingPacket(_ packet: Packet) {
+      let header = packet[Kind.ping.rawValue] as! [AnyObject]
+      pong(header[0] as! Int)
+   }
+   
    internal func process(_ packets: JSValue) {
       
       let reactions = [
-         "handshake" : onHandshakePacket,
-         "callback"  : onCallbackPacket,
-         "inspect"   : onInpectPacket,
-         "event"     : onEventPacket,
-         "call"      : onCallPacket
+         Kind.handshake.rawValue : onHandshakePacket,
+         Kind.callback.rawValue  : onCallbackPacket,
+         Kind.inspect.rawValue   : onInpectPacket,
+         Kind.event.rawValue     : onEventPacket,
+         Kind.call.rawValue      : onCallPacket,
+         Kind.ping.rawValue      : onPingPacket
       ]
    
       for packet in packets.toArray() {
@@ -194,6 +202,39 @@ open class Connection {
    
    /**
     *
+    * Send pong packet
+    *
+    *  - Parameter packetId: id of original `ping` packet
+    */
+   fileprivate func pong(_ packetId: Int) {
+      let packet = self.packet(.pong, packetId)
+      self.send(packet)
+   }
+   
+   /**
+    *
+    * Send callback packets
+    *
+    *  - Parameter packetId: id of original `call` packet
+    */
+   fileprivate func callback(_ packetId: Int, result: AnyObject) {
+      let packet = self.packet(.callback, packetId, "", "ok", result)
+      self.send(packet)
+   }
+   
+   /**
+    *
+    * Send callback packets
+    *
+    *  - Parameter packetId: id of original `call` packet
+    */
+   fileprivate func callback(_ packetId: Int, error: NSError) {
+      let packet = self.packet(.callback, packetId, "", "error", error.raw())
+      self.send(packet)
+   }
+   
+   /**
+    *
     * Send call packet
     *
     *  - Parameter interface:  interface containing required method
@@ -220,28 +261,6 @@ open class Connection {
     */
    open func call(_ interface: String, _ method: String, _ parameters: AnyObject) {
       let packet = self.packet(.call, packetId, interface, method, parameters)
-      self.send(packet)
-   }
-
-   /**
-    *
-    * Send callback packets
-    *
-    *  - Parameter packetId: id of original `call` packet
-    */
-   fileprivate func callback(_ packetId: Int, result: AnyObject) {
-      let packet = self.packet(.callback, packetId, "", "ok", result)
-      self.send(packet)
-   }
-   
-   /**
-    *
-    * Send callback packets
-    *
-    *  - Parameter packetId: id of original `call` packet
-    */
-   fileprivate func callback(_ packetId: Int, error: NSError) {
-      let packet = self.packet(.callback, packetId, "", "error", error.raw())
       self.send(packet)
    }
 
