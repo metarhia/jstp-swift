@@ -17,6 +17,23 @@ common.extend = function (object, extension) {
    return object;
 };
 
+common.escape = function (string) {
+  
+   var escapes = {
+      '\\':'\\\\',
+      '\'':'\\\'',
+      '\n':'\\n',
+      '\r':'\\r',
+
+      '\u2028':'\\u2028',
+      '\u2029':'\\u2029'
+   };
+  
+   return string.replace(/['\\\n\r\u2028\u2029]/g, function (character) {
+      return escapes[character];
+   })
+};
+
 common.serializer = function (types) {
 
    function serialize(object) {
@@ -25,7 +42,7 @@ common.serializer = function (types) {
 
            if (object instanceof Array) type = 'array';
       else if (object instanceof Date ) type = 'date';
-      else if (object === null        ) type = 'undefined';
+      else if (object === null        ) type = 'null';
       else                              type = typeof object;
 
       return serialize.types[type](object);
@@ -33,10 +50,11 @@ common.serializer = function (types) {
 
    serialize.types = common.extend ({
 
+      null:      function (arg) { return 'null';      },
       undefined: function (arg) { return 'undefined'; },
       boolean:   function (arg) { return String(arg); },
       number:    function (arg) { return String(arg); },
-      string:    function (arg) { return '\'' + arg.replace(/'/g, '\\\'') + '\''; },
+      string:    function (arg) { return '\'' + common.escape(arg) + '\''; },
       array:     function (arg) { return '[' + arg.map(serialize).join(',') + ']'; },
       
       object: function(arg) {
@@ -44,12 +62,10 @@ common.serializer = function (types) {
          var keys = Object.keys(arg);
          var array = [];
 
-         keys.forEach(function(key, index) {
-            
+         keys.forEach(function(key) {
             var representation = serialize(arg[key]);
-
             if (representation !== 'undefined') {
-                array.push(key + ':' + representation);
+               array.push('\'' + key + '\':' + serialize(arg[key]));
             }
          });
 
