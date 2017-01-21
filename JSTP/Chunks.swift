@@ -10,30 +10,26 @@ import JavaScriptCore
 
 internal class Chunks {
    
-   fileprivate var buffer: String
+   private var buffer: Data
    
    init() {
-      buffer = kChunksFirst
+      buffer = Data()
    }
    
-   func add(_ chunk: String) -> JSValue! {
+   func add(_ chunk: Data) -> JSValue? {
       
-      buffer += chunk
+      buffer.append(chunk)
       
-      guard chunk.hasSuffix(kPacketDelimiter) else {
+      guard let source = String(data: buffer, encoding: .utf8), source.hasSuffix(kPacketDelimiter) else {
          return nil
       }
       
-      var chunks = buffer + kChunksLast
-          buffer = kChunksFirst
-      
-      chunks = chunks.replacingOccurrences(of: kPacketDelimiter, with: ",")
-      
+      buffer = Data()
+
+      let chunks = (kChunksFirst + source + kChunksLast).replacingOccurrences(of: kPacketDelimiter, with: ",")
       let packets = Context.shared.parse(chunks)
       
-      guard packets.isUndefined == false,
-            packets.isNull      == false else {
-            
+      guard packets.isUndefined == false, packets.isNull == false else {
          return nil
       }
       

@@ -32,9 +32,9 @@ internal class TCPSocketDelegateImplementation : TCPSocketDelegate {
       connection.delegate?.connection(connection, didFailWithError: error)
    }
     
-   internal func socket(_ socket: TCPSocket, didReceiveMessage text: String) {
+   internal func socket(_ socket: TCPSocket, didReceiveData data: Data) {
       
-      guard let packets = connection.chunks.add(text) else {
+      guard let packets = connection.chunks.add(data) else {
          return
       }
       
