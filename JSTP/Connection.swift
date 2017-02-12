@@ -224,24 +224,11 @@ open class Connection {
 	 *  - Parameter parameters: method call parameters
 	 *  - Parameter callback:   function
 	 */
-	open func call(_ interface: String, _ method: String, _ parameters: AnyObject, _ callback: @escaping Callback) {
+	open func call(_ interface: String, _ method: String, _ parameters: AnyObject, _ callback: Callback? = nil) {
 		let packetId = self.packetId
 		let packet   = self.packet(.call, packetId, interface, method, parameters)
 		
 		self.callbacks[packetId] = callback
-		self.send(packet)
-	}
-	
-	/**
-	 *
-	 * Send call packet
-	 *
-	 *  - Parameter interface:  interface containing required method
-	 *  - Parameter method:     method name to be called
-	 *  - Parameter parameters: method call parameters
-	 */
-	open func call(_ interface: String, _ method: String, _ parameters: AnyObject) {
-		let packet = self.packet(.call, packetId, interface, method, parameters)
 		self.send(packet)
 	}
 	
@@ -279,8 +266,7 @@ open class Connection {
 	 *  - Parameter password: password hash
 	 *  - Parameter callback: function callback
 	 */
-	open func handshake(_ name: String, _ login: String, _ password: String, _ callback: @escaping Callback) {
-		
+	open func handshake(_ name: String, _ login: String, _ password: String, _ callback: Callback? = nil) {
 		let packetId = self.packetId
 		let packet   = self.packet(.handshake, 0, name, login, password)
 		
@@ -293,33 +279,9 @@ open class Connection {
 	 * Send handshake packet
 	 *
 	 *  - Parameter name:     application name
-	 *  - Parameter login:    user login
-	 *  - Parameter password: password hash
-	 */
-	open func handshake(_ name: String, _ login: String, _ password: String) {
-		let packet = self.packet(.handshake, 0, name, login, password)
-		self.send(packet)
-	}
-	
-	/**
-	 *
-	 * Send handshake packet
-	 *
-	 *  - Parameter name: application name
-	 */
-	open func handshake(_ name: String) {
-		let packet = self.packet(.handshake, 0, name)
-		self.send(packet)
-	}
-	
-	/**
-	 *
-	 * Send handshake packet
-	 *
-	 *  - Parameter name:     application name
 	 *  - Parameter callback: function callback
 	 */
-	open func handshake(_ name: String, _ callback: @escaping Callback) {
+	open func handshake(_ name: String, _ callback: Callback? = nil) {
 		let packetId = self.packetId
 		let packet   = self.packet(.handshake, 0, name)
 		
