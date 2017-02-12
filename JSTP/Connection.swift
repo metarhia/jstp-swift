@@ -257,6 +257,7 @@ open class Connection {
 		let packet = self.packet(.state, packetId, path, verb, value)
 		self.send(packet)
 	}
+	
 	/**
 	 *
 	 * Send handshake packet
@@ -290,9 +291,3 @@ open class Connection {
 	}
 
 }
-
-/****************************************************/
-
-fileprivate extension JSContext { subscript(key: AnyObject!) -> JSValue! { return objectForKeyedSubscript(key) } }
-fileprivate extension JSValue   { subscript(key: AnyObject!) -> JSValue! { return objectForKeyedSubscript(key) } }
-
