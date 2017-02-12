@@ -3,69 +3,55 @@
 //  JSTP
 //
 //  Created by Andrew Visotskyy on 7/25/16.
-//  Copyright © 2016 Andrew Visotskyy. All rights reserved.
+//  Copyright © 2016-2017 Andrew Visotskyy. All rights reserved.
 //
 
-internal extension NSError {
-   
-   internal convenience init(_ code: Int, _ description: String) {
-      
-      let domain = Bundle.main.bundleIdentifier!
-      let info   = [NSLocalizedDescriptionKey:description]
-      
-      self.init(domain: domain, code: code, userInfo: info)
-   }
-
-   internal convenience init?(_ object: Any?) {
-      
-      guard let data = object  as? [Any],
-            let code = data[0] as? Int else {
-      
-         return nil
-      }
-   
-      var description: String!
-      
-      if data.count == 2 {
-         description = data[1] as? String
-      }
-      
-      description = description ?? Errors.kErrors[code] ?? "Undefined error"
-      
-      self.init(code, description)
-   }
-   
-   internal func raw() -> AnyObject {
-         
-      let error =  [
-         "message":self.localizedDescription,
-         "code"   :self.code
-         
-      ] as [String : Any]
-         
-      return error as AnyObject
-   }
-   
+public class ConnectionError: Error, LocalizedError {
+	
+	public typealias Code = ConnectionErrorCode
+	
+	public init(code: Code, description: String? = nil) {
+		self.code = code
+		self.errorDescription = description ?? ConnectionError.defaultMessages[code.rawValue]
+	}
+	
+	public var code: Code
+	public var errorDescription: String?
+	
+	internal var asObject: AnyObject {
+		return ["code": code.rawValue, "message": localizedDescription] as AnyObject
+	}
+	
+	internal static func withObject(_ object: Any?) -> ConnectionError? {
+		guard let data = object  as? [Any],
+		      let code = data[0] as? Int,
+		      let errorCode = Code(rawValue: code) else {
+			return nil
+		}
+		return ConnectionError(code: errorCode, description: data[safe: 1] as? String)
+	}
+	
+	// MARK: -
+	
+	private static let defaultMessages = [
+		10: "Application not found",
+		11: "Authentication failed",
+		12: "Interface not found",
+		13: "Incompatible interface",
+		14: "Method not found",
+		15: "Not a server",
+		16: "Internal API error",
+		17: "Invalid signature"
+	]
+	
 }
 
-open class Errors {
-   
-   open static let InterfaceIncompatible = NSError(13, "Incompatible interface")
-   open static let ApplicationNotFound   = NSError(10, "Application not found" )
-   open static let AuthorizationFailed   = NSError(11, "Authentication failed" )
-   open static let InterfaceNotFound     = NSError(12, "Interface not found"   )
-   open static let InternalError         = NSError(16, "Internal API error"    )
-   open static let MethodNotFound        = NSError(14, "Method not found"      )
-   open static let NotSerever            = NSError(15, "Not a server"          )
-   
-   fileprivate static let kErrors = [
-      13: "Incompatible interface",
-      10: "Application not found",
-      11: "Authentication failed",
-      12: "Interface not found",
-      16: "Internal API error",
-      14: "Method not found",
-      15: "Not a server",
-   ]
-   
+public enum ConnectionErrorCode: Int {
+	case appNotFound = 10
+	case authFailed = 11
+	case interfaceNotFound = 12
+	case interfaceIncompatible = 13
+	case methodNotFound = 14
+	case notSerever = 15
+	case internalError = 16
 }

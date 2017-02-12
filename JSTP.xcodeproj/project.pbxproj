@@ -19,6 +19,7 @@
 		04967EC91D7C3967004A322C /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04967EC31D7C3967004A322C /* Errors.swift */; };
 		04967ECA1D7C3967004A322C /* Initializers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04967EC41D7C3967004A322C /* Initializers.swift */; };
 		04A885F91D3EB7F800B5127C /* JSTP.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A885F81D3EB7F800B5127C /* JSTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		04C45DBF1E508FCB007AE58C /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C45DBE1E508FCB007AE58C /* Collection+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		04A885F51D3EB7F700B5127C /* JSTP.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JSTP.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		04A885F81D3EB7F800B5127C /* JSTP.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSTP.h; sourceTree = "<group>"; };
 		04A885FA1D3EB7F800B5127C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		04C45DBE1E508FCB007AE58C /* Collection+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,11 +90,12 @@
 		04A886061D3EB8CB00B5127C /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				04967EC01D7C3967004A322C /* Common.js */,
+				04C45DC01E508FD2007AE58C /* Extensions */,
+				04C45DC11E508FDD007AE58C /* Resources */,
+				04967EC41D7C3967004A322C /* Initializers.swift */,
 				04967EBF1D7C3967004A322C /* Application.swift */,
 				04967EC11D7C3967004A322C /* Connection.swift */,
 				0457A1991D8E9F12002D9863 /* Constants.swift */,
-				04967EC41D7C3967004A322C /* Initializers.swift */,
 				04967EC21D7C3967004A322C /* Delegate.swift */,
 				0457A19B1D8E9F6A002D9863 /* Context.swift */,
 				0457A1971D8E9EF2002D9863 /* Chunks.swift */,
@@ -108,6 +111,22 @@
 				045783251D7F4469005BD2EB /* Socket.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		04C45DC01E508FD2007AE58C /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				04C45DBE1E508FCB007AE58C /* Collection+Extensions.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
+		04C45DC11E508FDD007AE58C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				04967EC01D7C3967004A322C /* Common.js */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -193,6 +212,7 @@
 				04967EC91D7C3967004A322C /* Errors.swift in Sources */,
 				0457A19E1D8E9FC2002D9863 /* Event.swift in Sources */,
 				0457A1981D8E9EF2002D9863 /* Chunks.swift in Sources */,
+				04C45DBF1E508FCB007AE58C /* Collection+Extensions.swift in Sources */,
 				04967EC81D7C3967004A322C /* Delegate.swift in Sources */,
 				04967EC51D7C3967004A322C /* Application.swift in Sources */,
 				0457A19C1D8E9F6A002D9863 /* Context.swift in Sources */,

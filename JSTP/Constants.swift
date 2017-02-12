@@ -3,7 +3,7 @@
 //  JSTP
 //
 //  Created by Andrew Visotskyy on 9/18/16.
-//  Copyright © 2016 Andrew Visotskyy. All rights reserved.
+//  Copyright © 2016-2017 Andrew Visotskyy. All rights reserved.
 //
 
 internal let kPacketDelimiter = "\u{0}"
