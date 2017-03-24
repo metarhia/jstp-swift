@@ -6,6 +6,6 @@
 //  Copyright © 2016-2017 Andrew Visotskyy. All rights reserved.
 //
 
-public typealias Function    = (AnyObject) -> Void
+public typealias Function    = (Values) -> Value
 public typealias Interface   = [String:Function]
 public typealias Application = [String:Interface]

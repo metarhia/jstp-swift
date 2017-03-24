@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0440096A1E85B0E500A3450B /* ConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044009691E85B0E500A3450B /* ConnectionDelegate.swift */; };
+		0440096C1E85B10500A3450B /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0440096B1E85B10500A3450B /* Packet.swift */; };
 		045783261D7F4469005BD2EB /* Socket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045783251D7F4469005BD2EB /* Socket.framework */; };
 		0457A1981D8E9EF2002D9863 /* Chunks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0457A1971D8E9EF2002D9863 /* Chunks.swift */; };
 		0457A19A1D8E9F12002D9863 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0457A1991D8E9F12002D9863 /* Constants.swift */; };
@@ -23,6 +25,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		044009691E85B0E500A3450B /* ConnectionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionDelegate.swift; sourceTree = "<group>"; };
+		0440096B1E85B10500A3450B /* Packet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
 		045783251D7F4469005BD2EB /* Socket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Socket.framework; path = ../Carthage/Build/iOS/Socket.framework; sourceTree = "<group>"; };
 		0457A1971D8E9EF2002D9863 /* Chunks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chunks.swift; sourceTree = "<group>"; };
 		0457A1991D8E9F12002D9863 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -30,7 +34,7 @@
 		0457A19D1D8E9FC2002D9863 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		04967EBF1D7C3967004A322C /* Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		04967EC01D7C3967004A322C /* Common.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Common.js; sourceTree = "<group>"; };
-		04967EC11D7C3967004A322C /* Connection.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; tabWidth = 3; };
+		04967EC11D7C3967004A322C /* Connection.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; tabWidth = 2; };
 		04967EC21D7C3967004A322C /* Delegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Delegate.swift; sourceTree = "<group>"; };
 		04967EC31D7C3967004A322C /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		04967EC41D7C3967004A322C /* Initializers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Initializers.swift; sourceTree = "<group>"; };
@@ -101,6 +105,8 @@
 				0457A1971D8E9EF2002D9863 /* Chunks.swift */,
 				0457A19D1D8E9FC2002D9863 /* Event.swift */,
 				04967EC31D7C3967004A322C /* Errors.swift */,
+				044009691E85B0E500A3450B /* ConnectionDelegate.swift */,
+				0440096B1E85B10500A3450B /* Packet.swift */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -212,6 +218,7 @@
 				04967EC91D7C3967004A322C /* Errors.swift in Sources */,
 				0457A19E1D8E9FC2002D9863 /* Event.swift in Sources */,
 				0457A1981D8E9EF2002D9863 /* Chunks.swift in Sources */,
+				0440096C1E85B10500A3450B /* Packet.swift in Sources */,
 				04C45DBF1E508FCB007AE58C /* Collection+Extensions.swift in Sources */,
 				04967EC81D7C3967004A322C /* Delegate.swift in Sources */,
 				04967EC51D7C3967004A322C /* Application.swift in Sources */,
@@ -219,6 +226,7 @@
 				0457A19A1D8E9F12002D9863 /* Constants.swift in Sources */,
 				04967ECA1D7C3967004A322C /* Initializers.swift in Sources */,
 				04967EC71D7C3967004A322C /* Connection.swift in Sources */,
+				0440096A1E85B0E500A3450B /* ConnectionDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

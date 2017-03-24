@@ -14,7 +14,7 @@ internal class TCPSocketDelegateImplementation : TCPSocketDelegate {
 	
 	fileprivate var connection: Connection!
 	
-	init(_ connection: Connection) {
+	internal init(_ connection: Connection) {
 		self.connection = connection
 	}
 	
@@ -40,4 +40,3 @@ internal class TCPSocketDelegateImplementation : TCPSocketDelegate {
 	}
 	
 }
-

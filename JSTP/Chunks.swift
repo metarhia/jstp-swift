@@ -14,18 +14,13 @@ internal class Chunks {
 	
 	internal func add(_ chunk: Data) -> JSValue? {
 		buffer.append(chunk)
-		
 		guard let source = String(data: buffer, encoding: .utf8), source.hasSuffix(kPacketDelimiter) else {
 			return nil
 		}
-		buffer = Data()
+		invalidate()
 		
-		let chunks = (kChunksFirst + source + kChunksLast).replacingOccurrences(of: kPacketDelimiter, with: ",")
+		let chunks = kChunksFirst + source.replacingOccurrences(of: kPacketDelimiter, with: ",") + kChunksLast
 		let packets = Context.shared.parse(chunks)
-		
-		guard packets.isUndefined == false, packets.isNull == false else {
-			return nil
-		}
 		
 		return packets
 	}

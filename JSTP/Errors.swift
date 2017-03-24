@@ -23,20 +23,22 @@ public class ConnectionError: Error, LocalizedError {
 		self.errorDescription = description ?? ConnectionError.defaultMessages[code]
 	}
 	
+	public convenience init?(with object: Value?) {
+		guard let data = object  as? Values,
+		      let code = data[0] as? Int else {
+			return nil
+		}
+		self.init(code: code, description: data[safe: 1] as? String)
+	}
+	
+	// MARK: -
+	
 	public var code: Code
 	public var type: ErrorType?
 	public var errorDescription: String?
 	
-	internal var asObject: Any {
+	internal var asObject: Value {
 		return ["code": code, "message": localizedDescription]
-	}
-	
-	internal static func withObject(_ object: Any?) -> ConnectionError? {
-		guard let data = object  as? [Any],
-		      let code = data[0] as? Int else {
-			return nil
-		}
-		return ConnectionError(code: code, description: data[safe: 1] as? String)
 	}
 	
 	// MARK: -

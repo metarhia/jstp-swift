@@ -12,41 +12,6 @@ import JavaScriptCore
 	import Socket
 #endif
 
-fileprivate enum Kind: String {
-	case handshake = "handshake"
-	case callback  = "callback"
-	case inspect   = "inspect"
-	case stream    = "stream"
-	case health    = "health"
-	case event     = "event"
-	case state     = "state"
-	case call      = "call"
-	case pong      = "pong"
-	case ping      = "ping"
-}
-
-public protocol ConnectionDelegate {
-	
-	func connection(_ connection: Connection, didReceiveEvent  event: Event)
-	func connection(_ connection: Connection, didFailWithError error: Error)
-	
-	func connectionDidDisconnect(_ connection: Connection)
-	func connectionDidConnect   (_ connection: Connection)
-	
-}
-
-// MARK: Default implementation for protocol methods
-
-public extension ConnectionDelegate {
-	
-	func connection(_ connection: Connection, didReceiveEvent  event: Event  ) {}
-	func connection(_ connection: Connection, didFailWithError error: NSError) {}
-	
-	func connectionDidDisconnect(_ connection: Connection) {}
-	func connectionDidConnect   (_ connection: Connection) {}
-	
-}
-
 open class Connection {
 	
 	open var application: Application
@@ -72,87 +37,88 @@ open class Connection {
 	// MARK: - Input Packets Processing
 	
 	private func onHandshakePacket(_ packet: Packet) {
-		let data  = packet["ok"   ]
+		let data  = packet["ok"   ] as? Values
 		let error = packet["error"]
 		
-		callbacks.removeValue(forKey: 0)?(data, ConnectionError.withObject(error))
+		callbacks.removeValue(forKey: 0)?(data, ConnectionError(with: error))
 	}
 	
 	private func onCallbackPacket(_ packet: Packet) {
-		let header = packet[Kind.callback.rawValue] as! [AnyObject]
+		let header = packet[PacketKind.callback.rawValue] as! Values
 		
 		let id     = header[0      ] as! Int
-		let data   = packet["ok"   ]
+		let data   = packet["ok"   ] as? Values
 		let error  = packet["error"]
 		
-		callbacks.removeValue(forKey: id)?(data, ConnectionError.withObject(error))
+		callbacks.removeValue(forKey: id)?(data, ConnectionError(with: error))
 	}
 	
 	private func onInpectPacket(_ packet: Packet) {
-		let header = packet[Kind.inspect.rawValue] as! [AnyObject]
+		let header = packet[PacketKind.inspect.rawValue] as! Values
 		
 		let id   = header[0] as! Int
 		let name = header[1] as! String
 		
 		guard let interface = application[name] else {
-			return callback(id, error: ConnectionError(code: .interfaceNotFound))
+			return callback(id, error: ConnectionError(type: .interfaceNotFound))
 		}
 		
-		callback(id, result: Array(interface.keys) as AnyObject)
+		callback(id, result: Array(interface.keys))
 	}
 	
 	private func onEventPacket(_ packet: Packet) {
 		var keys = Array(packet.keys) as! [String]
 		
-		let header = packet[Kind.event.rawValue] as! [AnyObject]
+		let header = packet[PacketKind.event.rawValue] as! Values
 		let interface = header[1] as! String
 		
-		keys = keys.filter { $0 != Kind.event.rawValue }
+		keys = keys.filter {
+			$0 != PacketKind.event.rawValue
+		}
 		
 		let event     = keys[0]
-		let arguments = packet[event]!
+		let arguments = packet[event] as! Values
 		
-		delegate?.connection(self, didReceiveEvent: Event(interface, event, arguments))
+		delegate?.connection(self, didReceiveEvent: Event(interface: interface, name: event, arguments: arguments))
 	}
 	
 	private func onCallPacket(_ packet: Packet) {
 		var keys = Array(packet.keys) as! [String]
 		
-		let header = packet[Kind.call.rawValue] as! [AnyObject]
+		let header = packet[PacketKind.call.rawValue] as! Values
 		
 		let id   = header[0] as! Int
 		let name = header[1] as! String
 		
-		keys = keys.filter { $0 != Kind.call.rawValue }
+		keys = keys.filter { $0 != PacketKind.call.rawValue }
 		
 		let interface = application[name]
 		let method    = keys[0]
 		
 		let function  = interface?[method]
-		let args      = packet    [method]
+		let args      = packet    [method] as? Values
 		
-		if interface == nil { return callback(id, error: ConnectionError(code: .interfaceNotFound)) }
-		if function  == nil { return callback(id, error: ConnectionError(code: .methodNotFound   )) }
+		if interface == nil { return callback(id, error: ConnectionError(type: .interfaceNotFound)) }
+		if function  == nil { return callback(id, error: ConnectionError(type: .methodNotFound   )) }
 		
-		function!(args!)
-		callback (id, result: [] as AnyObject)
+		let result = function!(args!)
+		callback(id, result: [result])
 	}
 	
 	private func onPingPacket(_ packet: Packet) {
-		let header = packet[Kind.ping.rawValue] as! [AnyObject]
+		let header = packet[PacketKind.ping.rawValue] as! Values
 		pong(header[0] as! Int)
 	}
 	
 	internal func process(_ packets: JSValue) {
 		let reactions = [
-			Kind.handshake.rawValue : onHandshakePacket,
-			Kind.callback.rawValue  : onCallbackPacket,
-			Kind.inspect.rawValue   : onInpectPacket,
-			Kind.event.rawValue     : onEventPacket,
-			Kind.call.rawValue      : onCallPacket,
-			Kind.ping.rawValue      : onPingPacket
+			PacketKind.handshake.rawValue : onHandshakePacket,
+			PacketKind.callback.rawValue  : onCallbackPacket,
+			PacketKind.inspect.rawValue   : onInpectPacket,
+			PacketKind.event.rawValue     : onEventPacket,
+			PacketKind.call.rawValue      : onCallPacket,
+			PacketKind.ping.rawValue      : onPingPacket
 		]
-		
 		for packet in packets.toArray() {
 			let packet = packet as! Packet
 			let keys   = packet.keys
@@ -171,11 +137,11 @@ open class Connection {
 		self.socket.write(text)
 	}
 	
-	fileprivate func packet(_ kind: Kind, _ args: Any...) -> JSValue {
+	fileprivate func packet(_ PacketKind: PacketKind, _ args: Value...) -> JSValue {
 		self.packetId += 1
 		
-		let arguments = [kind.rawValue] + args
-		let packet    = Context.shared.packet(arguments as [AnyObject])
+		let arguments = [PacketKind.rawValue] + args
+		let packet    = Context.shared.packet(arguments)
 		
 		return packet
 	}
@@ -199,7 +165,7 @@ open class Connection {
 	 *
 	 *  - Parameter packetId: id of original `call` packet
 	 */
-	fileprivate func callback(_ packetId: Int, result: AnyObject) {
+	fileprivate func callback(_ packetId: Int, result: Value) {
 		let packet = self.packet(.callback, packetId, "", "ok", result)
 		self.send(packet)
 	}
@@ -224,7 +190,7 @@ open class Connection {
 	 *  - Parameter parameters: method call parameters
 	 *  - Parameter callback:   function
 	 */
-	open func call(_ interface: String, _ method: String, _ parameters: AnyObject, _ callback: Callback? = nil) {
+	open func call(_ interface: String, _ method: String, _ parameters: Values = [], _ callback: Callback? = nil) {
 		let packetId = self.packetId
 		let packet   = self.packet(.call, packetId, interface, method, parameters)
 		
@@ -240,7 +206,7 @@ open class Connection {
 	 *  - Parameter event:      name of event
 	 *  - Parameter parameters: hash or object, event parameters
 	 */
-	open func event(_ interface: String, _ event: String, _ parameters: AnyObject) {
+	open func event(_ interface: String, _ event: String, _ parameters: Values = []) {
 		let packet = self.packet(.event, packetId, interface, event, parameters)
 		self.send(packet)
 	}
@@ -253,7 +219,7 @@ open class Connection {
 	 *  - Parameter verb:  operation with data inc, dec, let, delete, push, pop, shift, unshift
 	 *  - Parameter value: delta or new value
 	 */
-	open func state(_ path: String, _ verb: String, _ value: AnyObject) {
+	open func state(_ path: String, _ verb: String, _ value: Value) {
 		let packet = self.packet(.state, packetId, path, verb, value)
 		self.send(packet)
 	}
@@ -269,7 +235,7 @@ open class Connection {
 	 */
 	open func handshake(_ name: String, _ login: String, _ password: String, _ callback: Callback? = nil) {
 		let packetId = self.packetId
-		let packet   = self.packet(.handshake, 0, name, login, password)
+		let packet   = self.packet(.handshake, 0, name, "login" , login, password)
 		
 		self.callbacks[packetId] = callback
 		self.send(packet)

@@ -10,7 +10,8 @@ internal let kPacketDelimiter = "\u{0}"
 internal let kChunksFirst     = "["
 internal let kChunksLast      = "]"
 
-public typealias Callback  = (AnyObject?, Error?) -> Void
-public typealias Callbacks = [Int:Callback]
+public typealias Value = Any
+public typealias Values = [Value]
 
-internal typealias Packet = [AnyHashable:AnyObject]
+public typealias Callback  = (Values?, Error?) -> Void
+public typealias Callbacks = [Int:Callback]
