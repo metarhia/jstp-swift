@@ -8,27 +8,35 @@
 
 public class ConnectionError: Error, LocalizedError {
 	
-	public typealias Code = ConnectionErrorCode
+	public typealias Code = Int
+	public typealias ErrorType = ConnectionErrorType
 	
-	public init(code: Code, description: String? = nil) {
+	public init(type: ErrorType, description: String? = nil) {
+		self.type = type
+		self.code = type.rawValue
+		self.errorDescription = description ?? ConnectionError.defaultMessages[type.rawValue]
+	}
+	
+	public init(code: Int, description: String? = nil) {
 		self.code = code
-		self.errorDescription = description ?? ConnectionError.defaultMessages[code.rawValue]
+		self.type = ErrorType(rawValue: code)
+		self.errorDescription = description ?? ConnectionError.defaultMessages[code]
 	}
 	
 	public var code: Code
+	public var type: ErrorType?
 	public var errorDescription: String?
 	
-	internal var asObject: AnyObject {
-		return ["code": code.rawValue, "message": localizedDescription] as AnyObject
+	internal var asObject: Any {
+		return ["code": code, "message": localizedDescription]
 	}
 	
 	internal static func withObject(_ object: Any?) -> ConnectionError? {
 		guard let data = object  as? [Any],
-		      let code = data[0] as? Int,
-		      let errorCode = Code(rawValue: code) else {
+		      let code = data[0] as? Int else {
 			return nil
 		}
-		return ConnectionError(code: errorCode, description: data[safe: 1] as? String)
+		return ConnectionError(code: code, description: data[safe: 1] as? String)
 	}
 	
 	// MARK: -
@@ -46,7 +54,7 @@ public class ConnectionError: Error, LocalizedError {
 	
 }
 
-public enum ConnectionErrorCode: Int {
+public enum ConnectionErrorType: Int {
 	case appNotFound = 10
 	case authFailed = 11
 	case interfaceNotFound = 12
@@ -54,4 +62,5 @@ public enum ConnectionErrorCode: Int {
 	case methodNotFound = 14
 	case notSerever = 15
 	case internalError = 16
+	case invalidSignature = 17
 }
