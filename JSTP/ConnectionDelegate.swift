@@ -20,8 +20,8 @@ public protocol ConnectionDelegate {
 
 public extension ConnectionDelegate {
 	
-	func connection(_ connection: Connection, didReceiveEvent  event: Event  ) {}
-	func connection(_ connection: Connection, didFailWithError error: NSError) {}
+	func connection(_ connection: Connection, didReceiveEvent  event: Event) {}
+	func connection(_ connection: Connection, didFailWithError error: Error) {}
 	
 	func connectionDidDisconnect(_ connection: Connection) {}
 	func connectionDidConnect   (_ connection: Connection) {}
