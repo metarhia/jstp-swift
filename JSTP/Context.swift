@@ -24,7 +24,8 @@ internal class Context {
 		
 		context = JSContext()
 		context.exceptionHandler = { context, exception in
-			print("Error in \(context): \(exception)")
+			let exceptionDescription = String(describing: exception)
+			print(exceptionDescription)
 		}
 		context.evaluateScript(text)
 		
