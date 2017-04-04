@@ -12,6 +12,8 @@
 
 open class Connection {
 	
+	private(set) public var config: Configuration
+	
 	open var application: Application!
 	open var delegate: ConnectionDelegate?
 	
@@ -20,14 +22,33 @@ open class Connection {
 	internal var chunks    : Chunks
 	internal var packetId  : Int
 	
-	init(socket: TCPSocket) {
-		self.delegate = nil
+	public init(config: Configuration, delegate: ConnectionDelegate? = nil) {
 		self.callbacks = Callbacks()
 		self.chunks = Chunks()
-		self.socket = socket
-		self.packetId  = 0
+		self.packetId = 0
+		self.config = config
+		self.delegate = delegate
+		self.socket = Connection.createTransport(with: config)
 		self.application = Application(withConnection: self)
 		self.socket.delegate = TCPSocketDelegateImplementation(self)
+	}
+	
+	private static func createTransport(with config: Configuration) -> TCPSocket {
+		var settings = Settings()
+		if config.secure == false {
+			settings[SocketSecurityLevel] = SocketSecurityLevelNone
+		}
+		return TCPSocket (host: config.host, port: config.port, settings: settings)
+	}
+	
+	// MARK: -
+	
+	open func connect() {
+		self.socket.connect()
+	}
+	
+	open func disconnect() {
+		self.socket.disconnect()
 	}
 	
 	// MARK: - Input Packets Processing
