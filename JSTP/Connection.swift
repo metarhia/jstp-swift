@@ -37,7 +37,8 @@ open class Connection {
 	private func onHandshakePacket(_ packet: Packet) {
 		guard let payloadIdentifier = packet.payloadIdentifier,
 		      let payload = packet.payload else {
-			return
+			let error = ConnectionError(type: .invalidSignature)
+			return self.callback(packet.index, error: error)
 		}
 		let callback = callbacks.removeValue(forKey: packet.index)
 		guard payloadIdentifier != "error" else {
@@ -51,7 +52,8 @@ open class Connection {
 	private func onCallbackPacket(_ packet: Packet) {
 		guard let payloadIdentifier = packet.payloadIdentifier,
 		      let payload = packet.payload as? Values else {
-			return
+			let error = ConnectionError(type: .invalidSignature)
+			return self.callback(packet.index, error: error)
 		}
 		let callback = callbacks.removeValue(forKey: packet.index)
 		guard payloadIdentifier != "error" else {
@@ -64,7 +66,8 @@ open class Connection {
 	
 	private func onInpectPacket(_ packet: Packet) {
 		guard let resourceIdentifier = packet.resourceIdentifier else {
-			return
+			let error = ConnectionError(type: .invalidSignature)
+			return self.callback(packet.index, error: error)
 		}
 		guard let interface = self.application[resourceIdentifier] else {
 			let error = ConnectionError(type: .interfaceNotFound)
@@ -78,7 +81,8 @@ open class Connection {
 		guard let resourceIdentifier = packet.resourceIdentifier,
 		      let payloadIdentifier = packet.payloadIdentifier,
 		      let payload = packet.payload as? Values else {
-			return
+			let error = ConnectionError(type: .invalidSignature)
+			return self.callback(packet.index, error: error)
 		}
 		let event = Event(interface: resourceIdentifier, name: payloadIdentifier, arguments: payload)
 		delegate?.connection(self, didReceiveEvent: event)
@@ -88,7 +92,8 @@ open class Connection {
 		guard let resourceIdentifier = packet.resourceIdentifier,
 		      let payloadIdentifier = packet.payloadIdentifier,
 		      let payload = packet.payload as? Values else {
-			return
+			let error = ConnectionError(type: .invalidSignature)
+			return self.callback(packet.index, error: error)
 		}
 		guard let interface = self.application[resourceIdentifier] else {
 			let error = ConnectionError(type: .interfaceNotFound)
