@@ -12,7 +12,7 @@
 
 open class Connection {
 	
-	open var application: Application
+	open var application: Application!
 	open var delegate: ConnectionDelegate?
 	
 	internal var callbacks : Callbacks
@@ -21,14 +21,12 @@ open class Connection {
 	internal var packetId  : Int
 	
 	init(socket: TCPSocket) {
-		self.application = Application()
-		self.delegate    = nil
-		
+		self.delegate = nil
 		self.callbacks = Callbacks()
-		self.chunks    = Chunks()
-		self.socket    = socket
+		self.chunks = Chunks()
+		self.socket = socket
 		self.packetId  = 0
-		
+		self.application = Application(withConnection: self)
 		self.socket.delegate = TCPSocketDelegateImplementation(self)
 	}
 	
@@ -97,14 +95,14 @@ open class Connection {
 		}
 		guard let interface = self.application[resourceIdentifier] else {
 			let error = ConnectionError(type: .interfaceNotFound)
-			return callback(packet.index, error: error)
+			return self.callback(packet.index, error: error)
 		}
 		guard let method = interface[payloadIdentifier] else {
 			let error = ConnectionError(type: .methodNotFound)
-			return callback(packet.index, error: error)
+			return self.callback(packet.index, error: error)
 		}
-		let result = method(payload)
-		callback(packet.index, result: [result])
+		let callback = application.callback(withPacket: packet)
+		method(callback, payload)
 	}
 	
 	private func onPingPacket(_ packet: Packet) {
@@ -158,7 +156,7 @@ open class Connection {
 	 *
 	 *  - Parameter packetId: id of original `call` packet
 	 */
-	private func callback(_ packetId: Int, result: Values) {
+	internal func callback(_ packetId: Int, result: Values) {
 		let packet = self.createPacket(kind: .callback, payloadIdentifier: "ok", payload: result)
 		packet.index = packetId
 		self.send(packet)
@@ -170,7 +168,7 @@ open class Connection {
 	 *
 	 *  - Parameter packetId: id of original `call` packet
 	 */
-	private func callback(_ packetId: Int, error: ConnectionError) {
+	internal func callback(_ packetId: Int, error: ConnectionError) {
 		let packet = self.createPacket(kind: .callback, payloadIdentifier: "error", payload: error.asObject)
 		packet.index = packetId
 		self.send(packet)
