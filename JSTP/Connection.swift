@@ -6,8 +6,6 @@
 //  Copyright © 2016-2017 Andrew Visotskyy. All rights reserved.
 //
 
-import JavaScriptCore
-
 #if CARTHAGE
 	import Socket
 #endif
@@ -37,112 +35,101 @@ open class Connection {
 	// MARK: - Input Packets Processing
 	
 	private func onHandshakePacket(_ packet: Packet) {
-		let data  = packet["ok"   ] as? Values
-		let error = packet["error"]
-		
-		callbacks.removeValue(forKey: 0)?(data, ConnectionError(with: error))
+		guard let payloadIdentifier = packet.payloadIdentifier,
+		      let payload = packet.payload else {
+			return
+		}
+		let callback = callbacks.removeValue(forKey: packet.index)
+		guard payloadIdentifier != "error" else {
+			let error = ConnectionError(with: payload)
+			callback?(nil, error)
+			return
+		}
+		callback?([payload], nil)
 	}
 	
 	private func onCallbackPacket(_ packet: Packet) {
-		let header = packet[PacketKind.callback.rawValue] as! Values
-		
-		let id     = header[0      ] as! Int
-		let data   = packet["ok"   ] as? Values
-		let error  = packet["error"]
-		
-		callbacks.removeValue(forKey: id)?(data, ConnectionError(with: error))
+		guard let payloadIdentifier = packet.payloadIdentifier,
+		      let payload = packet.payload as? Values else {
+			return
+		}
+		let callback = callbacks.removeValue(forKey: packet.index)
+		guard payloadIdentifier != "error" else {
+			let error = ConnectionError(with: payload)
+			callback?(nil, error)
+			return
+		}
+		callback?(payload, nil)
 	}
 	
 	private func onInpectPacket(_ packet: Packet) {
-		let header = packet[PacketKind.inspect.rawValue] as! Values
-		
-		let id   = header[0] as! Int
-		let name = header[1] as! String
-		
-		guard let interface = application[name] else {
-			return callback(id, error: ConnectionError(type: .interfaceNotFound))
+		guard let resourceIdentifier = packet.resourceIdentifier else {
+			return
 		}
-		
-		callback(id, result: Array(interface.keys))
+		guard let interface = self.application[resourceIdentifier] else {
+			let error = ConnectionError(type: .interfaceNotFound)
+			return callback(packet.index, error: error)
+		}
+		let methods = Array(interface.keys)
+		callback(packet.index, result: methods)
 	}
 	
 	private func onEventPacket(_ packet: Packet) {
-		var keys = Array(packet.keys) as! [String]
-		
-		let header = packet[PacketKind.event.rawValue] as! Values
-		let interface = header[1] as! String
-		
-		keys = keys.filter {
-			$0 != PacketKind.event.rawValue
+		guard let resourceIdentifier = packet.resourceIdentifier,
+		      let payloadIdentifier = packet.payloadIdentifier,
+		      let payload = packet.payload as? Values else {
+			return
 		}
-		
-		let event     = keys[0]
-		let arguments = packet[event] as! Values
-		
-		delegate?.connection(self, didReceiveEvent: Event(interface: interface, name: event, arguments: arguments))
+		let event = Event(interface: resourceIdentifier, name: payloadIdentifier, arguments: payload)
+		delegate?.connection(self, didReceiveEvent: event)
 	}
 	
 	private func onCallPacket(_ packet: Packet) {
-		var keys = Array(packet.keys) as! [String]
-		
-		let header = packet[PacketKind.call.rawValue] as! Values
-		
-		let id   = header[0] as! Int
-		let name = header[1] as! String
-		
-		keys = keys.filter { $0 != PacketKind.call.rawValue }
-		
-		let interface = application[name]
-		let method    = keys[0]
-		
-		let function  = interface?[method]
-		let args      = packet    [method] as? Values
-		
-		if interface == nil { return callback(id, error: ConnectionError(type: .interfaceNotFound)) }
-		if function  == nil { return callback(id, error: ConnectionError(type: .methodNotFound   )) }
-		
-		let result = function!(args!)
-		callback(id, result: [result])
+		guard let resourceIdentifier = packet.resourceIdentifier,
+		      let payloadIdentifier = packet.payloadIdentifier,
+		      let payload = packet.payload as? Values else {
+			return
+		}
+		guard let interface = self.application[resourceIdentifier] else {
+			let error = ConnectionError(type: .interfaceNotFound)
+			return callback(packet.index, error: error)
+		}
+		guard let method = interface[payloadIdentifier] else {
+			let error = ConnectionError(type: .methodNotFound)
+			return callback(packet.index, error: error)
+		}
+		let result = method(payload)
+		callback(packet.index, result: [result])
 	}
 	
 	private func onPingPacket(_ packet: Packet) {
-		let header = packet[PacketKind.ping.rawValue] as! Values
-		pong(header[0] as! Int)
+		self.pong(packet.index)
 	}
 	
-	internal func process(_ packets: JSValue) {
+	internal func process(_ packets: [Packet]) {
 		let reactions = [
-			PacketKind.handshake.rawValue : onHandshakePacket,
-			PacketKind.callback.rawValue  : onCallbackPacket,
-			PacketKind.inspect.rawValue   : onInpectPacket,
-			PacketKind.event.rawValue     : onEventPacket,
-			PacketKind.call.rawValue      : onCallPacket,
-			PacketKind.ping.rawValue      : onPingPacket
+			Packet.Kind.handshake: onHandshakePacket,
+			Packet.Kind.callback: onCallbackPacket,
+			Packet.Kind.inspect: onInpectPacket,
+			Packet.Kind.event: onEventPacket,
+			Packet.Kind.call: onCallPacket,
+			Packet.Kind.ping: onPingPacket
 		]
-		for packet in packets.toArray() {
-			let packet = packet as! Packet
-			let keys   = packet.keys
-			for case let key as String in keys  {
-				reactions[key]?(packet)
-			}
+		for packet in packets {
+			reactions[packet.kind]?(packet)
 		}
 	}
 	
 	// MARK: -
 	
-	fileprivate func send(_ data: JSValue) {
-		let context = Context.shared
-		let text    = context.stringify(data) + kPacketDelimiter
-		
+	private func send(_ packet: Packet) {
+		let text = Context.shared.stringify(packet) + kPacketDelimiter
 		self.socket.write(text)
 	}
 	
-	fileprivate func packet(_ PacketKind: PacketKind, _ args: Value...) -> JSValue {
-		self.packetId += 1
-		
-		let arguments = [PacketKind.rawValue] + args
-		let packet    = Context.shared.packet(arguments)
-		
+	private func createPacket(kind: Packet.Kind, resourceIdentifier: String? = nil, payloadIdentifier: String? = nil, payload: Value? = nil) -> Packet {
+		let packet = Packet(withIndex: packetId, kind: kind, resourceIdentifier: resourceIdentifier, payloadIdentifier: payloadIdentifier, payload: payload)
+		self.packetId = packetId.advanced(by: 1)
 		return packet
 	}
 	
@@ -154,8 +141,9 @@ open class Connection {
 	 *
 	 *  - Parameter packetId: id of original `ping` packet
 	 */
-	fileprivate func pong(_ packetId: Int) {
-		let packet = self.packet(.pong, packetId)
+	private func pong(_ packetId: Int) {
+		let packet = self.createPacket(kind: .pong)
+		packet.index = packetId
 		self.send(packet)
 	}
 	
@@ -165,8 +153,9 @@ open class Connection {
 	 *
 	 *  - Parameter packetId: id of original `call` packet
 	 */
-	fileprivate func callback(_ packetId: Int, result: Value) {
-		let packet = self.packet(.callback, packetId, "", "ok", result)
+	private func callback(_ packetId: Int, result: Values) {
+		let packet = self.createPacket(kind: .callback, payloadIdentifier: "ok", payload: result)
+		packet.index = packetId
 		self.send(packet)
 	}
 	
@@ -176,8 +165,9 @@ open class Connection {
 	 *
 	 *  - Parameter packetId: id of original `call` packet
 	 */
-	fileprivate func callback(_ packetId: Int, error: ConnectionError) {
-		let packet = self.packet(.callback, packetId, "", "error", error.asObject)
+	private func callback(_ packetId: Int, error: ConnectionError) {
+		let packet = self.createPacket(kind: .callback, payloadIdentifier: "error", payload: error.asObject)
+		packet.index = packetId
 		self.send(packet)
 	}
 	
@@ -191,10 +181,8 @@ open class Connection {
 	 *  - Parameter callback:   function
 	 */
 	open func call(_ interface: String, _ method: String, _ parameters: Values = [], _ callback: Callback? = nil) {
-		let packetId = self.packetId
-		let packet   = self.packet(.call, packetId, interface, method, parameters)
-		
-		self.callbacks[packetId] = callback
+		let packet = self.createPacket(kind: .call, resourceIdentifier: interface, payloadIdentifier: method, payload: parameters)
+		self.callbacks[packet.index] = callback
 		self.send(packet)
 	}
 	
@@ -207,7 +195,7 @@ open class Connection {
 	 *  - Parameter parameters: hash or object, event parameters
 	 */
 	open func event(_ interface: String, _ event: String, _ parameters: Values = []) {
-		let packet = self.packet(.event, packetId, interface, event, parameters)
+		let packet = self.createPacket(kind: .event, resourceIdentifier: interface, payloadIdentifier: event, payload: parameters)
 		self.send(packet)
 	}
 	
@@ -220,7 +208,7 @@ open class Connection {
 	 *  - Parameter value: delta or new value
 	 */
 	open func state(_ path: String, _ verb: String, _ value: Value) {
-		let packet = self.packet(.state, packetId, path, verb, value)
+		let packet = self.createPacket(kind: .state, resourceIdentifier: path, payloadIdentifier: verb, payload: value)
 		self.send(packet)
 	}
 	
@@ -234,10 +222,8 @@ open class Connection {
 	 *  - Parameter callback: function callback
 	 */
 	open func handshake(_ name: String, _ login: String, _ password: String, _ callback: Callback? = nil) {
-		let packetId = self.packetId
-		let packet   = self.packet(.handshake, 0, name, "login" , login, password)
-		
-		self.callbacks[packetId] = callback
+		let packet = self.createPacket(kind: .handshake, resourceIdentifier: name, payloadIdentifier: "login", payload: [login, password])
+		self.callbacks[packet.index] = callback
 		self.send(packet)
 	}
 	
@@ -249,10 +235,8 @@ open class Connection {
 	 *  - Parameter callback: function callback
 	 */
 	open func handshake(_ name: String, _ callback: Callback? = nil) {
-		let packetId = self.packetId
-		let packet   = self.packet(.handshake, 0, name)
-		
-		self.callbacks[packetId] = callback
+		let packet = self.createPacket(kind: .handshake, resourceIdentifier: name)
+		self.callbacks[packet.index] = callback
 		self.send(packet)
 	}
 

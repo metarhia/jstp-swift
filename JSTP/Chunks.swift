@@ -6,22 +6,18 @@
 //  Copyright © 2016-2017 Andrew Visotskyy. All rights reserved.
 //
 
-import JavaScriptCore
-
 internal class Chunks {
 	
 	private var buffer: Data = Data()
 	
-	internal func add(_ chunk: Data) -> JSValue? {
+	internal func add(_ chunk: Data) -> [Packet] {
 		buffer.append(chunk)
 		guard let source = String(data: buffer, encoding: .utf8), source.hasSuffix(kPacketDelimiter) else {
-			return nil
+			return []
 		}
 		invalidate()
-		
 		let chunks = kChunksFirst + source.replacingOccurrences(of: kPacketDelimiter, with: ",") + kChunksLast
 		let packets = Context.shared.parse(chunks)
-		
 		return packets
 	}
 	

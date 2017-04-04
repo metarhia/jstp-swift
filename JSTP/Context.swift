@@ -16,7 +16,7 @@ internal class Context {
 	private let packet: JSValue!
 	private let stringify: JSValue!
 	
-	internal init() {
+	private init() {
 		let bundle = Bundle(for: Context.self)
 		
 		let path = bundle.path(forResource: "Common", ofType: "js")!
@@ -34,17 +34,19 @@ internal class Context {
 	
 	// MARK: Methods
 	
-	internal func stringify(_ argument: Value) -> String {
-		return stringify.call(withArguments: [argument]).toString()
+	internal func stringify(_ packet: Packet) -> String {
+		let packetValue = convertToValue(packet)
+		return stringify.call(withArguments: [packetValue]).toString()
 	}
 	
-	internal func packet(_ arguments: Values) -> JSValue {
-		return packet.construct(withArguments: arguments)
+	internal func parse(_ string: String) -> [Packet] {
+		let packets = context.evaluateScript(string)
+		return packets?.toArray().flatMap(Packet.init) ?? []
 	}
 	
-	internal func parse(_ string: String) -> JSValue {
-		return context.evaluateScript(string)
+	private func convertToValue(_ packet: Packet) -> JSValue {
+		let args = [packet.kind.rawValue, packet.index, packet.resourceIdentifier as Value, packet.payloadIdentifier as Value, packet.payload as Value] as Values
+		return self.packet.construct(withArguments: args)
 	}
 	
 }
-

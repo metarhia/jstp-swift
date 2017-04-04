@@ -33,7 +33,6 @@ common.serializer = function(types) {
 
 	function serialize(object) {
 		var type;
-
 		if (object instanceof Array) {
 			type = 'array';
 		} else if (object instanceof Date) {
@@ -43,7 +42,6 @@ common.serializer = function(types) {
 		} else {
 			type = typeof object;
 		}
-
 		return serialize.types[type](object);
 	}
 
@@ -78,7 +76,7 @@ common.serializer = function(types) {
 			return '{' + array.join(',') + '}';
 		}
 	}, types);
-
+	
 	return serialize;
 };
 
@@ -92,9 +90,8 @@ var stringify = common.serializer({
 });
 
 function Packet(kind, id, iface, verb, args) {
-	this[kind] = [id];
-	this[verb] = args;
-	if (iface) {
-		this[kind].push(iface);
+	this[kind] = iface ? [id, iface] : [id]
+	if (verb) {
+		this[verb] = args;
 	}
 }

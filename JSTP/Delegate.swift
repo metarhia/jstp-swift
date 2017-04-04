@@ -12,7 +12,7 @@
 
 internal class TCPSocketDelegateImplementation : TCPSocketDelegate {
 	
-	fileprivate var connection: Connection!
+	private var connection: Connection!
 	
 	internal init(_ connection: Connection) {
 		self.connection = connection
@@ -33,9 +33,7 @@ internal class TCPSocketDelegateImplementation : TCPSocketDelegate {
 	}
 	
 	internal func socket(_ socket: TCPSocket, didReceiveData data: Data) {
-		guard let packets = connection.chunks.add(data) else {
-			return
-		}
+		let packets = connection.chunks.add(data)
 		connection.process(packets)
 	}
 	
