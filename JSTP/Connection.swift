@@ -18,7 +18,7 @@ open class Connection {
 	public let delegate: ConnectionDelegate
 	
 	internal var callbacks: Callbacks
-	internal var socket: TCPSocket
+	internal var socket: TCPSocket!
 	internal var chunks: Chunks
 	internal var packetId: Int
 	
@@ -28,17 +28,15 @@ open class Connection {
 		self.packetId = 0
 		self.config = config
 		self.delegate = delegate
-		self.socket = Connection.createTransport(with: config)
 		self.application = Application()
-		self.socket.delegate = TCPSocketDelegateImplementation(self)
+		self.socket = createTransport(with: config)
 	}
 	
-	private static func createTransport(with config: Configuration) -> TCPSocket {
-		var settings = Settings()
-		if config.secure == false {
-			settings[SocketSecurityLevel] = SocketSecurityLevelNone
-		}
-		return TCPSocket (host: config.host, port: config.port, settings: settings)
+	private func createTransport(with config: Configuration) -> TCPSocket {
+		let delegate = TCPSocketDelegateImplementation(self)
+		let security = config.secure ? Security.negitiated(validates: true) : Security.none
+		let configuration = Socket.Config(host: config.host, port: config.port, security: security)
+		return TCPSocket(with: configuration, delegate: delegate)
 	}
 	
 	// MARK: -
