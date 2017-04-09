@@ -29,7 +29,7 @@ open class Connection {
 		self.config = config
 		self.delegate = delegate
 		self.socket = Connection.createTransport(with: config)
-		self.application = Application(withConnection: self)
+		self.application = Application()
 		self.socket.delegate = TCPSocketDelegateImplementation(self)
 	}
 	
@@ -122,7 +122,7 @@ open class Connection {
 			let error = ConnectionError(type: .methodNotFound)
 			return self.callback(packet.index, error: error)
 		}
-		let callback = application.callback(withPacket: packet)
+		let callback = FunctionCallback(connection: self, packet: packet)
 		method(callback, payload)
 	}
 	

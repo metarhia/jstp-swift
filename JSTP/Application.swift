@@ -8,20 +8,20 @@
 
 public class FunctionCallback {
 	
-	private let application: Application
+	private let connection: Connection
 	private let packet: Packet
 	
-	internal init(withApplication application: Application, packet: Packet) {
-		self.application = application
+	internal init(connection: Connection, packet: Packet) {
+		self.connection = connection
 		self.packet = packet
 	}
 	
 	public func invoke() {
-		application.connection.callback(packet.index, result: [])
+		connection.callback(packet.index, result: [])
 	}
 	
 	public func invoke(with value: Value) {
-		application.connection.callback(packet.index, result: [value])
+		connection.callback(packet.index, result: [value])
 	}
 	
 }
@@ -31,16 +31,10 @@ public class Application {
 	public typealias Interface = [String:Function]
 	public typealias Function = (FunctionCallback, Values) -> Void
 	
-	fileprivate let connection: Connection
 	fileprivate var application: [String:Interface]
 	
-	internal init(withConnection connection: Connection) {
-		self.connection = connection
+	internal init() {
 		self.application = [:]
-	}
-	
-	internal func callback(withPacket packet: Packet) -> FunctionCallback {
-		return FunctionCallback(withApplication: self, packet: packet)
 	}
 	
 }
