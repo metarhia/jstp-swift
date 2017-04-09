@@ -21,15 +21,15 @@ internal class TCPSocketDelegateImplementation : TCPSocketDelegate {
 	// MARK: Socket Delegate Methods
 	
 	internal func socketDidConnect(_ socket: TCPSocket) {
-		self.connection.delegate?.connectionDidConnect(self.connection)
+		self.connection.delegate.connectionDidConnect(self.connection)
 	}
 	
 	internal func socketDidDisconnect(_ socket: TCPSocket) {
-		connection.delegate?.connectionDidDisconnect(connection)
+		connection.delegate.connectionDidDisconnect(connection)
 	}
 	
 	internal func socket(_ socket: TCPSocket, didFailWithError error: NSError) {
-		connection.delegate?.connection(connection, didFailWithError: error)
+		connection.delegate.connection(connection, didFailWithError: error)
 	}
 	
 	internal func socket(_ socket: TCPSocket, didReceiveData data: Data) {

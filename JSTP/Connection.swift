@@ -14,15 +14,15 @@ open class Connection {
 	
 	private(set) public var config: Configuration
 	
-	open var application: Application!
-	open var delegate: ConnectionDelegate?
+	public let application: Application
+	public let delegate: ConnectionDelegate
 	
 	internal var callbacks : Callbacks
 	internal var socket    : TCPSocket
 	internal var chunks    : Chunks
 	internal var packetId  : Int
 	
-	public init(config: Configuration, delegate: ConnectionDelegate? = nil) {
+	public init(config: Configuration, delegate: ConnectionDelegate) {
 		self.callbacks = Callbacks()
 		self.chunks = Chunks()
 		self.packetId = 0
@@ -104,7 +104,7 @@ open class Connection {
 			return self.callback(packet.index, error: error)
 		}
 		let event = Event(interface: resourceIdentifier, name: payloadIdentifier, arguments: payload)
-		delegate?.connection(self, didReceiveEvent: event)
+		delegate.connection(self, didReceiveEvent: event)
 	}
 	
 	private func onCallPacket(_ packet: Packet) {
