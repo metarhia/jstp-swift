@@ -17,10 +17,10 @@ open class Connection {
 	public let application: Application
 	public let delegate: ConnectionDelegate
 	
-	internal var callbacks : Callbacks
-	internal var socket    : TCPSocket
-	internal var chunks    : Chunks
-	internal var packetId  : Int
+	internal var callbacks: Callbacks
+	internal var socket: TCPSocket
+	internal var chunks: Chunks
+	internal var packetId: Int
 	
 	public init(config: Configuration, delegate: ConnectionDelegate) {
 		self.callbacks = Callbacks()
