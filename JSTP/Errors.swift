@@ -6,7 +6,7 @@
 //  Copyright © 2016-2017 Andrew Visotskyy. All rights reserved.
 //
 
-public class ConnectionError: Error, LocalizedError {
+public class ConnectionError: Error, LocalizedError, CustomNSError, CustomStringConvertible {
 	
 	public typealias Code = Int
 	public typealias ErrorType = ConnectionErrorType
@@ -33,9 +33,9 @@ public class ConnectionError: Error, LocalizedError {
 	
 	// MARK: -
 	
-	public var code: Code
-	public var type: ErrorType?
-	public var errorDescription: String?
+	public let code: Code
+	public let type: ErrorType?
+	public let errorDescription: String?
 	
 	internal var asObject: Value {
 		return ["code": code, "message": localizedDescription]
@@ -53,6 +53,22 @@ public class ConnectionError: Error, LocalizedError {
 		16: "Internal API error",
 		17: "Invalid signature"
 	]
+	
+	// MARK: - CustomNSError
+	
+	public static var errorDomain: String {
+		return "com.gagnant.jstp"
+	}
+	
+	public var errorCode: Int {
+		return self.code
+	}
+	
+	// MARK: - CustomStringConvertible
+	
+	public var description: String {
+		return localizedDescription
+	}
 	
 }
 
