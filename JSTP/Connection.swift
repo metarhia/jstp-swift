@@ -49,6 +49,18 @@ open class Connection {
 		self.socket.disconnect()
 	}
 	
+	open func reconnect() {
+		self.reconnect(config: config)
+	}
+	
+	open func reconnect(config: Configuration) {
+		self.callbacks = Callbacks()
+		self.chunks = Chunks()
+		self.packetId  = 0
+		self.socket = createTransport(with: config)
+		self.socket.connect()
+	}
+
 	// MARK: - Input Packets Processing
 	
 	private func onHandshakePacket(_ packet: Packet) {
