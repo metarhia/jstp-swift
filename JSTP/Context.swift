@@ -17,9 +17,7 @@ internal class Context {
 	private let stringify: JSValue!
 	
 	private init() {
-		let bundle = Bundle(for: Context.self)
-		
-		let path = bundle.path(forResource: "Common", ofType: "js")!
+		let path = Bundle(for: Context.self).path(forResource: "Common", ofType: "js")!
 		let text = try? String(contentsOfFile: path)
 		
 		context = JSContext()

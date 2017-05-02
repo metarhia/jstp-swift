@@ -55,8 +55,9 @@ internal class Packet {
 		      let index = header[safe: 0] as? Int else {
 			return nil
 		}
-		let payload = packet.first { $0.key != kind.rawValue }
-		
+		let payload = packet.first {
+			$0.key != kind.rawValue
+		}
 		self.index = index
 		self.kind = kind
 		self.resourceIdentifier = header[safe: 1] as? String

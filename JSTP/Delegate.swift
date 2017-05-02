@@ -10,7 +10,7 @@
 	import Socket
 #endif
 
-internal class TCPSocketDelegateImplementation : TCPSocketDelegate {
+internal class TCPSocketDelegateImplementation: TCPSocketDelegate {
 	
 	private var connection: Connection!
 	
@@ -33,7 +33,7 @@ internal class TCPSocketDelegateImplementation : TCPSocketDelegate {
 	}
 	
 	internal func socket(_ socket: TCPSocket, didReceiveData data: Data) {
-		let packets = connection.chunks.add(data)
+		let packets = connection.chunks.add(chunk: data)
 		connection.process(packets)
 	}
 	

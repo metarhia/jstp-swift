@@ -10,19 +10,26 @@ internal class Chunks {
 	
 	private var buffer: Data = Data()
 	
-	internal func add(_ chunk: Data) -> [Packet] {
+	internal func add(chunk: Data) -> [Packet] {
 		buffer.append(chunk)
-		guard let source = String(data: buffer, encoding: .utf8), source.hasSuffix(kPacketDelimiter) else {
+		guard let source = Chunks.convert(data: chunk) else {
 			return []
 		}
 		invalidate()
-		let chunks = kChunksFirst + source.replacingOccurrences(of: kPacketDelimiter, with: ",") + kChunksLast
-		let packets = Context.shared.parse(chunks)
-		return packets
+		return Context.shared.parse(source)
 	}
 	
 	internal func invalidate() {
 		buffer = Data()
+	}
+	
+	// MARK: -
+	
+	private static func convert(data: Data) -> String? {
+		guard let source = String(data: data, encoding: .utf8), source.hasSuffix(kPacketDelimiter) else {
+			return nil
+		}
+		return kChunksFirst + source.replacingOccurrences(of: kPacketDelimiter, with: ",") + kChunksLast
 	}
 	
 }
