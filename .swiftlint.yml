@@ -1,0 +1,41 @@
+###
+# Swiftlint configuration file.
+# Latest version supported: 0.12.0
+# Any newer version hasn't been checked yet and might not follow the style guide.
+#
+# To update your local version of this file, execute the following command line:
+# curl https://raw.githubusercontent.com/kevindelord/swift-style-guide/master/.swiftlint.yml > .swiftlint.yml
+###
+
+disabled_rules: # rule identifiers to exclude from running
+  - nesting # func nesting max 1 level
+
+excluded:
+  - Carthage
+
+cyclomatic_complexity:
+  - 20 #warning
+  - 35 #error
+
+file_length:
+  - 600 #warning
+  - 800 #error
+
+function_body_length:
+  - 40 #warning
+  - 80 #error
+
+line_length:
+  - 300 #warning
+  - 350 #error
+
+type_body_length:
+  - 400 #warning
+  - 500 #error
+
+opt_in_rules:
+  - missing_docs
+  - force_unwrapping
+  - conditional_returns_on_newline
+  - private_outlet
+  - vertical_whitespace
