@@ -12,10 +12,10 @@
 
 open class Connection {
 
-	private(set) public var config: Configuration
+	private(set) public weak var delegate: ConnectionDelegate?
 
-	public let application: Application
-	public let delegate: ConnectionDelegate
+	private(set) public var config: Configuration
+	private(set) public var application: Application
 
 	internal var callbacks: Callbacks
 	internal var socket: TCPSocket!
@@ -114,7 +114,7 @@ open class Connection {
 			return self.callback(packet.index, error: error)
 		}
 		let event = Event(interface: resourceIdentifier, name: payloadIdentifier, arguments: payload)
-		delegate.connection(self, didReceiveEvent: event)
+		delegate?.connection(self, didReceiveEvent: event)
 	}
 
 	private func onCallPacket(_ packet: Packet) {

@@ -6,7 +6,7 @@
 //  Copyright © 2017 Andrew Visotskyy. All rights reserved.
 //
 
-public protocol ConnectionDelegate {
+public protocol ConnectionDelegate: class {
 
 	func connection(_ connection: Connection, didReceiveEvent event: Event)
 
