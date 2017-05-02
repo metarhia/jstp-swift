@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		042BA29C1EB8B4D900FAF733 /* Cartfile in Resources */ = {isa = PBXBuildFile; fileRef = 042BA29B1EB8B4D900FAF733 /* Cartfile */; };
+		042BA29E1EB8B5C700FAF733 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 042BA29D1EB8B5C700FAF733 /* .gitignore */; };
+		042BA2A01EB8B5CE00FAF733 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 042BA29F1EB8B5CE00FAF733 /* .swiftlint.yml */; };
 		0440096A1E85B0E500A3450B /* ConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044009691E85B0E500A3450B /* ConnectionDelegate.swift */; };
 		0440096C1E85B10500A3450B /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0440096B1E85B10500A3450B /* Packet.swift */; };
 		045783261D7F4469005BD2EB /* Socket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045783251D7F4469005BD2EB /* Socket.framework */; };
@@ -25,6 +28,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		042BA29B1EB8B4D900FAF733 /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
+		042BA29D1EB8B5C700FAF733 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		042BA29F1EB8B5CE00FAF733 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		044009691E85B0E500A3450B /* ConnectionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionDelegate.swift; sourceTree = "<group>"; };
 		0440096B1E85B10500A3450B /* Packet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
 		045783251D7F4469005BD2EB /* Socket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Socket.framework; path = ../Carthage/Build/iOS/Socket.framework; sourceTree = "<group>"; };
@@ -56,46 +62,9 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		04A885EB1D3EB7F700B5127C = {
+		048448ED1EB8BB8000F4B4DD /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				04A885F71D3EB7F800B5127C /* JSTP */,
-				04A885F61D3EB7F700B5127C /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		04A885F61D3EB7F700B5127C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				04A885F51D3EB7F700B5127C /* JSTP.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		04A885F71D3EB7F800B5127C /* JSTP */ = {
-			isa = PBXGroup;
-			children = (
-				04A886051D3EB8B600B5127C /* Supporting Files */,
-				04A886071D3EB9A400B5127C /* Frameworks */,
-				04A886061D3EB8CB00B5127C /* Sources */,
-			);
-			path = JSTP;
-			sourceTree = "<group>";
-		};
-		04A886051D3EB8B600B5127C /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				04A885FA1D3EB7F800B5127C /* Info.plist */,
-				04A885F81D3EB7F800B5127C /* JSTP.h */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		04A886061D3EB8CB00B5127C /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				04C45DC01E508FD2007AE58C /* Extensions */,
-				04C45DC11E508FDD007AE58C /* Resources */,
 				04967EBF1D7C3967004A322C /* Application.swift */,
 				04967EC11D7C3967004A322C /* Connection.swift */,
 				04AEADE91E94096F00334142 /* Configuration.swift */,
@@ -108,7 +77,55 @@
 				044009691E85B0E500A3450B /* ConnectionDelegate.swift */,
 				0440096B1E85B10500A3450B /* Packet.swift */,
 			);
-			name = Sources;
+			path = Core;
+			sourceTree = "<group>";
+		};
+		04A885EB1D3EB7F700B5127C = {
+			isa = PBXGroup;
+			children = (
+				04A885F71D3EB7F800B5127C /* Sources */,
+				04A886071D3EB9A400B5127C /* Frameworks */,
+				04A885F61D3EB7F700B5127C /* Products */,
+				042BA29B1EB8B4D900FAF733 /* Cartfile */,
+				042BA29D1EB8B5C700FAF733 /* .gitignore */,
+				042BA29F1EB8B5CE00FAF733 /* .swiftlint.yml */,
+			);
+			sourceTree = "<group>";
+		};
+		04A885F61D3EB7F700B5127C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				04A885F51D3EB7F700B5127C /* JSTP.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		04A885F71D3EB7F800B5127C /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				04A886051D3EB8B600B5127C /* Supporting Files */,
+				04A886061D3EB8CB00B5127C /* Shared */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		04A886051D3EB8B600B5127C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				04A885FA1D3EB7F800B5127C /* Info.plist */,
+				04A885F81D3EB7F800B5127C /* JSTP.h */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		04A886061D3EB8CB00B5127C /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				04C45DC01E508FD2007AE58C /* Extensions */,
+				04C45DC11E508FDD007AE58C /* Resources */,
+				048448ED1EB8BB8000F4B4DD /* Core */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		04A886071D3EB9A400B5127C /* Frameworks */ = {
@@ -117,6 +134,7 @@
 				045783251D7F4469005BD2EB /* Socket.framework */,
 			);
 			name = Frameworks;
+			path = JSTP;
 			sourceTree = "<group>";
 		};
 		04C45DC01E508FD2007AE58C /* Extensions */ = {
@@ -124,7 +142,7 @@
 			children = (
 				04C45DBE1E508FCB007AE58C /* Collection+Extensions.swift */,
 			);
-			name = Extensions;
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		04C45DC11E508FDD007AE58C /* Resources */ = {
@@ -132,7 +150,7 @@
 			children = (
 				04967EC01D7C3967004A322C /* Common.js */,
 			);
-			name = Resources;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -205,6 +223,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				042BA2A01EB8B5CE00FAF733 /* .swiftlint.yml in Resources */,
+				042BA29C1EB8B4D900FAF733 /* Cartfile in Resources */,
+				042BA29E1EB8B5C700FAF733 /* .gitignore in Resources */,
 				04967EC61D7C3967004A322C /* Common.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -357,10 +378,9 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/JSTP",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = JSTP/Info.plist;
+				INFOPLIST_FILE = "Sources/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
@@ -384,10 +404,9 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/JSTP",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = JSTP/Info.plist;
+				INFOPLIST_FILE = "Sources/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "-DCARTHAGE";
