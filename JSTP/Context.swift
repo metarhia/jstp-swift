@@ -17,6 +17,7 @@ internal class Context {
 	private let stringify: JSValue!
 
 	private init() {
+		// swiftlint:disable force_unwrapping
 		let path = Bundle(for: Context.self).path(forResource: "Common", ofType: "js")!
 		let text = try? String(contentsOfFile: path)
 
