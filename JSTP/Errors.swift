@@ -7,22 +7,22 @@
 //
 
 public class ConnectionError: Error, LocalizedError, CustomNSError, CustomStringConvertible {
-	
+
 	public typealias Code = Int
 	public typealias ErrorType = ConnectionErrorType
-	
+
 	public init(type: ErrorType, description: String? = nil) {
 		self.type = type
 		self.code = type.rawValue
 		self.errorDescription = description ?? ConnectionError.defaultMessages[type.rawValue]
 	}
-	
+
 	public init(code: Int, description: String? = nil) {
 		self.code = code
 		self.type = ErrorType(rawValue: code)
 		self.errorDescription = description ?? ConnectionError.defaultMessages[code]
 	}
-	
+
 	public convenience init?(with object: Value?) {
 		guard let data = object as? Values,
 		      let code = data[0] as? Int else {
@@ -30,19 +30,19 @@ public class ConnectionError: Error, LocalizedError, CustomNSError, CustomString
 		}
 		self.init(code: code, description: data[safe: 1] as? String)
 	}
-	
+
 	// MARK: -
-	
+
 	public let code: Code
 	public let type: ErrorType?
 	public let errorDescription: String?
-	
+
 	internal var asObject: Value {
 		return ["code": code, "message": localizedDescription]
 	}
-	
+
 	// MARK: -
-	
+
 	private static let defaultMessages = [
 		10: "Application not found",
 		11: "Authentication failed",
@@ -53,23 +53,23 @@ public class ConnectionError: Error, LocalizedError, CustomNSError, CustomString
 		16: "Internal API error",
 		17: "Invalid signature"
 	]
-	
+
 	// MARK: - CustomNSError
-	
+
 	public static var errorDomain: String {
 		return "com.gagnant.jstp"
 	}
-	
+
 	public var errorCode: Int {
 		return self.code
 	}
-	
+
 	// MARK: - CustomStringConvertible
-	
+
 	public var description: String {
 		return localizedDescription
 	}
-	
+
 }
 
 public enum ConnectionErrorType: Int {

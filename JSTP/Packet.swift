@@ -9,33 +9,33 @@
 import Foundation
 
 internal class Packet {
-	
+
 	internal enum Kind: String {
-		case handshake = "handshake"
-		case callback  = "callback"
-		case inspect   = "inspect"
-		case stream    = "stream"
-		case health    = "health"
-		case event     = "event"
-		case state     = "state"
-		case call      = "call"
-		case pong      = "pong"
-		case ping      = "ping"
+		case handshake
+		case callback
+		case inspect
+		case stream
+		case health
+		case event
+		case state
+		case call
+		case pong
+		case ping
 	}
-	
+
 	// MARK: - Header
-	
+
 	internal(set) public var index: Int
 	internal(set) public var kind: Kind
 	internal(set) public var resourceIdentifier: String?
-	
+
 	// MARK: - Payload
-	
+
 	internal(set) public var payloadIdentifier: String?
 	internal(set) public var payload: Value?
-	
+
 	// MARK: - Lifecycle
-	
+
 	internal init(withIndex index: Int, kind: Kind, resourceIdentifier: String? = nil, payloadIdentifier: String? = nil, payload: Value? = nil) {
 		self.index = index
 		self.kind = kind
@@ -43,7 +43,7 @@ internal class Packet {
 		self.payloadIdentifier = payloadIdentifier
 		self.payload = payload
 	}
-	
+
 	internal init?(withObject object: Any) {
 		guard let packet = object as? [String:Any] else {
 			return nil
@@ -64,5 +64,5 @@ internal class Packet {
 		self.payloadIdentifier = payload?.key
 		self.payload = payload?.value
 	}
-	
+
 }

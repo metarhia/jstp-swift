@@ -11,17 +11,17 @@
 #endif
 
 open class Connection {
-	
+
 	private(set) public var config: Configuration
-	
+
 	public let application: Application
 	public let delegate: ConnectionDelegate
-	
+
 	internal var callbacks: Callbacks
 	internal var socket: TCPSocket!
 	internal var chunks: Chunks
 	internal var packetId: Int
-	
+
 	public init(config: Configuration, delegate: ConnectionDelegate) {
 		self.callbacks = Callbacks()
 		self.chunks = Chunks()
@@ -31,28 +31,28 @@ open class Connection {
 		self.application = Application()
 		self.socket = createTransport(with: config)
 	}
-	
+
 	private func createTransport(with config: Configuration) -> TCPSocket {
 		let delegate = TCPSocketDelegateImplementation(self)
 		let security = config.secure ? Security.negitiated(validates: true) : Security.none
 		let configuration = Socket.Config(host: config.host, port: config.port, security: security)
 		return TCPSocket(with: configuration, delegate: delegate)
 	}
-	
+
 	// MARK: -
-	
+
 	open func connect() {
 		self.socket.connect()
 	}
-	
+
 	open func disconnect() {
 		self.socket.disconnect()
 	}
-	
+
 	open func reconnect() {
 		self.reconnect(config: config)
 	}
-	
+
 	open func reconnect(config: Configuration) {
 		self.callbacks = Callbacks()
 		self.chunks = Chunks()
@@ -62,7 +62,7 @@ open class Connection {
 	}
 
 	// MARK: - Input Packets Processing
-	
+
 	private func onHandshakePacket(_ packet: Packet) {
 		guard let payloadIdentifier = packet.payloadIdentifier,
 		      let payload = packet.payload else {
@@ -77,7 +77,7 @@ open class Connection {
 		}
 		callback?([payload], nil)
 	}
-	
+
 	private func onCallbackPacket(_ packet: Packet) {
 		guard let payloadIdentifier = packet.payloadIdentifier,
 		      let payload = packet.payload as? Values else {
@@ -92,7 +92,7 @@ open class Connection {
 		}
 		callback?(payload, nil)
 	}
-	
+
 	private func onInpectPacket(_ packet: Packet) {
 		guard let resourceIdentifier = packet.resourceIdentifier else {
 			let error = ConnectionError(type: .invalidSignature)
@@ -105,7 +105,7 @@ open class Connection {
 		let methods = Array(interface.keys)
 		callback(packet.index, result: methods)
 	}
-	
+
 	private func onEventPacket(_ packet: Packet) {
 		guard let resourceIdentifier = packet.resourceIdentifier,
 		      let payloadIdentifier = packet.payloadIdentifier,
@@ -116,7 +116,7 @@ open class Connection {
 		let event = Event(interface: resourceIdentifier, name: payloadIdentifier, arguments: payload)
 		delegate.connection(self, didReceiveEvent: event)
 	}
-	
+
 	private func onCallPacket(_ packet: Packet) {
 		guard let resourceIdentifier = packet.resourceIdentifier,
 		      let payloadIdentifier = packet.payloadIdentifier,
@@ -135,11 +135,11 @@ open class Connection {
 		let callback = FunctionCallback(connection: self, packet: packet)
 		method(callback, payload)
 	}
-	
+
 	private func onPingPacket(_ packet: Packet) {
 		self.pong(packet.index)
 	}
-	
+
 	internal func process(_ packets: [Packet]) {
 		let reactions = [
 			Packet.Kind.handshake: onHandshakePacket,
@@ -153,22 +153,22 @@ open class Connection {
 			reactions[packet.kind]?(packet)
 		}
 	}
-	
+
 	// MARK: -
-	
+
 	private func send(_ packet: Packet) {
 		let text = Context.shared.stringify(packet) + kPacketDelimiter
 		self.socket.write(text)
 	}
-	
+
 	private func createPacket(kind: Packet.Kind, resourceIdentifier: String? = nil, payloadIdentifier: String? = nil, payload: Value? = nil) -> Packet {
 		let packet = Packet(withIndex: packetId, kind: kind, resourceIdentifier: resourceIdentifier, payloadIdentifier: payloadIdentifier, payload: payload)
 		self.packetId = packetId.advanced(by: 1)
 		return packet
 	}
-	
+
 	// MARK: JavaScript Transfer Protocol
-	
+
 	/**
 	 *
 	 * Send pong packet
@@ -180,7 +180,7 @@ open class Connection {
 		packet.index = packetId
 		self.send(packet)
 	}
-	
+
 	/**
 	 *
 	 * Send callback packets
@@ -192,7 +192,7 @@ open class Connection {
 		packet.index = packetId
 		self.send(packet)
 	}
-	
+
 	/**
 	 *
 	 * Send callback packets
@@ -204,7 +204,7 @@ open class Connection {
 		packet.index = packetId
 		self.send(packet)
 	}
-	
+
 	/**
 	 *
 	 * Send call packet
@@ -219,7 +219,7 @@ open class Connection {
 		self.callbacks[packet.index] = callback
 		self.send(packet)
 	}
-	
+
 	/**
 	 *
 	 * Send event packet
@@ -232,7 +232,7 @@ open class Connection {
 		let packet = self.createPacket(kind: .event, resourceIdentifier: interface, payloadIdentifier: event, payload: parameters)
 		self.send(packet)
 	}
-	
+
 	/**
 	 *
 	 * Send event packet
@@ -245,7 +245,7 @@ open class Connection {
 		let packet = self.createPacket(kind: .state, resourceIdentifier: path, payloadIdentifier: verb, payload: value)
 		self.send(packet)
 	}
-	
+
 	/**
 	 *
 	 * Send handshake packet
@@ -260,7 +260,7 @@ open class Connection {
 		self.callbacks[packet.index] = callback
 		self.send(packet)
 	}
-	
+
 	/**
 	 *
 	 * Send handshake packet
