@@ -48,7 +48,7 @@ internal class Packet {
 		guard let packet = object as? [String:Any] else {
 			return nil
 		}
-		guard let kind = packet.keys.flatMap({ Kind(rawValue: $0) }).first else {
+		guard let kind = packet.keys.flatMap(Kind.init).first else {
 			return nil
 		}
 		guard let header = packet[kind.rawValue] as? [Any],
