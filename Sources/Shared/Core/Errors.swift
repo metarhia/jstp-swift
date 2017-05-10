@@ -24,7 +24,7 @@ public class ConnectionError: Error, LocalizedError, CustomNSError, CustomString
 	}
 
 	public convenience init?(with object: Value?) {
-		guard let data = object as? Values,
+		guard let data = object as? [Value],
 		      let code = data[0] as? Int else {
 			return nil
 		}

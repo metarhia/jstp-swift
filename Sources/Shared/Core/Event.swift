@@ -8,11 +8,11 @@
 
 public class Event {
 
-	public let arguments: Values
+	public let arguments: [Value]
 	public let interface: String
 	public let name: String
 
-	public init(interface: String, name: String, arguments: Values) {
+	public init(interface: String, name: String, arguments: [Value]) {
 		self.arguments = arguments
 		self.interface = interface
 		self.name = name

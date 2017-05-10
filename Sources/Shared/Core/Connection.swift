@@ -80,7 +80,7 @@ open class Connection {
 
 	private func onCallbackPacket(_ packet: Packet) {
 		guard let payloadIdentifier = packet.payloadIdentifier,
-		      let payload = packet.payload as? Values else {
+		      let payload = packet.payload as? [Value] else {
 			let error = ConnectionError(type: .invalidSignature)
 			return self.callback(packet.index, error: error)
 		}
@@ -109,7 +109,7 @@ open class Connection {
 	private func onEventPacket(_ packet: Packet) {
 		guard let resourceIdentifier = packet.resourceIdentifier,
 		      let payloadIdentifier = packet.payloadIdentifier,
-		      let payload = packet.payload as? Values else {
+		      let payload = packet.payload as? [Value] else {
 			let error = ConnectionError(type: .invalidSignature)
 			return self.callback(packet.index, error: error)
 		}
@@ -120,7 +120,7 @@ open class Connection {
 	private func onCallPacket(_ packet: Packet) {
 		guard let resourceIdentifier = packet.resourceIdentifier,
 		      let payloadIdentifier = packet.payloadIdentifier,
-		      let payload = packet.payload as? Values else {
+		      let payload = packet.payload as? [Value] else {
 			let error = ConnectionError(type: .invalidSignature)
 			return self.callback(packet.index, error: error)
 		}
@@ -187,7 +187,7 @@ open class Connection {
 	 *
 	 *  - Parameter packetId: id of original `call` packet
 	 */
-	internal func callback(_ packetId: Int, result: Values) {
+	internal func callback(_ packetId: Int, result: [Value]) {
 		let packet = self.createPacket(kind: .callback, payloadIdentifier: "ok", payload: result)
 		packet.index = packetId
 		self.send(packet)
@@ -214,7 +214,7 @@ open class Connection {
 	 *  - Parameter parameters: method call parameters
 	 *  - Parameter callback:   function
 	 */
-	open func call(_ interface: String, _ method: String, _ parameters: Values = [], _ callback: Callback? = nil) {
+	open func call(_ interface: String, _ method: String, _ parameters: [Value] = [], _ callback: Callback? = nil) {
 		let packet = self.createPacket(kind: .call, resourceIdentifier: interface, payloadIdentifier: method, payload: parameters)
 		self.callbacks[packet.index] = callback
 		self.send(packet)
@@ -228,7 +228,7 @@ open class Connection {
 	 *  - Parameter event:      name of event
 	 *  - Parameter parameters: hash or object, event parameters
 	 */
-	open func event(_ interface: String, _ event: String, _ parameters: Values = []) {
+	open func event(_ interface: String, _ event: String, _ parameters: [Value] = []) {
 		let packet = self.createPacket(kind: .event, resourceIdentifier: interface, payloadIdentifier: event, payload: parameters)
 		self.send(packet)
 	}

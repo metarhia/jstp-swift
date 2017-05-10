@@ -45,7 +45,7 @@ internal class Context {
 	}
 
 	private func convertToValue(_ packet: Packet) -> JSValue {
-		let args = [packet.kind.rawValue, packet.index, packet.resourceIdentifier as Value, packet.payloadIdentifier as Value, packet.payload as Value] as Values
+		let args = [packet.kind.rawValue, packet.index, packet.resourceIdentifier as Value, packet.payloadIdentifier as Value, packet.payload as Value] as [Value]
 		return self.packet.construct(withArguments: args)
 	}
 

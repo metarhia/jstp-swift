@@ -29,7 +29,7 @@ public class FunctionCallback {
 public class Application {
 
 	public typealias Interface = [String:Function]
-	public typealias Function = (FunctionCallback, Values) -> Void
+	public typealias Function = (FunctionCallback, [Value]) -> Void
 
 	fileprivate var application: [String:Interface]
 
