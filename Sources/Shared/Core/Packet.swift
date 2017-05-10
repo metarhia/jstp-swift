@@ -44,14 +44,14 @@ internal class Packet {
 		self.payload = payload
 	}
 
-	internal init?(withObject object: Any) {
-		guard let packet = object as? [String:Any] else {
+	internal init?(withObject object: Value) {
+		guard let packet = object as? [String:Value] else {
 			return nil
 		}
 		guard let kind = packet.keys.flatMap(Kind.init).first else {
 			return nil
 		}
-		guard let header = packet[kind.rawValue] as? [Any],
+		guard let header = packet[kind.rawValue] as? [Value],
 		      let index = header[safe: 0] as? Int else {
 			return nil
 		}
