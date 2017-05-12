@@ -12,7 +12,7 @@ internal class Chunks {
 
 	internal func add(chunk: Data) -> [Packet] {
 		buffer.append(chunk)
-		guard let source = Chunks.convert(data: chunk) else {
+		guard let source = Chunks.convert(data: buffer) else {
 			return []
 		}
 		invalidate()
