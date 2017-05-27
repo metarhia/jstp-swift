@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0440096A1E85B0E500A3450B /* ConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044009691E85B0E500A3450B /* ConnectionDelegate.swift */; };
 		0440096C1E85B10500A3450B /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0440096B1E85B10500A3450B /* Packet.swift */; };
+		044F698C1ED96239004A6D1E /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044F698B1ED96239004A6D1E /* Transport.swift */; };
 		045783261D7F4469005BD2EB /* Socket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 045783251D7F4469005BD2EB /* Socket.framework */; };
 		0457A1981D8E9EF2002D9863 /* Chunks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0457A1971D8E9EF2002D9863 /* Chunks.swift */; };
 		0457A19A1D8E9F12002D9863 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0457A1991D8E9F12002D9863 /* Constants.swift */; };
@@ -30,6 +31,7 @@
 		042BA29F1EB8B5CE00FAF733 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		044009691E85B0E500A3450B /* ConnectionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionDelegate.swift; sourceTree = "<group>"; };
 		0440096B1E85B10500A3450B /* Packet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
+		044F698B1ED96239004A6D1E /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
 		045783251D7F4469005BD2EB /* Socket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Socket.framework; path = ../Carthage/Build/iOS/Socket.framework; sourceTree = "<group>"; };
 		0457A1971D8E9EF2002D9863 /* Chunks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chunks.swift; sourceTree = "<group>"; };
 		0457A1991D8E9F12002D9863 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -59,6 +61,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		044F698A1ED961C3004A6D1E /* Transports */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Transports;
+			sourceTree = "<group>";
+		};
 		048448ED1EB8BB8000F4B4DD /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -73,6 +82,7 @@
 				04967EC31D7C3967004A322C /* Errors.swift */,
 				044009691E85B0E500A3450B /* ConnectionDelegate.swift */,
 				0440096B1E85B10500A3450B /* Packet.swift */,
+				044F698B1ED96239004A6D1E /* Transport.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -118,6 +128,7 @@
 		04A886061D3EB8CB00B5127C /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				044F698A1ED961C3004A6D1E /* Transports */,
 				04C45DC01E508FD2007AE58C /* Extensions */,
 				04C45DC11E508FDD007AE58C /* Resources */,
 				048448ED1EB8BB8000F4B4DD /* Core */,
@@ -259,6 +270,7 @@
 				0457A19A1D8E9F12002D9863 /* Constants.swift in Sources */,
 				04967EC71D7C3967004A322C /* Connection.swift in Sources */,
 				0440096A1E85B0E500A3450B /* ConnectionDelegate.swift in Sources */,
+				044F698C1ED96239004A6D1E /* Transport.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
