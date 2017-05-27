@@ -25,7 +25,7 @@ public protocol TransportDelegate: class {
 
 }
 
-public protocol Transport {
+public protocol Transport: class {
 
 	typealias State = TransportState
 
