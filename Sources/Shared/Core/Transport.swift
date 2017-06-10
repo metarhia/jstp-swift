@@ -35,7 +35,6 @@ public protocol Transport: class {
 
 	/// Transport uses the standard delegate paradigm and executes all delegate callbacks on a given
 	/// delegate dispatch queue.
-
 	var delegateQueue: DispatchQueue { get set }
 
 	// MARK: - Diagnostics
@@ -46,7 +45,6 @@ public protocol Transport: class {
  	/// That is, it can be used again for connecting.
  	///
  	/// If a transport is in the process of connecting, it may be neither disconnected nor connected.
-
 	var state: State { get }
 
 	// MARK: - Connecting
@@ -57,7 +55,6 @@ public protocol Transport: class {
 	///
 	/// The delegate callbacks are used to notify you when the transport connects, or if the host
 	/// was unreachable.
-
 	func connect()
 
 	// MARK: - Disconnecting
@@ -68,7 +65,6 @@ public protocol Transport: class {
 	/// transportDidDisconnect:withError: delegate method will be queued onto the delegateQueue
 	/// asynchronously. In other words, the disconnected delegate method will be invoked sometime
 	/// shortly after this method returns.
-
  	func disconnect()
 
 	// MARK: - Writing
@@ -81,6 +77,5 @@ public protocol Transport: class {
 public enum TransportState {
 	case connected
 	case connecting
-	case disconnecting
 	case disconnected(Error?)
 }
