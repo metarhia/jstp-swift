@@ -18,7 +18,7 @@ public protocol TransportDelegate: class {
 	/// If you call the disconnect method, and the transport wasn't already disconnected,
 	/// then an invocation of this delegate method will be enqueued on the delegateQueue
 	/// before the disconnect method returns.
-	func transportDidDisconnect(_ transport: Transport, withError error: Error?)
+	func transport(_ transport: Transport, didDisconnectWithError error: Error?)
 
 	/// Called when a transport has read in data.
 	func transport(_ transport: Transport, didReceiveData data: Data)
