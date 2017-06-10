@@ -35,8 +35,7 @@ open class Connection {
 	private func createTransport(with config: Configuration) -> TCPSocket {
 		let delegate = TCPSocketDelegateImplementation(self)
 		let security = config.secure ? Security.negitiated(validates: true) : Security.none
-		let configuration = Socket.Config(host: config.host, port: config.port, security: security)
-		return TCPSocket(with: configuration, delegate: delegate)
+		return TCPSocket(with: config.host, port: config.port, security: security, delegate: delegate)
 	}
 
 	// MARK: -

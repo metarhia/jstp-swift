@@ -24,7 +24,7 @@ internal class TCPSocketDelegateImplementation: TCPSocketDelegate {
 		self.connection.delegate?.connectionDidConnect(self.connection)
 	}
 
-	internal func socketDidDisconnect(_ socket: TCPSocket) {
+	func socket(_ socket: TCPSocket, didDisconnectWithError error: Error?) {
 		connection.delegate?.connectionDidDisconnect(connection)
 	}
 
