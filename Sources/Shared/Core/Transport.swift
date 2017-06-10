@@ -15,7 +15,7 @@ public protocol TransportDelegate: class {
 
 	/// Called when a transport disconnects with or without error.
 	///
-	/// If you call the disconnect method, and the socket wasn't already disconnected,
+	/// If you call the disconnect method, and the transport wasn't already disconnected,
 	/// then an invocation of this delegate method will be enqueued on the delegateQueue
 	/// before the disconnect method returns.
 	func transportDidDisconnect(_ transport: Transport, withError error: Error?)
