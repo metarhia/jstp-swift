@@ -75,7 +75,13 @@ public protocol Transport: class {
 }
 
 public enum TransportState {
+
+	/// Transport is connected and is ready for use.
 	case connected
+
+	/// Transport is in the process of connecting.
 	case connecting
+
+	/// Transport is disconnected with optional error.
 	case disconnected(Error?)
 }
