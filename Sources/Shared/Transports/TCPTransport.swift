@@ -52,6 +52,14 @@ public class TCPTransport: Transport {
 
 	// MARK: - Lifecycle
 
+	/// Creates transport with given parameters.
+	///
+	/// - Parameters:
+	///   - host: The host this transport be connected to.
+	///   - port: The port this transport to be connected on.
+	///   - secure: Security property indicating the security level of the target stream.
+	///   - delegate: A transport delegate object that handles transport-related events.
+	///   - delegateQueue: A queue for scheduling the delegate calls. The queue should be a serial queue, in order to ensure the correct ordering of callbacks.
 	public init(with host: String, port: Int, secure: Bool = true, delegate: TransportDelegate, delegateQueue: DispatchQueue = .main) {
 		self.delegate = delegate
 		self.socket = TCPSocket(with: host, port: port, security: secure ? .negitiated(validates: true) : .none, delegateQueue: delegateQueue)
