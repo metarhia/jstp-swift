@@ -6,10 +6,6 @@
 //  Copyright © 2016-2017 Andrew Visotskyy. All rights reserved.
 //
 
-#if CARTHAGE
-	import Socket
-#endif
-
 open class Connection {
 
 	private(set) public weak var delegate: ConnectionDelegate?
@@ -17,47 +13,46 @@ open class Connection {
 	private(set) public var config: Configuration
 	private(set) public var application: Application
 
+	// swiftlint:disable weak_delegate
+	internal var transportDelegate: TransportDelegate?
+	internal var transport: Transport
+
+	// swiftlint:enable weak_delegate
 	internal var callbacks: Callbacks
-	internal var socket: TCPSocket!
 	internal var chunks: Chunks
 	internal var packetId: Int
 
-	public init(config: Configuration, delegate: ConnectionDelegate) {
+	public init(config: Configuration, transport: Transport, delegate: ConnectionDelegate) {
 		self.callbacks = Callbacks()
 		self.chunks = Chunks()
+		self.application = Application()
 		self.packetId = 0
 		self.config = config
 		self.delegate = delegate
-		self.application = Application()
-		self.socket = createTransport(with: config)
-	}
-
-	private func createTransport(with config: Configuration) -> TCPSocket {
-		let delegate = TCPSocketDelegateImplementation(self)
-		let security = config.secure ? Security.negitiated(validates: true) : Security.none
-		return TCPSocket(with: config.host, port: config.port, security: security, delegate: delegate)
+		self.transport = transport
+		self.transportDelegate = TransportDelegateImplementation(with: self)
+		self.transport.delegate = self.transportDelegate
 	}
 
 	// MARK: -
 
 	open func connect() {
-		self.socket.connect()
+		self.transport.connect()
 	}
 
 	open func disconnect() {
-		self.socket.disconnect()
+		self.transport.disconnect()
 	}
 
 	open func reconnect() {
-		self.reconnect(config: config)
+		self.transport.connect()
 	}
 
 	open func reconnect(config: Configuration) {
 		self.callbacks = Callbacks()
 		self.chunks = Chunks()
 		self.packetId  = 0
-		self.socket = createTransport(with: config)
-		self.socket.connect()
+		self.transport.connect()
 	}
 
 	// MARK: - Input Packets Processing
@@ -157,7 +152,7 @@ open class Connection {
 
 	private func send(_ packet: Packet) {
 		let text = Context.shared.stringify(packet) + kPacketDelimiter
-		self.socket.write(text)
+		self.transport.write(string: text)
 	}
 
 	private func createPacket(kind: Packet.Kind, resourceIdentifier: String? = nil, payloadIdentifier: String? = nil, payload: Value? = nil) -> Packet {

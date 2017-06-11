@@ -24,15 +24,6 @@ public class Credentials {
 
 public class Configuration {
 
-	/// Security property indicating the security level of the target stream.
-	internal(set) public var secure: Bool
-
-	/// The host this connection be connected to.
-	internal(set) public var host: String
-
-	/// The port this connection to be connected on.
-	internal(set) public var port: Int
-
 	/// The credentials the user may use to authenticate
 	internal(set) public var credentials: Credentials?
 
@@ -41,10 +32,7 @@ public class Configuration {
 
 	// MARK: - Initializers
 
-	public init(host: String, _ port: Int, _ secure: Bool = true, _ applicationName: String, _ credentials: Credentials? = nil) {
-		self.host = host
-		self.port = port
-		self.secure = secure
+	public init(_ applicationName: String, _ credentials: Credentials? = nil) {
 		self.applicationName = applicationName
 		self.credentials = credentials
 	}
