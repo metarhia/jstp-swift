@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0419935F1EECAD40002091EE /* TCPTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0419935E1EECAD40002091EE /* TCPTransport.swift */; };
 		0440096A1E85B0E500A3450B /* ConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044009691E85B0E500A3450B /* ConnectionDelegate.swift */; };
 		0440096C1E85B10500A3450B /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0440096B1E85B10500A3450B /* Packet.swift */; };
 		044F698C1ED96239004A6D1E /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044F698B1ED96239004A6D1E /* Transport.swift */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0419935E1EECAD40002091EE /* TCPTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPTransport.swift; sourceTree = "<group>"; };
 		042BA29B1EB8B4D900FAF733 /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		042BA29D1EB8B5C700FAF733 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		042BA29F1EB8B5CE00FAF733 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 		044F698A1ED961C3004A6D1E /* Transports */ = {
 			isa = PBXGroup;
 			children = (
+				0419935E1EECAD40002091EE /* TCPTransport.swift */,
 			);
 			path = Transports;
 			sourceTree = "<group>";
@@ -267,6 +270,7 @@
 				04967EC51D7C3967004A322C /* Application.swift in Sources */,
 				04AEADEA1E94096F00334142 /* Configuration.swift in Sources */,
 				0457A19C1D8E9F6A002D9863 /* Context.swift in Sources */,
+				0419935F1EECAD40002091EE /* TCPTransport.swift in Sources */,
 				0457A19A1D8E9F12002D9863 /* Constants.swift in Sources */,
 				04967EC71D7C3967004A322C /* Connection.swift in Sources */,
 				0440096A1E85B0E500A3450B /* ConnectionDelegate.swift in Sources */,
