@@ -72,6 +72,9 @@ public protocol Transport: class {
 	/// Writes data to the transport. If you pass in zero-length data, this method does nothing.
 	func write(data: Data)
 
+	/// Writes UTF-8 encoded string to the transport.
+	func write(string: String)
+
 }
 
 public enum TransportState {

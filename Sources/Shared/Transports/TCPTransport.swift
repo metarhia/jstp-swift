@@ -90,6 +90,11 @@ public class TCPTransport: Transport {
 		self.socket.write(data)
 	}
 
+	/// Writes UTF-8 encoded string to the transport.
+	public func write(string: String) {
+		self.socket.write(string)
+	}
+
 }
 
 private class SocketDelegate: TCPSocketDelegate {
