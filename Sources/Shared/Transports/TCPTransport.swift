@@ -15,10 +15,23 @@ public class TCPTransport: Transport {
 	private var socket: TCPSocket
 	private var socketDelegate: TCPSocketDelegate?
 
+	// swiftlint:enable weak_delegate
+	private weak var unsafeDelegate: TransportDelegate?
+
 	// MARK: - Configuration
 
-	// swiftlint:enable weak_delegate
-	public weak var delegate: TransportDelegate?
+	public var delegate: TransportDelegate? {
+		get {
+			return synchronized(self) {
+				return unsafeDelegate
+			}
+		}
+		set {
+			synchronized(self) {
+				unsafeDelegate = newValue
+			}
+		}
+	}
 
 	/// Transport uses the standard delegate paradigm and executes all delegate callbacks on a given
 	/// delegate dispatch queue.
@@ -61,7 +74,7 @@ public class TCPTransport: Transport {
 	///   - delegate: A transport delegate object that handles transport-related events.
 	///   - delegateQueue: A queue for scheduling the delegate calls. The queue should be a serial queue, in order to ensure the correct ordering of callbacks.
 	public init(with host: String, port: Int, secure: Bool = true, delegate: TransportDelegate? = nil, delegateQueue: DispatchQueue = .main) {
-		self.delegate = delegate
+		self.unsafeDelegate = delegate
 		self.socket = TCPSocket(with: host, port: port, security: secure ? .negitiated(validates: true) : .none, delegateQueue: delegateQueue)
 		self.socketDelegate = SocketDelegate(with: self)
 		self.socket.delegate = socketDelegate
