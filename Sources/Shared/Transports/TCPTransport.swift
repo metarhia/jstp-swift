@@ -60,7 +60,7 @@ public class TCPTransport: Transport {
 	///   - secure: Security property indicating the security level of the target stream.
 	///   - delegate: A transport delegate object that handles transport-related events.
 	///   - delegateQueue: A queue for scheduling the delegate calls. The queue should be a serial queue, in order to ensure the correct ordering of callbacks.
-	public init(with host: String, port: Int, secure: Bool = true, delegate: TransportDelegate, delegateQueue: DispatchQueue = .main) {
+	public init(with host: String, port: Int, secure: Bool = true, delegate: TransportDelegate? = nil, delegateQueue: DispatchQueue = .main) {
 		self.delegate = delegate
 		self.socket = TCPSocket(with: host, port: port, security: secure ? .negitiated(validates: true) : .none, delegateQueue: delegateQueue)
 		self.socketDelegate = SocketDelegate(with: self)
