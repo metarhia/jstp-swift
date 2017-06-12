@@ -20,6 +20,7 @@ public class TCPTransport: Transport {
 
 	// MARK: - Configuration
 
+	/// A transport delegate object that handles transport-related events.
 	public var delegate: TransportDelegate? {
 		get {
 			return synchronized(self) {

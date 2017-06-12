@@ -31,6 +31,7 @@ public protocol Transport: class {
 
 	// MARK: - Configuration
 
+	/// A transport delegate object that handles transport-related events.
 	weak var delegate: TransportDelegate? { get set }
 
 	/// Transport uses the standard delegate paradigm and executes all delegate callbacks on a given
