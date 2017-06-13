@@ -12,7 +12,7 @@ public protocol ConnectionDelegate: class {
 
 	func connection(_ connection: Connection, didFailWithError error: Error)
 
-	func connectionDidDisconnect(_ connection: Connection)
+	func connection(_ connection: Connection, didDisconnectWithError error: Error?)
 
 	func connectionDidConnect(_ connection: Connection)
 
@@ -30,7 +30,7 @@ public extension ConnectionDelegate {
 		// DO NOTHING
 	}
 
-	public func connectionDidDisconnect(_ connection: Connection) {
+	public func connection(_ connection: Connection, didDisconnectWithError error: Error?) {
 		// DO NOTHING
 	}
 

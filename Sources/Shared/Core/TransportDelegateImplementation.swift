@@ -27,7 +27,7 @@ internal class TransportDelegateImplementation: TransportDelegate {
 		guard let connection = self.connection else {
 			return
 		}
-		connection.delegate?.connectionDidDisconnect(connection)
+		connection.delegate?.connection(connection, didDisconnectWithError: error)
 	}
 
 	func transport(_ transport: Transport, didReceiveData data: Data) {
