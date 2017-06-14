@@ -8,12 +8,16 @@
 
 public class SessionData {
 
+	/// Application name which was specified during connection
 	public internal(set) var applicationName: String?
 
+	/// Current session ID
 	public internal(set) var sessionId: String?
 
+	/// Credentials which was specified during connection
 	public internal(set) var credentials: Credentials?
 
+	/// The index of the next packet
 	internal var nextPacketId: Int
 
 	internal init(applicationName: String? = nil, sessionId: String? = nil, credentials: Credentials? = nil, nextPacketId: Int = 0) {
