@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		040325EE1EFAFD3A004AE607 /* SessionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040325ED1EFAFD3A004AE607 /* SessionData.swift */; };
 		0419935F1EECAD40002091EE /* TCPTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0419935E1EECAD40002091EE /* TCPTransport.swift */; };
 		041993621EEE9C64002091EE /* Synchronized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041993611EEE9C64002091EE /* Synchronized.swift */; };
 		0440096A1E85B0E500A3450B /* ConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044009691E85B0E500A3450B /* ConnectionDelegate.swift */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		040325ED1EFAFD3A004AE607 /* SessionData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionData.swift; sourceTree = "<group>"; };
 		0419935E1EECAD40002091EE /* TCPTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPTransport.swift; sourceTree = "<group>"; };
 		041993611EEE9C64002091EE /* Synchronized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronized.swift; sourceTree = "<group>"; };
 		042BA29B1EB8B4D900FAF733 /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 				044009691E85B0E500A3450B /* ConnectionDelegate.swift */,
 				0440096B1E85B10500A3450B /* Packet.swift */,
 				044F698B1ED96239004A6D1E /* Transport.swift */,
+				040325ED1EFAFD3A004AE607 /* SessionData.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -282,6 +285,7 @@
 				04AEADEA1E94096F00334142 /* Configuration.swift in Sources */,
 				0457A19C1D8E9F6A002D9863 /* Context.swift in Sources */,
 				0419935F1EECAD40002091EE /* TCPTransport.swift in Sources */,
+				040325EE1EFAFD3A004AE607 /* SessionData.swift in Sources */,
 				0457A19A1D8E9F12002D9863 /* Constants.swift in Sources */,
 				041993621EEE9C64002091EE /* Synchronized.swift in Sources */,
 				04967EC71D7C3967004A322C /* Connection.swift in Sources */,

@@ -13,11 +13,7 @@ open class Connection {
 	private(set) public var config: Configuration
 	private(set) public var application: Application
 
-	/// The credentials the user may use to authenticate
-	internal(set) public var credentials: Credentials?
-
-	/// Application Name
-	internal(set) public var applicationName: String?
+	private var sessionData: SessionData
 
 	// swiftlint:disable weak_delegate
 	internal var transportDelegate: TransportDelegate?
@@ -26,13 +22,12 @@ open class Connection {
 	// swiftlint:enable weak_delegate
 	internal var callbacks: Callbacks
 	internal var chunks: Chunks
-	internal var packetId: Int
 
 	public init(config: Configuration, transport: Transport, delegate: ConnectionDelegate) {
 		self.callbacks = Callbacks()
 		self.chunks = Chunks()
 		self.application = Application()
-		self.packetId = 0
+		self.sessionData = SessionData()
 		self.config = config
 		self.delegate = delegate
 		self.transport = transport
@@ -57,7 +52,7 @@ open class Connection {
 	open func reconnect(config: Configuration) {
 		self.callbacks = Callbacks()
 		self.chunks = Chunks()
-		self.packetId  = 0
+		self.sessionData.nextPacketId = 0
 		self.transport.connect()
 	}
 
@@ -162,8 +157,8 @@ open class Connection {
 	}
 
 	private func createPacket(kind: Packet.Kind, resourceIdentifier: String? = nil, payloadIdentifier: String? = nil, payload: Value? = nil) -> Packet {
-		let packet = Packet(withIndex: packetId, kind: kind, resourceIdentifier: resourceIdentifier, payloadIdentifier: payloadIdentifier, payload: payload)
-		self.packetId = packetId.advanced(by: 1)
+		let packet = Packet(withIndex: sessionData.nextPacketId, kind: kind, resourceIdentifier: resourceIdentifier, payloadIdentifier: payloadIdentifier, payload: payload)
+		sessionData.nextPacketId += 1
 		return packet
 	}
 
