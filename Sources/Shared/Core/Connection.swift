@@ -13,6 +13,12 @@ open class Connection {
 	private(set) public var config: Configuration
 	private(set) public var application: Application
 
+	/// The credentials the user may use to authenticate
+	internal(set) public var credentials: Credentials?
+
+	/// Application Name
+	internal(set) public var applicationName: String?
+
 	// swiftlint:disable weak_delegate
 	internal var transportDelegate: TransportDelegate?
 	internal var transport: Transport

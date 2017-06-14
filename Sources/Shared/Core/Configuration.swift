@@ -24,17 +24,10 @@ public class Credentials {
 
 public class Configuration {
 
-	/// The credentials the user may use to authenticate
-	internal(set) public var credentials: Credentials?
+	// MARK: Factory methods
 
-	/// Application Name
-	internal(set) public var applicationName: String
-
-	// MARK: - Initializers
-
-	public init(_ applicationName: String, _ credentials: Credentials? = nil) {
-		self.applicationName = applicationName
-		self.credentials = credentials
+	public static var `default`: Configuration {
+		return Configuration()
 	}
 
 }
