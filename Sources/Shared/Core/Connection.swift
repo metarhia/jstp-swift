@@ -250,8 +250,8 @@ open class Connection {
 	 *  - Parameter password: password hash
 	 *  - Parameter callback: function callback
 	 */
-	open func handshake(_ name: String, _ login: String, _ password: String, _ callback: Callback? = nil) {
-		let packet = self.createPacket(kind: .handshake, resourceIdentifier: name, payloadIdentifier: "login", payload: [login, password])
+	open func handshake(_ name: String, _ credentials: Credentials, _ callback: Callback? = nil) {
+		let packet = self.createPacket(kind: .handshake, resourceIdentifier: name, payloadIdentifier: "login", payload: [credentials.login, credentials.password])
 		self.callbacks[packet.index] = callback
 		self.send(packet)
 	}
