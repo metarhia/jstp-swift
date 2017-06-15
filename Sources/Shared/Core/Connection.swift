@@ -12,8 +12,7 @@ open class Connection {
 
 	private(set) public var config: Configuration
 	private(set) public var application: Application
-
-	private var sessionData: SessionData
+	private(set) public var sessionData: SessionData
 
 	// swiftlint:disable weak_delegate
 	internal var transportDelegate: TransportDelegate?
