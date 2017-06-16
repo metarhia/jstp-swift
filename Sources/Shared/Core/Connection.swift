@@ -36,7 +36,9 @@ open class Connection {
 
 	// MARK: -
 
-	open func connect() {
+	open func connect(with applicationName: String, credentials: Credentials? = nil) {
+		self.sessionData.applicationName = applicationName
+		self.sessionData.credentials = credentials
 		self.transport.connect()
 	}
 
