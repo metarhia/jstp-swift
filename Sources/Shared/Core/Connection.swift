@@ -249,7 +249,7 @@ open class Connection {
 	 *  - Parameter password: password hash
 	 *  - Parameter callback: function callback
 	 */
-	open func handshake(_ name: String, _ credentials: Credentials, _ callback: Callback? = nil) {
+	internal func handshake(_ name: String, _ credentials: Credentials, _ callback: Callback? = nil) {
 		let packet = self.createPacket(kind: .handshake, resourceIdentifier: name, payloadIdentifier: "login", payload: [credentials.login, credentials.password])
 		self.callbacks[packet.index] = callback
 		self.send(packet)
@@ -262,7 +262,7 @@ open class Connection {
 	 *  - Parameter name:     application name
 	 *  - Parameter callback: function callback
 	 */
-	open func handshake(_ name: String, _ callback: Callback? = nil) {
+	internal func handshake(_ name: String, _ callback: Callback? = nil) {
 		let packet = self.createPacket(kind: .handshake, resourceIdentifier: name)
 		self.callbacks[packet.index] = callback
 		self.send(packet)
