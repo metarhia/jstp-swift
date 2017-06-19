@@ -43,7 +43,7 @@ open class Connection {
 	}
 
 	open func disconnect() {
-		self.transport.disconnect()
+		self.disconnect(with: nil)
 	}
 
 	open func reconnect() {
@@ -55,6 +55,11 @@ open class Connection {
 		self.chunks = Chunks()
 		self.sessionData.nextPacketId = 0
 		self.transport.connect()
+	}
+
+	internal func disconnect(with error: Error?) {
+		self.transport.disconnect()
+		self.delegate?.connection(self, didDisconnectWithError: error)
 	}
 
 	// MARK: - Input Packets Processing
