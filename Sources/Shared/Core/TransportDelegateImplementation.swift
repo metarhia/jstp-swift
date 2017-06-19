@@ -22,12 +22,15 @@ internal class TransportDelegateImplementation: TransportDelegate {
 		}
 		guard let applicationName = connection.sessionData.applicationName else {
 			// Disconnect with error here
+			connection.disconnect(with: nil)
 			return
 		}
 		let onHandshakePerformed: Callback = { response, error in
-			if error != nil {
-				// Disconnect with error here
-			} else if let sessionId = response?[safe: 0] as? String {
+			guard error == nil else {
+				connection.disconnect(with: error)
+				return
+			}
+			if let sessionId = response?[safe: 0] as? String {
 				connection.sessionData.sessionId = sessionId
 				connection.delegate?.connectionDidConnect(connection)
 			}
