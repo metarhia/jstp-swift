@@ -22,7 +22,7 @@ open class Connection {
 	internal var callbacks: Callbacks
 	internal var chunks: Chunks
 
-	public init(config: Configuration, transport: Transport, delegate: ConnectionDelegate) {
+	public init(with transport: Transport, delegate: ConnectionDelegate, config: Configuration = .default) {
 		self.callbacks = Callbacks()
 		self.chunks = Chunks()
 		self.application = Application()
