@@ -37,6 +37,7 @@ open class Connection {
 	// MARK: -
 
 	open func connect(with applicationName: String, credentials: Credentials? = nil) {
+		self.invalidate()
 		self.sessionData.applicationName = applicationName
 		self.sessionData.credentials = credentials
 		self.transport.connect()
@@ -60,6 +61,13 @@ open class Connection {
 	internal func disconnect(with error: Error?) {
 		self.transport.disconnect()
 		self.delegate?.connection(self, didDisconnectWithError: error)
+	}
+
+	private func invalidate() {
+		self.sessionData.invalidate()
+		self.callbacks = Callbacks()
+		self.application = Application()
+		self.chunks = Chunks()
 	}
 
 	// MARK: - Input Packets Processing

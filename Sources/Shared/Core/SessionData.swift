@@ -27,4 +27,11 @@ public class SessionData {
 		self.nextPacketId = nextPacketId
 	}
 
+	internal func invalidate() {
+		self.applicationName = nil
+		self.sessionId = nil
+		self.credentials = nil
+		self.nextPacketId = 0
+	}
+
 }
