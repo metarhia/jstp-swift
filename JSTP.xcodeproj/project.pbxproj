@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		040325EE1EFAFD3A004AE607 /* SessionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040325ED1EFAFD3A004AE607 /* SessionData.swift */; };
+		040AFEDC1F02C0BF00DF4AC3 /* ConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040AFEDB1F02C0BF00DF4AC3 /* ConnectionState.swift */; };
 		0419935F1EECAD40002091EE /* TCPTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0419935E1EECAD40002091EE /* TCPTransport.swift */; };
 		041993621EEE9C64002091EE /* Synchronized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041993611EEE9C64002091EE /* Synchronized.swift */; };
 		0440096A1E85B0E500A3450B /* ConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044009691E85B0E500A3450B /* ConnectionDelegate.swift */; };
@@ -30,6 +31,7 @@
 
 /* Begin PBXFileReference section */
 		040325ED1EFAFD3A004AE607 /* SessionData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionData.swift; sourceTree = "<group>"; };
+		040AFEDB1F02C0BF00DF4AC3 /* ConnectionState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionState.swift; sourceTree = "<group>"; };
 		0419935E1EECAD40002091EE /* TCPTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPTransport.swift; sourceTree = "<group>"; };
 		041993611EEE9C64002091EE /* Synchronized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronized.swift; sourceTree = "<group>"; };
 		042BA29B1EB8B4D900FAF733 /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				0440096B1E85B10500A3450B /* Packet.swift */,
 				044F698B1ED96239004A6D1E /* Transport.swift */,
 				040325ED1EFAFD3A004AE607 /* SessionData.swift */,
+				040AFEDB1F02C0BF00DF4AC3 /* ConnectionState.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -280,6 +283,7 @@
 				0457A1981D8E9EF2002D9863 /* Chunks.swift in Sources */,
 				0440096C1E85B10500A3450B /* Packet.swift in Sources */,
 				04C45DBF1E508FCB007AE58C /* Collection+Extensions.swift in Sources */,
+				040AFEDC1F02C0BF00DF4AC3 /* ConnectionState.swift in Sources */,
 				04967EC81D7C3967004A322C /* TransportDelegateImplementation.swift in Sources */,
 				04967EC51D7C3967004A322C /* Application.swift in Sources */,
 				04AEADEA1E94096F00334142 /* Configuration.swift in Sources */,
