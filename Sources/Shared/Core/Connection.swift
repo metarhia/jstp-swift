@@ -14,6 +14,8 @@ open class Connection {
 	private(set) public var application: Application
 	private(set) public var sessionData: SessionData
 
+	internal(set) public var state: State
+
 	// swiftlint:disable weak_delegate
 	internal var transportDelegate: TransportDelegate?
 	internal var transport: Transport
@@ -28,6 +30,7 @@ open class Connection {
 		self.application = Application()
 		self.sessionData = SessionData()
 		self.config = config
+		self.state = .disconnected(nil)
 		self.delegate = delegate
 		self.transport = transport
 		self.transportDelegate = TransportDelegateImplementation(with: self)
