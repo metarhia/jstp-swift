@@ -8,10 +8,19 @@
 
 extension Connection {
 
+	/// Denotes possible `Connection` states.
 	public enum State {
+
+		/// Connection is established and is ready for use.
 		case connected
+
+		/// Connection is establishing.
 		case connecting
+
+		/// Connection is disconnected with optional error.
 		case disconnected(Error?)
+
+		/// Connection is in the process of disconnecting.
 		case disconnecting
 	}
 
