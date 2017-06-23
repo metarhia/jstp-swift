@@ -41,6 +41,7 @@ open class Connection {
 
 	open func connect(with applicationName: String, credentials: Credentials? = nil) {
 		self.invalidate()
+		self.state = .connecting
 		self.sessionData.applicationName = applicationName
 		self.sessionData.credentials = credentials
 		self.transport.connect()
@@ -62,6 +63,7 @@ open class Connection {
 	}
 
 	internal func disconnect(with error: Error?) {
+		self.state = .disconnecting
 		self.transport.disconnect()
 		self.delegate?.connection(self, didDisconnectWithError: error)
 	}

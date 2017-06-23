@@ -31,6 +31,7 @@ internal class TransportDelegateImplementation: TransportDelegate {
 				return
 			}
 			if let sessionId = response?[safe: 0] as? String {
+				connection.state = .connected
 				connection.sessionData.sessionId = sessionId
 				connection.delegate?.connectionDidConnect(connection)
 			}
@@ -46,6 +47,7 @@ internal class TransportDelegateImplementation: TransportDelegate {
 		guard let connection = self.connection else {
 			return
 		}
+		connection.state = .disconnected(error)
 		connection.delegate?.connection(connection, didDisconnectWithError: error)
 	}
 
