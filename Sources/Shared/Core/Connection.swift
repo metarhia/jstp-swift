@@ -51,17 +51,6 @@ open class Connection {
 		self.disconnect(with: nil)
 	}
 
-	open func reconnect() {
-		self.transport.connect()
-	}
-
-	open func reconnect(config: Configuration) {
-		self.callbacks = Callbacks()
-		self.chunks = Chunks()
-		self.sessionData.nextPacketId = 0
-		self.transport.connect()
-	}
-
 	internal func disconnect(with error: Error?) {
 		self.state = .disconnecting
 		self.transport.disconnect()
