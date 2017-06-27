@@ -21,6 +21,7 @@
 		0457A19E1D8E9FC2002D9863 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0457A19D1D8E9FC2002D9863 /* Event.swift */; };
 		04688D7A1F125B8F00E1A8AD /* BufferingPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04688D791F125B8E00E1A8AD /* BufferingPolicy.swift */; };
 		04688D7C1F1263BB00E1A8AD /* DropBufferingPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04688D7B1F1263BB00E1A8AD /* DropBufferingPolicy.swift */; };
+		04688D7E1F126B7F00E1A8AD /* BufferBufferingPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04688D7D1F126B7F00E1A8AD /* BufferBufferingPolicy.swift */; };
 		04967EC51D7C3967004A322C /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04967EBF1D7C3967004A322C /* Application.swift */; };
 		04967EC61D7C3967004A322C /* Common.js in Resources */ = {isa = PBXBuildFile; fileRef = 04967EC01D7C3967004A322C /* Common.js */; };
 		04967EC71D7C3967004A322C /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04967EC11D7C3967004A322C /* Connection.swift */; };
@@ -49,6 +50,7 @@
 		0457A19D1D8E9FC2002D9863 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		04688D791F125B8E00E1A8AD /* BufferingPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferingPolicy.swift; sourceTree = "<group>"; };
 		04688D7B1F1263BB00E1A8AD /* DropBufferingPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropBufferingPolicy.swift; sourceTree = "<group>"; };
+		04688D7D1F126B7F00E1A8AD /* BufferBufferingPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BufferBufferingPolicy.swift; sourceTree = "<group>"; };
 		04967EBF1D7C3967004A322C /* Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		04967EC01D7C3967004A322C /* Common.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Common.js; sourceTree = "<group>"; };
 		04967EC11D7C3967004A322C /* Connection.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; tabWidth = 2; };
@@ -108,6 +110,7 @@
 				040AFEDB1F02C0BF00DF4AC3 /* ConnectionState.swift */,
 				04688D791F125B8E00E1A8AD /* BufferingPolicy.swift */,
 				04688D7B1F1263BB00E1A8AD /* DropBufferingPolicy.swift */,
+				04688D7D1F126B7F00E1A8AD /* BufferBufferingPolicy.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -284,6 +287,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04688D7E1F126B7F00E1A8AD /* BufferBufferingPolicy.swift in Sources */,
 				04967EC91D7C3967004A322C /* Errors.swift in Sources */,
 				0457A19E1D8E9FC2002D9863 /* Event.swift in Sources */,
 				0457A1981D8E9EF2002D9863 /* Chunks.swift in Sources */,
