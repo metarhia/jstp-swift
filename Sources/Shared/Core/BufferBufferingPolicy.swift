@@ -6,8 +6,6 @@
 //  Copyright © 2017 Andrew Visotskyy. All rights reserved.
 //
 
-import Foundation
-
 internal class BufferBufferingPolicy: BufferingPolicy {
 
 	private(set) internal var buffer: [Packet]

@@ -8,10 +8,17 @@
 
 internal protocol BufferingPolicy {
 
+	/// aaa
 	var buffer: [Packet] { get }
 
+	/// 
+	///
+	/// - Parameter packet: aaa
 	func buffer(packet: Packet)
 
+	/// aaa
+	///
+	/// - Parameter index: aaa
 	func onAcknowledged(packetWithIndex index: Int)
 
 }
