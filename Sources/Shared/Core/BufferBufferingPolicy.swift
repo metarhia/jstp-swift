@@ -12,7 +12,10 @@ internal class BufferBufferingPolicy: BufferingPolicy {
 
 	private(set) internal var buffer: [Packet]
 
+	internal var countLimit: Int
+
 	internal func buffer(packet: Packet) {
+		refineBuffer()
 		buffer.append(packet)
 	}
 
@@ -22,10 +25,18 @@ internal class BufferBufferingPolicy: BufferingPolicy {
 		}
 	}
 
+	private func refineBuffer() {
+		guard countLimit > 0 else {
+			return
+		}
+		self.buffer = Array(buffer.suffix(countLimit))
+	}
+
 	// MARK: - Lifecycle
 
-	internal init() {
+	internal init(with countLimit: Int = 0) {
 		self.buffer = []
+		self.countLimit = countLimit
 	}
 
 }
