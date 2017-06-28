@@ -16,6 +16,12 @@ internal class BufferBufferingPolicy: BufferingPolicy {
 		buffer.append(packet)
 	}
 
+	internal func onAcknowledged(packetWithIndex index: Int) {
+		self.buffer = buffer.filter { packet in
+			return packet.index > index
+		}
+	}
+
 	// MARK: - Lifecycle
 
 	internal init() {

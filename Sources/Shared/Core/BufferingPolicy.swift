@@ -12,4 +12,6 @@ internal protocol BufferingPolicy {
 
 	func buffer(packet: Packet)
 
+	func onAcknowledged(packetWithIndex index: Int)
+
 }

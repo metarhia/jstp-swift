@@ -14,4 +14,8 @@ internal class DropBufferingPolicy: BufferingPolicy {
 		return
 	}
 
+	internal func onAcknowledged(packetWithIndex index: Int) {
+		return
+	}
+
 }
