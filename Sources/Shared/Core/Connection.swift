@@ -13,6 +13,7 @@ open class Connection {
 	private(set) public var config: Configuration
 	private(set) public var application: Application
 	private(set) public var sessionData: SessionData
+	private(set) public var restorationPolicy: RestorationPolicy
 
 	internal(set) public var state: State
 
@@ -24,7 +25,7 @@ open class Connection {
 	internal var callbacks: Callbacks
 	internal var chunks: Chunks
 
-	public init(with transport: Transport, delegate: ConnectionDelegate, config: Configuration = .default) {
+	public init(with transport: Transport, restorationPolicy: RestorationPolicy, delegate: ConnectionDelegate, config: Configuration = .default) {
 		self.callbacks = Callbacks()
 		self.chunks = Chunks()
 		self.application = Application()
@@ -32,6 +33,7 @@ open class Connection {
 		self.config = config
 		self.state = .disconnected(nil)
 		self.delegate = delegate
+		self.restorationPolicy = restorationPolicy
 		self.transport = transport
 		self.transportDelegate = TransportDelegateImplementation(with: self)
 		self.transport.delegate = self.transportDelegate
