@@ -20,27 +20,14 @@ internal class TransportDelegateImplementation: TransportDelegate {
 		guard let connection = self.connection else {
 			return
 		}
-		guard let applicationName = connection.sessionData.applicationName else {
-			// Disconnect with error here
-			connection.disconnect(with: nil)
-			return
-		}
-		let onHandshakePerformed: Callback = { response, error in
-			guard error == nil else {
-				connection.disconnect(with: error)
-				return
-			}
-			if let sessionId = response?[safe: 0] as? String {
-				connection.state = .connected
-				connection.sessionData.sessionId = sessionId
+		connection.restorationPolicy.onTransportAvailable(connection: connection,
+			success: {
 				connection.delegate?.connectionDidConnect(connection)
+			},
+			failure: { error in
+				connection.disconnect(with: error)
 			}
-		}
-		if let credentials = connection.sessionData.credentials {
-			connection.handshake(applicationName, credentials, onHandshakePerformed)
-		} else {
-			connection.handshake(applicationName, onHandshakePerformed)
-		}
+		)
 	}
 
 	func transport(_ transport: Transport, didDisconnectWithError error: Error?) {
