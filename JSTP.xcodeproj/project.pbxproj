@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		040325EE1EFAFD3A004AE607 /* SessionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040325ED1EFAFD3A004AE607 /* SessionData.swift */; };
 		040AFEDC1F02C0BF00DF4AC3 /* ConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040AFEDB1F02C0BF00DF4AC3 /* ConnectionState.swift */; };
+		040325F01EFB2BF4004AE607 /* RestorationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040325EF1EFB2BF4004AE607 /* RestorationPolicy.swift */; };
 		0419935F1EECAD40002091EE /* TCPTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0419935E1EECAD40002091EE /* TCPTransport.swift */; };
 		041993621EEE9C64002091EE /* Synchronized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041993611EEE9C64002091EE /* Synchronized.swift */; };
 		0440096A1E85B0E500A3450B /* ConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044009691E85B0E500A3450B /* ConnectionDelegate.swift */; };
@@ -35,6 +36,7 @@
 /* Begin PBXFileReference section */
 		040325ED1EFAFD3A004AE607 /* SessionData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionData.swift; sourceTree = "<group>"; };
 		040AFEDB1F02C0BF00DF4AC3 /* ConnectionState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionState.swift; sourceTree = "<group>"; };
+		040325EF1EFB2BF4004AE607 /* RestorationPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestorationPolicy.swift; sourceTree = "<group>"; };
 		0419935E1EECAD40002091EE /* TCPTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPTransport.swift; sourceTree = "<group>"; };
 		041993611EEE9C64002091EE /* Synchronized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronized.swift; sourceTree = "<group>"; };
 		042BA29B1EB8B4D900FAF733 /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 				04688D791F125B8E00E1A8AD /* BufferingPolicy.swift */,
 				04688D7B1F1263BB00E1A8AD /* DropBufferingPolicy.swift */,
 				04688D7D1F126B7F00E1A8AD /* BufferBufferingPolicy.swift */,
+				040325EF1EFB2BF4004AE607 /* RestorationPolicy.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				04688D7E1F126B7F00E1A8AD /* BufferBufferingPolicy.swift in Sources */,
+				040325F01EFB2BF4004AE607 /* RestorationPolicy.swift in Sources */,
 				04967EC91D7C3967004A322C /* Errors.swift in Sources */,
 				0457A19E1D8E9FC2002D9863 /* Event.swift in Sources */,
 				0457A1981D8E9EF2002D9863 /* Chunks.swift in Sources */,
