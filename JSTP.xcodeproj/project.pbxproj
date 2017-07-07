@@ -10,6 +10,7 @@
 		040325EE1EFAFD3A004AE607 /* SessionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040325ED1EFAFD3A004AE607 /* SessionData.swift */; };
 		040AFEDC1F02C0BF00DF4AC3 /* ConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040AFEDB1F02C0BF00DF4AC3 /* ConnectionState.swift */; };
 		040325F01EFB2BF4004AE607 /* RestorationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040325EF1EFB2BF4004AE607 /* RestorationPolicy.swift */; };
+		040AFEDA1F02AB6200DF4AC3 /* DropRestorationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040AFED91F02AB6200DF4AC3 /* DropRestorationPolicy.swift */; };
 		0419935F1EECAD40002091EE /* TCPTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0419935E1EECAD40002091EE /* TCPTransport.swift */; };
 		041993621EEE9C64002091EE /* Synchronized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041993611EEE9C64002091EE /* Synchronized.swift */; };
 		0440096A1E85B0E500A3450B /* ConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044009691E85B0E500A3450B /* ConnectionDelegate.swift */; };
@@ -37,6 +38,7 @@
 		040325ED1EFAFD3A004AE607 /* SessionData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionData.swift; sourceTree = "<group>"; };
 		040AFEDB1F02C0BF00DF4AC3 /* ConnectionState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionState.swift; sourceTree = "<group>"; };
 		040325EF1EFB2BF4004AE607 /* RestorationPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestorationPolicy.swift; sourceTree = "<group>"; };
+		040AFED91F02AB6200DF4AC3 /* DropRestorationPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropRestorationPolicy.swift; sourceTree = "<group>"; };
 		0419935E1EECAD40002091EE /* TCPTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPTransport.swift; sourceTree = "<group>"; };
 		041993611EEE9C64002091EE /* Synchronized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronized.swift; sourceTree = "<group>"; };
 		042BA29B1EB8B4D900FAF733 /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 				04688D7B1F1263BB00E1A8AD /* DropBufferingPolicy.swift */,
 				04688D7D1F126B7F00E1A8AD /* BufferBufferingPolicy.swift */,
 				040325EF1EFB2BF4004AE607 /* RestorationPolicy.swift */,
+				040AFED91F02AB6200DF4AC3 /* DropRestorationPolicy.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -307,6 +310,7 @@
 				040325EE1EFAFD3A004AE607 /* SessionData.swift in Sources */,
 				04688D7A1F125B8F00E1A8AD /* BufferingPolicy.swift in Sources */,
 				0457A19A1D8E9F12002D9863 /* Constants.swift in Sources */,
+				040AFEDA1F02AB6200DF4AC3 /* DropRestorationPolicy.swift in Sources */,
 				041993621EEE9C64002091EE /* Synchronized.swift in Sources */,
 				04967EC71D7C3967004A322C /* Connection.swift in Sources */,
 				0440096A1E85B0E500A3450B /* ConnectionDelegate.swift in Sources */,
