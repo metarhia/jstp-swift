@@ -14,10 +14,6 @@ public class RestorationPolicy {
 
 	}
 
-	internal func onRestore(connection: Connection, completion: @escaping () -> Void) {
-
-	}
-
 	internal init() {
 
 	}
