@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		040325EE1EFAFD3A004AE607 /* SessionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040325ED1EFAFD3A004AE607 /* SessionData.swift */; };
-		040AFEDC1F02C0BF00DF4AC3 /* ConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040AFEDB1F02C0BF00DF4AC3 /* ConnectionState.swift */; };
 		040325F01EFB2BF4004AE607 /* RestorationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040325EF1EFB2BF4004AE607 /* RestorationPolicy.swift */; };
 		040AFEDA1F02AB6200DF4AC3 /* DropRestorationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040AFED91F02AB6200DF4AC3 /* DropRestorationPolicy.swift */; };
+		040AFEDC1F02C0BF00DF4AC3 /* ConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040AFEDB1F02C0BF00DF4AC3 /* ConnectionState.swift */; };
 		0419935F1EECAD40002091EE /* TCPTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0419935E1EECAD40002091EE /* TCPTransport.swift */; };
 		041993621EEE9C64002091EE /* Synchronized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041993611EEE9C64002091EE /* Synchronized.swift */; };
 		0440096A1E85B0E500A3450B /* ConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044009691E85B0E500A3450B /* ConnectionDelegate.swift */; };
@@ -36,9 +36,9 @@
 
 /* Begin PBXFileReference section */
 		040325ED1EFAFD3A004AE607 /* SessionData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionData.swift; sourceTree = "<group>"; };
-		040AFEDB1F02C0BF00DF4AC3 /* ConnectionState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionState.swift; sourceTree = "<group>"; };
 		040325EF1EFB2BF4004AE607 /* RestorationPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestorationPolicy.swift; sourceTree = "<group>"; };
 		040AFED91F02AB6200DF4AC3 /* DropRestorationPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropRestorationPolicy.swift; sourceTree = "<group>"; };
+		040AFEDB1F02C0BF00DF4AC3 /* ConnectionState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionState.swift; sourceTree = "<group>"; };
 		0419935E1EECAD40002091EE /* TCPTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPTransport.swift; sourceTree = "<group>"; };
 		041993611EEE9C64002091EE /* Synchronized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronized.swift; sourceTree = "<group>"; };
 		042BA29B1EB8B4D900FAF733 /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
@@ -98,6 +98,10 @@
 		048448ED1EB8BB8000F4B4DD /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				04BDC5081F168C0E0006DB2B /* BufferingPolicies */,
+				04BDC5091F168C2C0006DB2B /* RestorationPolicies */,
+				04688D791F125B8E00E1A8AD /* BufferingPolicy.swift */,
+				040325EF1EFB2BF4004AE607 /* RestorationPolicy.swift */,
 				04967EBF1D7C3967004A322C /* Application.swift */,
 				04967EC11D7C3967004A322C /* Connection.swift */,
 				04AEADE91E94096F00334142 /* Configuration.swift */,
@@ -112,11 +116,6 @@
 				044F698B1ED96239004A6D1E /* Transport.swift */,
 				040325ED1EFAFD3A004AE607 /* SessionData.swift */,
 				040AFEDB1F02C0BF00DF4AC3 /* ConnectionState.swift */,
-				04688D791F125B8E00E1A8AD /* BufferingPolicy.swift */,
-				04688D7B1F1263BB00E1A8AD /* DropBufferingPolicy.swift */,
-				04688D7D1F126B7F00E1A8AD /* BufferBufferingPolicy.swift */,
-				040325EF1EFB2BF4004AE607 /* RestorationPolicy.swift */,
-				040AFED91F02AB6200DF4AC3 /* DropRestorationPolicy.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -178,6 +177,23 @@
 			);
 			name = Frameworks;
 			path = JSTP;
+			sourceTree = "<group>";
+		};
+		04BDC5081F168C0E0006DB2B /* BufferingPolicies */ = {
+			isa = PBXGroup;
+			children = (
+				04688D7B1F1263BB00E1A8AD /* DropBufferingPolicy.swift */,
+				04688D7D1F126B7F00E1A8AD /* BufferBufferingPolicy.swift */,
+			);
+			path = BufferingPolicies;
+			sourceTree = "<group>";
+		};
+		04BDC5091F168C2C0006DB2B /* RestorationPolicies */ = {
+			isa = PBXGroup;
+			children = (
+				040AFED91F02AB6200DF4AC3 /* DropRestorationPolicy.swift */,
+			);
+			path = RestorationPolicies;
 			sourceTree = "<group>";
 		};
 		04C45DC01E508FD2007AE58C /* Extensions */ = {
