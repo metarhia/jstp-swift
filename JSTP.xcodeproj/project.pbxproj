@@ -26,6 +26,7 @@
 		04967EC91D7C3967004A322C /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04967EC31D7C3967004A322C /* Errors.swift */; };
 		04A885F91D3EB7F800B5127C /* JSTP.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A885F81D3EB7F800B5127C /* JSTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		04AEADEA1E94096F00334142 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AEADE91E94096F00334142 /* Configuration.swift */; };
+		04B01FA71F39ACD200A4CE92 /* String+Decode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B01FA61F39ACD200A4CE92 /* String+Decode.swift */; };
 		04C45DBF1E508FCB007AE58C /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C45DBE1E508FCB007AE58C /* Collection+Extensions.swift */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +55,7 @@
 		04A885F81D3EB7F800B5127C /* JSTP.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSTP.h; sourceTree = "<group>"; };
 		04A885FA1D3EB7F800B5127C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04AEADE91E94096F00334142 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		04B01FA61F39ACD200A4CE92 /* String+Decode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Decode.swift"; sourceTree = "<group>"; };
 		04C45DBE1E508FCB007AE58C /* Collection+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -169,6 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				04C45DBE1E508FCB007AE58C /* Collection+Extensions.swift */,
+				04B01FA61F39ACD200A4CE92 /* String+Decode.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 				04967EC51D7C3967004A322C /* Application.swift in Sources */,
 				04AEADEA1E94096F00334142 /* Configuration.swift in Sources */,
 				0457A19C1D8E9F6A002D9863 /* Context.swift in Sources */,
+				04B01FA71F39ACD200A4CE92 /* String+Decode.swift in Sources */,
 				0419935F1EECAD40002091EE /* TCPTransport.swift in Sources */,
 				040325EE1EFAFD3A004AE607 /* SessionData.swift in Sources */,
 				0457A19A1D8E9F12002D9863 /* Constants.swift in Sources */,
