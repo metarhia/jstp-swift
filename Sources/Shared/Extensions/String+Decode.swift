@@ -8,6 +8,12 @@
 
 extension String {
 
+	/// Returns a String initialized by converting given data into Unicode characters
+	/// using a UTF-8 encoding. Input `data` parameter will contain suffix data which
+	/// can't be converted to string.
+	///
+	/// - Warning: The implementation relies on the fact that given data is valid UTF-8
+	/// sequence, but may not contain all continuation bytes for the last character.
 	public static func decode(data: inout Data) -> String? {
 		var headerPosition = data.count - 1
 		while data[headerPosition] & UInt8(0xC0) == UInt8(0x80) {
