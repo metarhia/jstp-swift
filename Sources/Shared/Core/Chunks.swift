@@ -8,28 +8,30 @@
 
 internal class Chunks {
 
-	private var buffer: Data = Data()
+	private var dataBuffer = Data()
+	private var stringBuffer = String()
 
 	internal func add(chunk: Data) -> [Packet] {
-		buffer.append(chunk)
-		guard let source = Chunks.convert(data: buffer) else {
+		dataBuffer.append(chunk)
+		guard let string = String.decode(data: &dataBuffer) else {
 			return []
 		}
-		invalidate()
+		self.stringBuffer.append(string)
+		guard let source = Chunks.convertToSource(string: &stringBuffer) else {
+			return []
+		}
 		return Context.shared.parse(source)
-	}
-
-	internal func invalidate() {
-		buffer = Data()
 	}
 
 	// MARK: -
 
-	private static func convert(data: Data) -> String? {
-		guard let source = String(data: data, encoding: .utf8), source.hasSuffix(kPacketDelimiter) else {
+	private static func convertToSource(string: inout String) -> String? {
+		guard let range = string.range(of: kPacketDelimiter, options: .backwards) else {
 			return nil
 		}
-		return kChunksFirst + source.replacingOccurrences(of: kPacketDelimiter, with: ",") + kChunksLast
+		let source = kChunksFirst + string.substring(to: range.upperBound) + kChunksLast
+		string = string.substring(from: range.upperBound)
+		return source.replacingOccurrences(of: kPacketDelimiter, with: ",")
 	}
 
 }
