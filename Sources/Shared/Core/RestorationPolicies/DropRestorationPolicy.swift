@@ -26,7 +26,8 @@ public class DropRestorationPolicy: RestorationPolicy {
 	}
 
 	public override init() {
-
+		super.init()
+		self.bufferingPolicy = DropBufferingPolicy()
 	}
 
 }

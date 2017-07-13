@@ -11,6 +11,8 @@ import UIKit
 
 public class RestorationPolicy {
 
+	internal var bufferingPolicy: BufferingPolicy?
+
 	/// Called when transport signaled that it has been connected. You must perform handshake and call specific completion handler depending on the result of the operation.
 	///
 	/// The default implementation does nothing.
