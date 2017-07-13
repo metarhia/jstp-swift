@@ -11,7 +11,7 @@ import UIKit
 
 public class RestorationPolicy {
 
-	internal var bufferingPolicy: BufferingPolicy?
+	internal var bufferingPolicy: BufferingPolicy
 
 	/// Called when transport signaled that it has been connected. You must perform handshake and call specific completion handler depending on the result of the operation.
 	///
@@ -31,8 +31,8 @@ public class RestorationPolicy {
 	// MARK: - Lifecycle
 
 	/// The designated initializer. The default implementation does nothing.
-	internal init() {
-
+	internal init(with bufferingPolicy: BufferingPolicy) {
+		self.bufferingPolicy = bufferingPolicy
 	}
 
 }

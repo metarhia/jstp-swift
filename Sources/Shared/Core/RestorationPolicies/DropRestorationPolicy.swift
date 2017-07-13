@@ -25,9 +25,9 @@ public class DropRestorationPolicy: RestorationPolicy {
 		}
 	}
 
-	public override init() {
-		super.init()
-		self.bufferingPolicy = DropBufferingPolicy()
+	public init() {
+		let bufferingPolicy = DropBufferingPolicy()
+		super.init(with: bufferingPolicy)
 	}
 
 }
