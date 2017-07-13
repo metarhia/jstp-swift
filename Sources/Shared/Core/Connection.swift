@@ -161,7 +161,7 @@ open class Connection {
 
 	// MARK: -
 
-	private func send(_ packet: Packet) {
+	private func send(packet: Packet) {
 		let text = Context.shared.stringify(packet) + kPacketDelimiter
 		self.transport.write(string: text)
 	}
@@ -183,7 +183,7 @@ open class Connection {
 	private func pong(_ packetId: Int) {
 		let packet = self.createPacket(kind: .pong)
 		packet.index = packetId
-		self.send(packet)
+		self.send(packet: packet)
 	}
 
 	/**
@@ -195,7 +195,7 @@ open class Connection {
 	internal func callback(_ packetId: Int, result: [Value]) {
 		let packet = self.createPacket(kind: .callback, payloadIdentifier: "ok", payload: result)
 		packet.index = packetId
-		self.send(packet)
+		self.send(packet: packet)
 	}
 
 	/**
@@ -207,7 +207,7 @@ open class Connection {
 	internal func callback(_ packetId: Int, error: ConnectionError) {
 		let packet = self.createPacket(kind: .callback, payloadIdentifier: "error", payload: error.asObject)
 		packet.index = packetId
-		self.send(packet)
+		self.send(packet: packet)
 	}
 
 	/**
@@ -222,7 +222,7 @@ open class Connection {
 	open func call(_ interface: String, _ method: String, _ parameters: [Value] = [], _ callback: Callback? = nil) {
 		let packet = self.createPacket(kind: .call, resourceIdentifier: interface, payloadIdentifier: method, payload: parameters)
 		self.callbacks[packet.index] = callback
-		self.send(packet)
+		self.send(packet: packet)
 	}
 
 	/**
@@ -235,7 +235,7 @@ open class Connection {
 	 */
 	open func event(_ interface: String, _ event: String, _ parameters: [Value] = []) {
 		let packet = self.createPacket(kind: .event, resourceIdentifier: interface, payloadIdentifier: event, payload: parameters)
-		self.send(packet)
+		self.send(packet: packet)
 	}
 
 	/**
@@ -248,7 +248,7 @@ open class Connection {
 	 */
 	open func state(_ path: String, _ verb: String, _ value: Value) {
 		let packet = self.createPacket(kind: .state, resourceIdentifier: path, payloadIdentifier: verb, payload: value)
-		self.send(packet)
+		self.send(packet: packet)
 	}
 
 	/**
@@ -263,7 +263,7 @@ open class Connection {
 	internal func handshake(_ name: String, _ credentials: Credentials, _ callback: Callback? = nil) {
 		let packet = self.createPacket(kind: .handshake, resourceIdentifier: name, payloadIdentifier: "login", payload: [credentials.login, credentials.password])
 		self.callbacks[packet.index] = callback
-		self.send(packet)
+		self.send(packet: packet)
 	}
 
 	/**
@@ -276,7 +276,7 @@ open class Connection {
 	internal func handshake(_ name: String, _ callback: Callback? = nil) {
 		let packet = self.createPacket(kind: .handshake, resourceIdentifier: name)
 		self.callbacks[packet.index] = callback
-		self.send(packet)
+		self.send(packet: packet)
 	}
 
 }
