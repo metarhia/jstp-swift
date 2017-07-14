@@ -89,6 +89,7 @@ open class Connection {
 			let error = ConnectionError(type: .invalidSignature)
 			return self.callback(packet.index, error: error)
 		}
+		self.restorationPolicy.bufferingPolicy.onAcknowledged(packetWithIndex: packet.index)
 		let callback = callbacks.removeValue(forKey: packet.index)
 		guard payloadIdentifier != "error" else {
 			let error = ConnectionError(with: payload)
