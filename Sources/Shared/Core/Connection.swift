@@ -161,9 +161,14 @@ open class Connection {
 
 	// MARK: -
 
-	private func send(packet: Packet) {
-		let text = Context.shared.stringify(packet) + kPacketDelimiter
-		self.transport.write(string: text)
+	private func send(packet: Packet, buffer: Bool = true) {
+		if case .connected =  transport.state {
+			let text = Context.shared.stringify(packet) + kPacketDelimiter
+			self.transport.write(string: text)
+		}
+		if buffer {
+			self.restorationPolicy.bufferingPolicy.buffer(packet: packet)
+		}
 	}
 
 	private func createPacket(kind: Packet.Kind, resourceIdentifier: String? = nil, payloadIdentifier: String? = nil, payload: Value? = nil) -> Packet {
@@ -263,7 +268,7 @@ open class Connection {
 	internal func handshake(_ name: String, _ credentials: Credentials, _ callback: Callback? = nil) {
 		let packet = self.createPacket(kind: .handshake, resourceIdentifier: name, payloadIdentifier: "login", payload: [credentials.login, credentials.password])
 		self.callbacks[packet.index] = callback
-		self.send(packet: packet)
+		self.send(packet: packet, buffer: false)
 	}
 
 	/**
@@ -276,7 +281,7 @@ open class Connection {
 	internal func handshake(_ name: String, _ callback: Callback? = nil) {
 		let packet = self.createPacket(kind: .handshake, resourceIdentifier: name)
 		self.callbacks[packet.index] = callback
-		self.send(packet: packet)
+		self.send(packet: packet, buffer: false)
 	}
 
 }
