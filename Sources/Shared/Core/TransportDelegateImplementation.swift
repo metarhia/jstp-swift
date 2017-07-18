@@ -23,6 +23,7 @@ internal class TransportDelegateImplementation: TransportDelegate {
 		connection.restorationPolicy.onTransportAvailable(connection: connection,
 			success: {
 				connection.delegate?.connectionDidConnect(connection)
+				connection.state = .connected
 			},
 			failure: { error in
 				connection.disconnect(with: error)
